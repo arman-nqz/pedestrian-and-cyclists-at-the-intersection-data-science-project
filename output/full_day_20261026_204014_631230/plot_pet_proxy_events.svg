@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="520" viewBox="0 0 820 520">
+<rect width="820" height="520" fill="white"/>
+<rect x="88.0" y="68.0" width="690.0" height="374.0" fill="#f8f9fa" opacity="1" stroke="#dee2e6" stroke-width="1" rx="0"/>
+<line x1="88.0" y1="68.0" x2="88.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="442.0" x2="778.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="88.0" y="462.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0</text>
+<text x="78.0" y="446.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0</text>
+<line x1="203.0" y1="68.0" x2="203.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="379.7" x2="778.0" y2="379.7" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="203.0" y="462.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0.5</text>
+<text x="78.0" y="383.7" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">7.6e+02</text>
+<line x1="318.0" y1="68.0" x2="318.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="317.3" x2="778.0" y2="317.3" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="318.0" y="462.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">1</text>
+<text x="78.0" y="321.3" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">1.5e+03</text>
+<line x1="433.0" y1="68.0" x2="433.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="255.0" x2="778.0" y2="255.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="433.0" y="462.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">1.5</text>
+<text x="78.0" y="259.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">2.3e+03</text>
+<line x1="548.0" y1="68.0" x2="548.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="192.7" x2="778.0" y2="192.7" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="548.0" y="462.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">2</text>
+<text x="78.0" y="196.7" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">3.1e+03</text>
+<line x1="663.0" y1="68.0" x2="663.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="130.3" x2="778.0" y2="130.3" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="663.0" y="462.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">2.5</text>
+<text x="78.0" y="134.3" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">3.8e+03</text>
+<line x1="778.0" y1="68.0" x2="778.0" y2="442.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="68.0" x2="778.0" y2="68.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="778.0" y="462.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">3</text>
+<text x="78.0" y="72.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">4.6e+03</text>
+<line x1="88.0" y1="442.0" x2="778.0" y2="442.0" stroke="#212529" stroke-width="1.5"/>
+<line x1="88.0" y1="442.0" x2="88.0" y2="68.0" stroke="#212529" stroke-width="1.5"/>
+<text x="433.0" y="508.0" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" font-weight="bold" fill="#212529">PET proxy (s; unrounded comparison)</text>
+<text x="16.0" y="259.0" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" font-weight="bold" fill="#212529" transform="rotate(-90,16.0,259.0)">Proxy event count</text>
+<text x="410.0" y="34.0" text-anchor="middle" font-size="15" font-family="Arial,sans-serif" font-weight="bold" fill="#212529">PET Grid-Cell Proxy Near-Miss Events</text>
+<rect x="88.0" y="167.4" width="26.6" height="274.6" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="115.6" y="391.7" width="26.6" height="50.3" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="143.2" y="399.4" width="26.6" height="42.6" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="170.8" y="369.4" width="26.6" height="72.6" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="198.4" y="326.8" width="26.6" height="115.2" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="226.0" y="322.5" width="26.6" height="119.5" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="253.6" y="377.9" width="26.6" height="64.1" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="281.2" y="371.2" width="26.6" height="70.8" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="308.8" y="355.4" width="26.6" height="86.6" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="336.4" y="282.4" width="26.6" height="159.6" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="364.0" y="116.8" width="26.6" height="325.2" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="391.6" y="176.4" width="26.6" height="265.6" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="419.2" y="275.3" width="26.6" height="166.7" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="446.8" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="474.4" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="502.0" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="529.6" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="557.2" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="584.8" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="612.4" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="640.0" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="667.6" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="695.2" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="722.8" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="750.4" y="442.0" width="26.6" height="0.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<line x1="433.0" y1="68.0" x2="433.0" y2="442.0" stroke="red" stroke-width="1.8" stroke-dasharray="6,3"/>
+</svg>

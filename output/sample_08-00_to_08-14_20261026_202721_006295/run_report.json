@@ -1,0 +1,37 @@
+{
+  "intersection": "K305",
+  "date": "2026-10-14",
+  "run_mode": "quick",
+  "selected_files": [
+    "k305_object_list_2026-10-14_08-00_to_08-04.json",
+    "k305_object_list_2026-10-14_08-05_to_08-09.json",
+    "k305_object_list_2026-10-14_08-10_to_08-14.json"
+  ],
+  "output_directory": "/home/arman/Projects/University data science project cameras/output/sample_08-00_to_08-14_20261026_202721_006295",
+  "frames_analysed": 8996,
+  "tracks_by_class": {
+    "Motorcycle": 18,
+    "Bus": 40,
+    "Truck": 137,
+    "Cyclist": 123,
+    "Van": 398,
+    "Car": 2251,
+    "Pedestrian": 568
+  },
+  "raw_ttc_frame_observations": 1763,
+  "near_miss_ttc_frame_observations": 316,
+  "consolidated_ttc_events": 51,
+  "pet_proxy_pairs": 269,
+  "pet_proxy_near_miss_events": 17,
+  "ttc_threshold_sec_strict_lt": 1.5,
+  "pet_threshold_sec_strict_lt": 1.5,
+  "pet_method": "2 m grid-cell occupancy proxy; not map-based engineering PET",
+  "data_quality": {
+    "raw_rows": 253732,
+    "duplicate_rows_removed": 0,
+    "velocity_outliers_removed": 0,
+    "short_tracks_removed": 928
+  },
+  "runtime_sec": 28.73,
+  "plots_enabled": true
+}

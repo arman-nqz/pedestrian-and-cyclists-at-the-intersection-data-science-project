@@ -1,0 +1,17 @@
+The data is stored in JSON format and organized into 5-minute intervals. The LiDAR object list is recorded at 10 Hz (10 frames per second).
+
+Each frame contains a timestamp and a list of detected objects with the following information:
+
+- frame_timestamp: Timestamp of the frame (seconds and nanosec).
+- timestamp_local: Local date and time of the frame.
+- objects: List of detected objects in the frame.
+  - track_id: Unique ID assigned to a tracked object.
+  - class_name: Type of object (e.g., Car, Pedestrian).
+  - score: Detection confidence score.
+  - bounding_box:
+    - position (x, y, z): 3D position of the object.
+    - yaw: Orientation of the object.
+    - scale (x, y, z): Object dimensions (length, width, height).
+  - velocity (x, y): Object velocity along the x and y axes.
+
+The same object can appear in multiple consecutive frames with its track_id, allowing its movement to be tracked over time.

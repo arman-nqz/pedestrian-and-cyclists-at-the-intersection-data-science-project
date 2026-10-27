@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="620" viewBox="0 0 820 620">
+<rect width="820" height="620" fill="white"/>
+<rect x="88.0" y="68.0" width="690.0" height="474.0" fill="#f8f9fa" opacity="1" stroke="#dee2e6" stroke-width="1" rx="0"/>
+<line x1="88.0" y1="68.0" x2="88.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="542.0" x2="778.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="88.0" y="562.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0</text>
+<text x="78.0" y="546.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0</text>
+<line x1="203.0" y1="68.0" x2="203.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="463.0" x2="778.0" y2="463.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="203.0" y="562.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0.83</text>
+<text x="78.0" y="467.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">1.7</text>
+<line x1="318.0" y1="68.0" x2="318.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="384.0" x2="778.0" y2="384.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="318.0" y="562.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">1.7</text>
+<text x="78.0" y="388.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">3.3</text>
+<line x1="433.0" y1="68.0" x2="433.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="305.0" x2="778.0" y2="305.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="433.0" y="562.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">2.5</text>
+<text x="78.0" y="309.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">5</text>
+<line x1="548.0" y1="68.0" x2="548.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="226.0" x2="778.0" y2="226.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="548.0" y="562.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">3.3</text>
+<text x="78.0" y="230.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">6.7</text>
+<line x1="663.0" y1="68.0" x2="663.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="147.0" x2="778.0" y2="147.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="663.0" y="562.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">4.2</text>
+<text x="78.0" y="151.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">8.3</text>
+<line x1="778.0" y1="68.0" x2="778.0" y2="542.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="68.0" x2="778.0" y2="68.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="778.0" y="562.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">5</text>
+<text x="78.0" y="72.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">10</text>
+<line x1="88.0" y1="542.0" x2="778.0" y2="542.0" stroke="#212529" stroke-width="1.5"/>
+<line x1="88.0" y1="542.0" x2="88.0" y2="68.0" stroke="#212529" stroke-width="1.5"/>
+<text x="433.0" y="608.0" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" font-weight="bold" fill="#212529">TTC (seconds)</text>
+<text x="16.0" y="309.0" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" font-weight="bold" fill="#212529" transform="rotate(-90,16.0,309.0)">PET (seconds)</text>
+<text x="410.0" y="34.0" text-anchor="middle" font-size="15" font-family="Arial,sans-serif" font-weight="bold" fill="#212529">TTC vs PET — Near-Miss Events (K305)</text>
+<circle cx="281.4" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="264.0" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="245.7" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="236.5" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="220.2" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="207.7" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="191.9" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="182.4" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="171.5" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="163.6" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="142.9" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="128.1" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="113.8" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="102.9" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="93.0" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="200.3" cy="494.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="164.0" cy="494.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="138.6" cy="494.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="123.7" cy="494.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="106.8" cy="494.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="102.1" cy="494.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="96.0" cy="494.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="145.5" cy="513.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="145.5" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="125.5" cy="513.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="125.5" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="105.0" cy="513.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="105.0" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="89.4" cy="513.6" r="7" fill="#e74c3c" opacity="0.75"/>
+<circle cx="89.4" cy="508.8" r="7" fill="#e74c3c" opacity="0.75"/>
+<line x1="295.0" y1="68.0" x2="295.0" y2="542.0" stroke="#212529" stroke-width="1.8" stroke-dasharray="6,3"/>
+<line x1="88.0" y1="470.9" x2="778.0" y2="470.9" stroke="#212529" stroke-width="1.8" stroke-dasharray="6,3"/>
+<rect x="588.0" y="73.0" width="192.0" height="86.0" fill="white" opacity="1" stroke="#ccc" stroke-width="1" rx="5"/>
+<circle cx="603.0" cy="92.0" r="9" fill="#e74c3c" opacity="0.85"/>
+<text x="617.0" y="97.0" text-anchor="start" font-size="11" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">Motor vs Vulnerable</text>
+<circle cx="603.0" cy="116.0" r="9" fill="#2980b9" opacity="0.85"/>
+<text x="617.0" y="121.0" text-anchor="start" font-size="11" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">Motor vs Motor</text>
+<circle cx="603.0" cy="140.0" r="9" fill="#27ae60" opacity="0.85"/>
+<text x="617.0" y="145.0" text-anchor="start" font-size="11" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">Vul vs Vul</text>
+</svg>
