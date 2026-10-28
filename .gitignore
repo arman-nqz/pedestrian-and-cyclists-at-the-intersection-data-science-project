@@ -7,3 +7,5 @@
 !/database/k305_object_list_2026-10-14_aggregation_5min/k305_object_list_2026-10-14_00-00_to_00-04.json
 !/database/k305_object_list_2026-10-14_aggregation_5min/k305_object_list_2026-10-14_00-05_to_00-09.json
 !/database/k305_object_list_2026-10-14_aggregation_5min/k305_object_list_2026-10-14_00-10_to_00-14.json
+
+.venv/
