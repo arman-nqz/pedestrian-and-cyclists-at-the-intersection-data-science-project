@@ -54,6 +54,7 @@ CONFIG = {
     "VULNERABLE_CLASSES": {"Pedestrian","Cyclist"},
     "DATA_DIR":   "/home/arman/Projects/University data science project cameras/database/k305_object_list_2026-10-14_aggregation_5min",
     "OUTPUT_DIR": "output",
+    "BOUNDARY_BUFFER_SEC":      10.0,
 }
 
 # Numeric category codes for vectorised logic
@@ -105,22 +106,58 @@ def rolling_mean_1d(arr:np.ndarray, w:int) -> np.ndarray:
     return out
 
 
-def preprocess_chunk(df:pd.DataFrame, quality:Optional[Dict[str,int]]=None) -> pd.DataFrame:
-    if df.empty: return df
-    W=CONFIG["SMOOTHING_WINDOW"]; VMAX=CONFIG["MAX_VELOCITY_MS"]; MINLEN=CONFIG["MIN_TRACK_LENGTH"]
+def extract_boundary_tail(df: pd.DataFrame, buffer_sec: float) -> pd.DataFrame:
+    """Return raw rows from the tail of df within buffer_sec of the last timestamp.
+
+    These rows are passed to the next chunk's preprocess_chunk() call as a
+    carry-over prefix so that boundary-straddling tracks are not truncated.
+    """
+    if df.empty:
+        return pd.DataFrame()
+    cutoff = df["ts"].max() - buffer_sec
+    return df[df["ts"] >= cutoff].copy()
+
+
+def _chunks_are_consecutive(path_a: Path, path_b: Path) -> bool:
+    """Return True if path_b immediately follows path_a in the 5-minute grid."""
+    import re
+    pat = re.compile(r'_(\d{2})-(\d{2})_to_(\d{2})-(\d{2})\.json$')
+    ma = pat.search(path_a.name)
+    mb = pat.search(path_b.name)
+    if not ma or not mb:
+        return False
+    end_a   = int(ma.group(3)) * 60 + int(ma.group(4))
+    start_b = int(mb.group(1)) * 60 + int(mb.group(2))
+    return end_a == start_b
+
+
+def preprocess_chunk(df: pd.DataFrame, quality: Optional[Dict[str,int]] = None,
+                     boundary_tail: Optional[pd.DataFrame] = None) -> pd.DataFrame:
+    if df.empty:
+        return df
+    W = CONFIG["SMOOTHING_WINDOW"]; VMAX = CONFIG["MAX_VELOCITY_MS"]; MINLEN = CONFIG["MIN_TRACK_LENGTH"]
+
+    # Record the maximum timestamp of the carry-over tail (used to strip it back out later)
+    tail_ts_max: Optional[float] = None
+    if boundary_tail is not None and not boundary_tail.empty:
+        tail_ts_max = float(boundary_tail["ts"].max())
+        # Prepend tail rows to give boundary-straddling tracks their missing history.
+        # Tail rows are raw (unsmoothed); they are stripped from the output after smoothing.
+        df = pd.concat([boundary_tail, df], ignore_index=True)
 
     # Dedup: keep first occurrence per (ts,tid) – data already sorted by score asc
     before_dedup = len(df)
-    df = df.sort_values(["tid","ts"]).drop_duplicates(subset=["ts","tid"])
+    df = df.sort_values(["tid", "ts"]).drop_duplicates(subset=["ts", "tid"])
     if quality is not None:
         quality["duplicate_rows_removed"] += before_dedup - len(df)
 
     # Outlier velocity
-    spd = np.sqrt(df["vx"]**2+df["vy"]**2)
+    spd = np.sqrt(df["vx"] ** 2 + df["vy"] ** 2)
     bad = spd > VMAX
     if quality is not None:
         quality["velocity_outliers_removed"] += int(bad.sum())
-    df.loc[bad,"vx"] = np.nan; df.loc[bad,"vy"] = np.nan
+    df.loc[bad, "vx"] = np.nan
+    df.loc[bad, "vy"] = np.nan
 
     # Per-track smoothing — using pandas groupby but only for short arrays
     parts = []
@@ -130,23 +167,30 @@ def preprocess_chunk(df:pd.DataFrame, quality:Optional[Dict[str,int]]=None) -> p
             if quality is not None:
                 quality["short_tracks_removed"] += 1
             continue
-        arr = g[["x","y","vx","vy"]].values.astype(float)
+        arr = g[["x", "y", "vx", "vy"]].values.astype(float)
         # Linear interpolation over NaN
         for col in range(4):
-            a = arr[:,col]
+            a = arr[:, col]
             nans = np.isnan(a)
             if nans.any() and (~nans).any():
                 xp = np.where(~nans)[0]; fp = a[~nans]
                 a[nans] = np.interp(np.where(nans)[0], xp, fp)
-            arr[:,col] = rolling_mean_1d(a, W)
+            arr[:, col] = rolling_mean_1d(a, W)
         g = g.copy()
-        g["x"]  = arr[:,0]; g["y"]  = arr[:,1]
-        g["vx"] = arr[:,2]; g["vy"] = arr[:,3]
-        g["spd"] = np.sqrt(g["vx"]**2+g["vy"]**2)
+        g["x"]  = arr[:, 0]; g["y"]  = arr[:, 1]
+        g["vx"] = arr[:, 2]; g["vy"] = arr[:, 3]
+        g["spd"] = np.sqrt(g["vx"] ** 2 + g["vy"] ** 2)
         parts.append(g)
 
-    if not parts: return pd.DataFrame()
-    return pd.concat(parts, ignore_index=True)
+    if not parts:
+        return pd.DataFrame()
+    result = pd.concat(parts, ignore_index=True)
+
+    # Strip the carry-over tail rows so they are not double-counted in global stats.
+    if tail_ts_max is not None:
+        result = result[result["ts"] > tail_ts_max]
+
+    return result
 
 # =============================================================================
 # MODULE 3: VECTORISED TTC
@@ -789,6 +833,83 @@ def consolidate_ttc_events(ttc_df):
     return pd.DataFrame(rows,columns=cols).sort_values("min_ttc_sec",ignore_index=True)
 
 
+def _test_boundary_spanning():
+    """Boundary spanning test: near-miss that straddles a chunk seam.
+
+    Two objects on a collision course. Object 1 (motor) moves right at 3 m/s
+    starting from x=-10. Object 2 (VRU) moves left at 3 m/s starting from x=+10.
+    They approach each other; combined radius = 1.0 m.
+    Collision (gap=1.0) occurs at t = (20-1)/6 ≈ 3.167 s.
+
+    Chunk N: t = 0.0 to 2.0 s (21 frames at 0.1 s intervals)
+    Chunk N+1: t = 2.1 to 4.0 s (20 frames at 0.1 s intervals)
+
+    Without stitching: chunk N+1 has 20 frames (≥ MINLEN), so both chunks
+    process fine BUT the minimum TTC would be calculated only within each
+    chunk, missing the true minimum just after the boundary.
+    With stitching: the two chunks' TTC rows are combined and consolidate_ttc_events
+    produces exactly 1 event spanning the seam.
+
+    Also tests short-track stitching: if chunk N+1 starts with only 2 frames
+    before the near-miss peak, without boundary tail those 2 frames would be
+    dropped (< MINLEN=5).
+    """
+    MINLEN = CONFIG["MIN_TRACK_LENGTH"]
+    BUFFER = CONFIG["BOUNDARY_BUFFER_SEC"]
+
+    fps = 10.0  # 10 Hz
+    dt = 1.0 / fps
+
+    def make_frames(t_start, t_end):
+        """Generate synthetic raw DataFrame for two objects over a time range."""
+        times = np.arange(t_start, t_end + dt / 2, dt)
+        rows = []
+        for t in times:
+            x1 = -10.0 + 3.0 * t
+            x2 =  10.0 - 3.0 * t
+            rows.append((round(t, 2), "", 1, "Car",        CAT_MOTOR, x1, 0.0, 3.0, 0.0, 0.5))
+            rows.append((round(t, 2), "", 2, "Pedestrian", CAT_VUL,   x2, 0.0, -3.0, 0.0, 0.5))
+        return pd.DataFrame(rows, columns=["ts", "tsl", "tid", "cls", "cat", "x", "y", "vx", "vy", "r"])
+
+    # Chunk N: t=0 to t=2.0 (21 frames × 2 objects = 42 rows)
+    raw_n = make_frames(0.0, 2.0)
+
+    # Chunk N+1: only 3 frames (< MINLEN=5) — tests short-track rescue via stitching
+    raw_n1_short = make_frames(2.1, 2.3)  # 3 frames per obj = 6 rows total
+
+    # Process chunk N normally (no boundary tail)
+    q_n = defaultdict(int)
+    df_n = preprocess_chunk(raw_n, q_n)
+
+    # Compute boundary tail from raw chunk N data
+    tail = extract_boundary_tail(raw_n, BUFFER)
+
+    # Without stitching: chunk N+1 short tracks should be dropped
+    q_no_stitch = defaultdict(int)
+    df_n1_no_stitch = preprocess_chunk(raw_n1_short, q_no_stitch)
+    assert df_n1_no_stitch.empty, "Without stitching, short tracks should be dropped"
+
+    # With stitching: chunk N+1 short tracks should be rescued
+    q_stitch = defaultdict(int)
+    df_n1_stitched = preprocess_chunk(raw_n1_short, q_stitch, boundary_tail=tail)
+    assert not df_n1_stitched.empty, "With stitching, short tracks should be retained"
+
+    # TTC from both chunks combined should consolidate to 1 event
+    ttc_n  = run_ttc_on_chunk(df_n)
+    ttc_n1 = run_ttc_on_chunk(df_n1_stitched)
+    all_ttc = pd.DataFrame(ttc_n + ttc_n1)
+    assert not all_ttc.empty and all_ttc["nm"].any(), "Should have near-miss frames"
+
+    events = consolidate_ttc_events(all_ttc)
+    assert len(events) == 1, f"Expected 1 consolidated event, got {len(events)}"
+
+    # The minimum TTC should be less than TTC_THRESHOLD_SEC
+    assert events.iloc[0]["min_ttc_sec"] < CONFIG["TTC_THRESHOLD_SEC"], \
+        "Event min TTC should be below threshold"
+
+    print("  ✓ boundary_spanning: 1 consolidated event, short-track rescue confirmed")
+
+
 def run_ttc_self_tests():
     def make(rows): return pd.DataFrame(rows,columns=["ts","tsl","tid","cls","cat","x","y","vx","vy","r","spd"])
     def obj(tid,x,vx,cat): return (0.,"",tid,"Car" if cat==CAT_MOTOR else "Pedestrian",cat,x,0.,vx,0.,.5,abs(vx))
@@ -796,7 +917,9 @@ def run_ttc_self_tests():
     for name,(df,count,ttc,nm) in cases.items():
         result=compute_ttc_vectorised(df); assert len(result)==count, name
         if result: assert abs(result[0]["ttc"]-ttc)<1e-9 and result[0]["nm"] is nm, name
-    print("TTC self-tests passed: approaching, separating, parallel, overlapping, threshold boundary.")
+    # --- Boundary-spanning near-miss test ---
+    _test_boundary_spanning()
+    print("TTC self-tests passed: approaching, separating, parallel, overlapping, threshold boundary, boundary_spanning.")
 
 
 def main(argv=None):
@@ -809,10 +932,17 @@ def main(argv=None):
     started=time.perf_counter(); np.random.seed(42)
     print(f"NEAR-MISS PIPELINE | {label} | {len(files)} chunk(s)\nOutput: {run_dir}")
     ttc_rows=[]; pet_acc=PETAccumulator(); cls_set=defaultdict(set); quality=defaultdict(int); n_frames=0; xs=[]; ys=[]
+    boundary_tail: Optional[pd.DataFrame] = None
     for i,path in enumerate(files,1):
         with open(path) as fh: raw=parse_chunk(json.load(fh))
         quality["raw_rows"]+=len(raw)
-        df=preprocess_chunk(raw,quality)
+        df=preprocess_chunk(raw,quality,boundary_tail=boundary_tail)
+        # Compute raw tail for the NEXT chunk (from original parsed data, before smoothing)
+        # Only carry over if the next file is consecutive in the 5-min grid
+        if i < len(files) and _chunks_are_consecutive(path, files[i]):
+            boundary_tail = extract_boundary_tail(raw, CONFIG["BOUNDARY_BUFFER_SEC"])
+        else:
+            boundary_tail = None
         if df.empty: print(f"[{i}/{len(files)}] {path.name}: no retained tracks"); continue
         n_frames+=df.ts.nunique()
         for cls,tid in df[["cls","tid"]].drop_duplicates().itertuples(index=False): cls_set[cls].add(tid)
