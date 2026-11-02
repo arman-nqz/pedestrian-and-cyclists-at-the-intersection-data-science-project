@@ -206,21 +206,41 @@ In accordance with the project specification poster ([`topic.pdf`](file:///home/
 +-------------------+--------------------------------------+------------------------+
 ```
 
-### 6.1 Key Metrics Table to Populate
+### 6.1 Empirical Values Populated from 24-Hour Scan (October 14, 2026)
 
-| Metric Name | Poster Value (Benchmark Example) | Target Metric in K305 Dataset | Traffic Engineering Meaning |
+| Metric Name | Poster Example | Measured K305 Dataset Value | Traffic Engineering Meaning |
 | :--- | :--- | :--- | :--- |
-| **Total Pedestrians (15 min)** | 450 | Peak 15-min window count | Pedestrian demand at marked crossings |
-| **Total Cyclists (15 min)** | 310 | Peak 15-min window count | Cyclist demand on bike lanes & crossings |
-| **Peak Hour (Pedestrians)** | 07:30 – 08:30 | Morning peak interval | Commuter / school pedestrian rush |
-| **Peak Hour (Cyclists)** | 16:00 – 17:00 | Afternoon peak interval | Commuter / student cyclist return rush |
-| **Main Pedestrian Crossing Area** | Southern Crosswalk (*Würzburger Str.*) | Highest pedestrian duration zone | Critical crossing with highest exposure |
-| **Main Cyclist Route** | West–East (*Dr.-Willi-Reiland-Ring*) | Dominant trajectory cluster | Primary active transport corridor |
-| **VRU–Vehicle Conflict Zones** | Crosswalk corners / turning pockets | High co-occupancy zones | Areas requiring safety interventions |
+| **Analyzed Frames** | — | **860,338 frames** (10 Hz across 288 files) | Complete 24h baseline |
+| **Total Tracked Objects** | — | **178,854 unique tracks** (54,113 noise tracks removed) | Full population count |
+| **Total Pedestrians (Full Day)** | — | **46,710 tracks** (26.1% of all tracks) | Heavy pedestrian volume |
+| **Total Cyclists (Full Day)** | — | **12,770 tracks** (7.1% of all tracks) | Dedicated bike demand |
+| **Peak Conflict Hours (TTC)** | 07:30 / 16:30 | **07:00–08:00 (300 events), 13:00–14:00 (295 events), 16:00–17:00 (286 events)** | Tri-modal peak (commute & school dismissal) |
+| **Peak Traffic 5-Min Interval** | — | **07:40 – 07:44** (`k305_object_list_2026-10-14_07-40_to_07-44.json`) | Highest concurrent vehicle & VRU density |
+| **Consolidated TTC Events (<1.5s)** | — | **2,583 events** (Car-Ped: 39.6%, Cyc-Car: 29.4%, Truck/Bus: 20.2%) | Critical safety conflict baseline |
+| **Median Min TTC** | — | **0.57 seconds** (Mean: 0.64s) | High severity / tight margin for error |
+| **PET Proxy Records (<1.5s)** | — | **22,192 records** (Median: 1.10s) | 2m spatial grid co-occupancy clearances |
+| **Main Conflict Hotspots** | Crosswalk corners | Four corner curb cuts & right-turn crosswalk sweeps | High exposure crosswalk conflict zones |
 
 ---
 
-## 7. Recommended Technical Stack & Tools
+## 7. Near-Miss Pipeline & Animation Architecture (Weeks 2 & 3)
+
+In Weeks 2 and 3, the project advanced from exploratory volumes to automated Surrogate Safety Measures and dynamic visualization:
+
+1. **Near-Miss Engine (`near_miss_analysis.py` / `near_miss_analysis.ipynb`)**:
+   - Vectorized kinematic Time-To-Collision (Hayward 1972) evaluated using NumPy array broadcasting ($O(N^2)$ checks in $<1\,\text{ms}$).
+   - $2\,\text{m} \times 2\,\text{m}$ grid spatial accumulator for Post-Encroachment Time (Allen 1978).
+   - Event consolidation ($0.25\,\text{s}$ temporal gap clustering) compressing 12.6k raw frames into 2,583 distinct conflict events.
+2. **Extended Results Visualizer (`analyze_full_day_results.py`)**:
+   - Post-processes full-day event CSVs without rerunning detection.
+   - Generates publication figures: `spatial_hotspots.png`, `hourly_interactions.png`, and `ttc_by_interaction_type.png`.
+3. **Peak Traffic Search & 2D Simulation (`find_peak_traffic.py` / `data_video.py`)**:
+   - Evaluates all 288 files to rank intervals by volume and VRU count.
+   - Generates animated 2D LiDAR simulations of intersection trajectories (`output/peak_traffic_0740.gif`).
+
+---
+
+## 8. Recommended Technical Stack & Tools
 
 * **Core Data Handling**: `Python 3.10+`, `pandas`, `numpy`.
 * **High-Throughput Processing**: `polars` or `duckdb` (enables processing all 288 JSON files in under 2 minutes).
@@ -230,7 +250,7 @@ In accordance with the project specification poster ([`topic.pdf`](file:///home/
 
 ---
 
-## 8. Summary for Meetings with Professors & Supervisors
+## 9. Summary for Meetings with Professors & Supervisors
 
 ### 30-Second Elevator Pitch
 > *"For Topic 4, we inspected the full 24-hour K305 dataset (288 files at 10 Hz, ~11M detections). VRUs represent over 20% of the data (~17.5% pedestrians, ~3.1% cyclists). We discovered that naive counting produces severe distortion due to tracker fragmentation when users wait at signals and spurious noise tracks (< 0.5s). To solve this, we formulated a duration-based spatial occupancy model that measures cumulative presence (person-seconds and vehicle-seconds) across sidewalks, crosswalks, and bike lanes, directly aligning with our temporal profiles, density maps, and conflict overlap goals."*
