@@ -107,6 +107,12 @@ Implemented as a streaming $2\,\text{m} \times 2\,\text{m}$ grid-cell proxy (`PE
 ### 3. Temporal Event Consolidation
 At 10 Hz, a single 1.2-second conflict generates 12 consecutive alerts. Our consolidation algorithm clusters frames belonging to the same road-user pair within a **$0.25\,\text{s}$ gap window**, compressing 12,656 raw frames into **2,583 distinct physical conflict episodes** and recording the minimum TTC, duration, and spatial coordinates.
 
+### 4. Chunk-Boundary Stitching & Continuity Buffer
+When analyzing 288 consecutive 5-minute JSON chunks in a streaming pipeline, interactions and trajectories crossing file seams previously suffered from boundary truncation, filter edge distortions, and split events.
+* **Mechanism**: A 10.0-second carry-over buffer (`BOUNDARY_BUFFER_SEC = 10.0`, ~100 frames) extracts raw observations from the tail of Chunk $N$ and passes them as a prefix into Chunk $N+1$.
+* **Smoothing & Deduplication Logic**: Track deduplication and 5-frame rolling-mean velocity smoothing run across the stitched array, rescuing short boundary-crossing tracks ($<5$ frames in Chunk $N+1$). After smoothing, buffered tail frames ($t \le t_{\text{tail, max}}$) are stripped out so they are never double-counted in dataset frame counts or summary statistics.
+* **Seam Integrity & Safety**: Filename timestamp parsing (`_chunks_are_consecutive`) ensures stitching occurs only between adjacent files. Spanning interactions are automatically unified by `consolidate_ttc_events()` into a single physical episode with exact global minimum TTC.
+
 ---
 
 ## 📊 Full-Day Empirical Findings (October 14, 2026)
@@ -241,8 +247,8 @@ python data_video.py --input database/k305_object_list_2026-10-14_aggregation_5m
    *Planned*: Polygonal crosswalk zones and sidewalk curb offset buffers.
 4. **Traffic Light (SPaT) Signal Data**: Without signal timing logs, the pipeline cannot distinguish permitted green turns from illegal red-light violations.  
    *Planned*: Ingest SPaT controller logs or infer signal phases from queue stop-and-go patterns.
-5. **5-Minute Chunk Boundary Seams**: Tracks crossing the 5-minute file boundary are not joined across files.  
-   *Planned*: Stream track states across file seams.
+5. **5-Minute Chunk Boundary Seams**:  
+   *Status*: **Resolved ✅** — Implemented a 10.0-second rolling carry-over buffer in `near_miss_analysis.py` (`preprocess_chunk` carry-over & strip pattern) ensuring unbroken rolling-mean smoothing, short-track rescue, and seam-spanning TTC/PET event consolidation without frame double-counting.
 
 ---
 

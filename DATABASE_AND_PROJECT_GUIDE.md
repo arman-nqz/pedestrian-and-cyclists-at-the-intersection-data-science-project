@@ -144,7 +144,7 @@ flowchart LR
    * *Rule*: If Track $B$ appears within distance $\Delta d \le 1.0\,\text{m}$ and time gap $\Delta t \le 3.0\,\text{s}$ of Track $A$'s termination, stitch $A$ and $B$ into a single continuous entity.
 3. **5-Minute Boundary Stitching**:
    * *Observation*: 25 to 30 continuous tracks span across the 5-minute file boundary with identical `track_id`.
-   * *Rule*: Maintain a cross-file track accumulator rather than treating each 5-minute JSON as an isolated island, avoiding duplicate counting at boundaries.
+   * *Implementation*: Resolved in `near_miss_analysis.py` via a 10.0-second rolling carry-over buffer (`BOUNDARY_BUFFER_SEC = 10.0`). The tail frames of Chunk $N$ are prepended to Chunk $N+1$ before smoothing (rescuing $<5$ frame tracks and eliminating rolling-mean edge artifacts), then stripped ($t \le t_{\text{tail,max}}$) before output so no duplicate frames or counts are recorded. Consecutive adjacency is verified via filename regex (`_chunks_are_consecutive`).
 4. **Temporal Inactivity Gaps**:
    * *Observation*: `k305_object_list_2026-10-14_00-00_to_00-04.json` contains a 220-second gap with no detected objects (midnight quiet period or sensor initialization). Daytime files are strictly continuous.
 
