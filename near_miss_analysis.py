@@ -1020,7 +1020,28 @@ def main(argv=None):
                   MIN_DETECTION_SCORE=args.min_score, INCLUDE_NON_VRU=args.include_non_vru,
                   DATA_DIR=args.data_dir, DATASET_DATE=args.date)
     files,label=select_files(args)
-    run_dir=Path(args.output_dir)/f"{label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"; run_dir.mkdir(parents=True)
+    def run_token(value: float) -> str:
+        """Filesystem-friendly threshold token; e.g. 0.25 becomes 0p25."""
+        return f"{value:.2f}".replace(".", "p")
+
+    run_id = (
+        f"k305_{args.date}_{label}_score-{run_token(args.min_score)}_"
+        f"ttc-{run_token(args.ttc_threshold)}_pet-{run_token(args.pet_threshold)}_"
+        f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+    )
+    run_dir=Path(args.output_dir)/run_id; run_dir.mkdir(parents=True)
+    (run_dir / "RUN_INFO.txt").write_text(
+        "K305 Near-Miss Analysis Run\n"
+        f"Run folder: {run_id}\n"
+        f"Dataset date: {args.date}\n"
+        f"Run scope: {label}\n"
+        f"Input directory: {Path(args.data_dir).resolve()}\n"
+        f"Selected files: {len(files)}\n"
+        f"Minimum detection score: {args.min_score}\n"
+        f"TTC threshold (strictly below): {args.ttc_threshold} s\n"
+        f"PET threshold (strictly below): {args.pet_threshold} s\n"
+        f"Created local time: {datetime.now().astimezone().isoformat()}\n"
+    )
     started=time.perf_counter(); np.random.seed(42)
     print(f"NEAR-MISS PIPELINE | {label} | {len(files)} chunk(s)\nOutput: {run_dir}")
     ttc_rows=[]; pet_acc=PETAccumulator(); cls_set=defaultdict(set); quality=defaultdict(int); n_frames=0; xs=[]; ys=[]
@@ -1057,7 +1078,7 @@ def main(argv=None):
         mk_ttc_hist(ttc_df,run_dir); mk_pet_hist(pet_df,run_dir); mk_heatmap(np.asarray(xs),np.asarray(ys),cx,cy,run_dir); mk_ttc_vs_pet(ttc_df,pet_df,run_dir); mk_hourly(ttc_df,pet_df,run_dir); mk_breakdown(ttc_df,pet_df,run_dir)
     quality["retained_rows"]=int(sum(len(t) for cells in pet_acc.data.values() for t in cells.values()))
     stats=summary({k:len(v) for k,v in cls_set.items()},ttc_df,pet_df,n_frames,sum(len(v) for v in cls_set.values()),ttc_events,quality)
-    stats.update({"run_scope":label,"selected_files":[p.name for p in files],"output_directory":str(run_dir),"runtime_sec":round(time.perf_counter()-started,2),"pet_note":"PET is a 2 m grid-cell occupancy proxy, not a map-defined conflict-zone PET."})
+    stats.update({"run_id":run_id,"run_scope":label,"selected_files":[p.name for p in files],"output_directory":str(run_dir),"runtime_sec":round(time.perf_counter()-started,2),"pet_note":"PET is a 2 m grid-cell occupancy proxy, not a map-defined conflict-zone PET."})
     with open(run_dir/"run_report.json","w") as fh: json.dump(stats,fh,indent=2,default=lambda o:int(o) if isinstance(o,np.integer) else float(o) if isinstance(o,np.floating) else str(o))
     print_report(stats, ttc_events); print(f"TTC near-miss events: {len(ttc_events):,}\nPET proxy near-miss events: {0 if pet_df.empty else int(pet_df.nm.sum()):,}\nDone in {stats['runtime_sec']} s. Share {run_dir/'run_report.json'} for review.")
     return ttc_df,pet_df,stats
