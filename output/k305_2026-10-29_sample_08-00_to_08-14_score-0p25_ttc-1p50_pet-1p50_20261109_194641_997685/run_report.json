@@ -1,0 +1,65 @@
+{
+  "intersection": "K305",
+  "date": "2026-10-29",
+  "total_frames": 9000,
+  "total_tracks": 837,
+  "class_distribution": {
+    "Bus": 4,
+    "Truck": 26,
+    "Motorcycle": 42,
+    "Van": 74,
+    "Cyclist": 57,
+    "Car": 448,
+    "Pedestrian": 186
+  },
+  "ttc": {
+    "total_frame_interactions": 1097,
+    "near_miss_frame_observations": 210,
+    "near_miss_rate_pct": 19.14,
+    "min_ttc_sec": 0.0096,
+    "mean_ttc_sec": 2.6482,
+    "by_type": {
+      "Car_vs_Pedestrian": 67,
+      "Motorcycle_vs_Pedestrian": 56,
+      "Cyclist_vs_Car": 50,
+      "Motorcycle_vs_Cyclist": 21,
+      "Bus_vs_Pedestrian": 9,
+      "Van_vs_Cyclist": 3,
+      "Truck_vs_Pedestrian": 3,
+      "Van_vs_Pedestrian": 1
+    },
+    "near_miss_events": 44
+  },
+  "pet": {
+    "total_crossings": 218,
+    "near_misses": 105,
+    "near_miss_rate_pct": 48.17,
+    "min_pet_sec": 0.0,
+    "mean_pet_sec": 3.0473,
+    "by_type": {
+      "Motorcycle_vs_Pedestrian": 54,
+      "Motorcycle_vs_Cyclist": 41,
+      "Pedestrian_vs_Motorcycle": 7,
+      "Van_vs_Cyclist": 1,
+      "Van_vs_Pedestrian": 1,
+      "Car_vs_Pedestrian": 1
+    }
+  },
+  "data_quality": {
+    "raw_rows": 111892,
+    "duplicate_rows_removed": 0,
+    "velocity_outliers_removed": 0,
+    "short_tracks_removed": 3,
+    "retained_rows": 111881
+  },
+  "run_id": "k305_2026-10-29_sample_08-00_to_08-14_score-0p25_ttc-1p50_pet-1p50_20261109_194641_997685",
+  "run_scope": "sample_08-00_to_08-14",
+  "selected_files": [
+    "k305_object_list_2026-10-29_08-00_to_08-04.json",
+    "k305_object_list_2026-10-29_08-05_to_08-09.json",
+    "k305_object_list_2026-10-29_08-10_to_08-14.json"
+  ],
+  "output_directory": "output/k305_2026-10-29_sample_08-00_to_08-14_score-0p25_ttc-1p50_pet-1p50_20261109_194641_997685",
+  "runtime_sec": 14.95,
+  "pet_note": "PET is a 2 m grid-cell occupancy proxy, not a map-defined conflict-zone PET."
+}

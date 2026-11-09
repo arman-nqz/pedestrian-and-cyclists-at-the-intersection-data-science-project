@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="645" viewBox="0 0 920 645">
+<rect width="920" height="645" fill="white"/>
+<rect x="88.0" y="68.0" width="790.0" height="499.0" fill="#f8f9fa" opacity="1" stroke="#dee2e6" stroke-width="1" rx="0"/>
+<line x1="88.0" y1="68.0" x2="88.0" y2="567.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="567.0" x2="878.0" y2="567.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="88.0" y="587.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0</text>
+<text x="78.0" y="571.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">0</text>
+<line x1="246.0" y1="68.0" x2="246.0" y2="567.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="467.2" x2="878.0" y2="467.2" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="246.0" y="587.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">15</text>
+<text x="78.0" y="471.2" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">1.8</text>
+<line x1="404.0" y1="68.0" x2="404.0" y2="567.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="367.4" x2="878.0" y2="367.4" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="404.0" y="587.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">31</text>
+<text x="78.0" y="371.4" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">3.6</text>
+<line x1="562.0" y1="68.0" x2="562.0" y2="567.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="267.6" x2="878.0" y2="267.6" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="562.0" y="587.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">46</text>
+<text x="78.0" y="271.6" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">5.4</text>
+<line x1="720.0" y1="68.0" x2="720.0" y2="567.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="167.8" x2="878.0" y2="167.8" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="720.0" y="587.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">62</text>
+<text x="78.0" y="171.8" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">7.2</text>
+<line x1="878.0" y1="68.0" x2="878.0" y2="567.0" stroke="#dee2e6" stroke-width="0.6"/>
+<line x1="88.0" y1="68.0" x2="878.0" y2="68.0" stroke="#dee2e6" stroke-width="0.6"/>
+<text x="878.0" y="587.0" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">77</text>
+<text x="78.0" y="72.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">9</text>
+<line x1="88.0" y1="567.0" x2="878.0" y2="567.0" stroke="#212529" stroke-width="1.5"/>
+<line x1="88.0" y1="567.0" x2="88.0" y2="68.0" stroke="#212529" stroke-width="1.5"/>
+<text x="483.0" y="633.0" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" font-weight="bold" fill="#212529">Count</text>
+<text x="16.0" y="321.5" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" font-weight="bold" fill="#212529" transform="rotate(-90,16.0,321.5)">Interaction Type</text>
+<text x="460.0" y="34.0" text-anchor="middle" font-size="15" font-family="Arial,sans-serif" font-weight="bold" fill="#212529">Near-Miss Breakdown by Interaction Type (K305)</text>
+<rect x="88.0" y="519.3" width="92.3" height="20.0" fill="#2980b9" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="539.3" width="0.0" height="20.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="544.3" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Vehicular] Bus_vs_Pedestrian</text>
+<rect x="88.0" y="463.9" width="687.0" height="20.0" fill="#2980b9" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="483.8" width="10.3" height="20.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="488.8" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Vehicular] Car_vs_Pedestrian</text>
+<rect x="88.0" y="408.4" width="512.7" height="20.0" fill="#2980b9" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="428.4" width="0.0" height="20.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="433.4" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Vehicular] Cyclist_vs_Car</text>
+<rect x="88.0" y="353.0" width="30.8" height="20.0" fill="#2980b9" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="372.9" width="0.0" height="20.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="377.9" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Vehicular] Truck_vs_Pedestrian</text>
+<rect x="88.0" y="297.5" width="30.8" height="20.0" fill="#2980b9" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="317.5" width="10.3" height="20.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="322.5" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Vehicular] Van_vs_Cyclist</text>
+<rect x="88.0" y="242.1" width="10.3" height="20.0" fill="#2980b9" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="262.1" width="10.3" height="20.0" fill="#e74c3c" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="267.0" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Vehicular] Van_vs_Pedestrian</text>
+<rect x="88.0" y="186.7" width="215.3" height="20.0" fill="#e67e22" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="206.6" width="420.4" height="20.0" fill="#8e44ad" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="211.6" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Moto/VRU] Motorcycle_vs_Cyclist</text>
+<rect x="88.0" y="131.2" width="574.2" height="20.0" fill="#e67e22" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="151.2" width="553.7" height="20.0" fill="#8e44ad" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="156.2" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Moto/VRU] Motorcycle_vs_Pedestrian</text>
+<rect x="88.0" y="75.8" width="0.0" height="20.0" fill="#e67e22" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<rect x="88.0" y="95.7" width="71.8" height="20.0" fill="#8e44ad" opacity="0.85" stroke="none" stroke-width="0" rx="0"/>
+<text x="82.0" y="100.7" text-anchor="end" font-size="10" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">[Moto/VRU] Pedestrian_vs_Motorcycle</text>
+<rect x="688.0" y="73.0" width="192.0" height="110.0" fill="white" opacity="1" stroke="#ccc" stroke-width="1" rx="5"/>
+<circle cx="703.0" cy="92.0" r="9" fill="#2980b9" opacity="0.85"/>
+<text x="717.0" y="97.0" text-anchor="start" font-size="11" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">Vehicular TTC</text>
+<circle cx="703.0" cy="116.0" r="9" fill="#e74c3c" opacity="0.85"/>
+<text x="717.0" y="121.0" text-anchor="start" font-size="11" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">Vehicular PET</text>
+<circle cx="703.0" cy="140.0" r="9" fill="#e67e22" opacity="0.85"/>
+<text x="717.0" y="145.0" text-anchor="start" font-size="11" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">Moto/VRU TTC</text>
+<circle cx="703.0" cy="164.0" r="9" fill="#8e44ad" opacity="0.85"/>
+<text x="717.0" y="169.0" text-anchor="start" font-size="11" font-family="Arial,sans-serif" font-weight="normal" fill="#212529">Moto/VRU PET</text>
+</svg>
