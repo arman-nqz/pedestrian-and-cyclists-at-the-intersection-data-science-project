@@ -11,3 +11,7 @@
 .venv/
 # Generated dashboard data (rebuild with build_dashboard_data.py)
 /dashboard/data/
+
+# Python caches
+__pycache__/
+*.pyc
