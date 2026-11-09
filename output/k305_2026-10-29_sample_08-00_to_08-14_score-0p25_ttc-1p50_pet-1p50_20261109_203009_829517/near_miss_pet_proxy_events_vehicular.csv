@@ -1,0 +1,4 @@
+cell_gx,cell_gy,zone_x,zone_y,timestamp,timestamp_local,track_id_1,track_id_2,class_1,class_2,category_1,category_2,pet_sec,is_near_miss_pet,interaction_type,conflict_tier,is_parallel_adjacent_movement,video_available,video_playback_offset,video_file_scu3k2,video_file_scu4yv
+9,-15,19.0,-29.0,1793258040.4097905,2026-10-29T08:14:00.409791+01:00,10761,13534,Van,Cyclist,1,2,0.0,True,Van_vs_Cyclist,vehicular,False,True,14:00,Standard_SCU3K2_2026-10-29_0600.003.mp4,Standard_SCU4YV_2026-10-29_0600.003.mp4
+0,-18,1.0,-35.0,1793258017.909542,2026-10-29T08:13:37.909542+01:00,15224,118933,Car,Pedestrian,1,2,0.7999,True,Car_vs_Pedestrian,vehicular,False,True,13:37,Standard_SCU3K2_2026-10-29_0600.003.mp4,Standard_SCU4YV_2026-10-29_0600.003.mp4
+9,-15,19.0,-29.0,1793258047.909436,2026-10-29T08:14:07.909436+01:00,10761,119070,Van,Pedestrian,1,2,0.8,True,Van_vs_Pedestrian,vehicular,False,True,14:07,Standard_SCU3K2_2026-10-29_0600.003.mp4,Standard_SCU4YV_2026-10-29_0600.003.mp4
