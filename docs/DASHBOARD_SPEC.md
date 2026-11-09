@@ -172,12 +172,21 @@ Events for the dashboard are computed by the **existing** functions in `near_mis
 ### 5.4 Prerequisites that are not built yet
 | Item | Needed for | Owner / status |
 |---|---|---|
-| `zones.json`: crossing polygons and the N/E/S/W arms | arm split, routes, overlap zones | open; start from the OSM crossings in `k305_map.json` |
+| `zones.json`: crossing polygons and the N/E/S/W arms | arm split, routes, overlap zones | **done**: `zones.py` (see 5.6) |
 | Map alignment of OSM to the sensor frame | background map, zones | **done**: `map_alignment.py`, result `dashboard/config/k305_map.json` (see section 5.5) |
 | Repo version of the full cleaning pipeline (parse + filter variants) | build script | partly: `track_stitching.py` exists; parse/filter still in the notebook |
 | Signal data | compliance view, phase-based overlap | not yet described by the team |
 
 The dashboard must work without the open items (features degrade as noted in each view).
+
+### 5.6 Zones (done, review needed)
+
+`zones.py` writes `dashboard/config/zones.json` and `zones_check.png` from the `stitched` density and the aligned OSM map:
+
+- **Crossings:** 0.5 m cells where pedestrians spend at least 15 s per day **and** the smoothed vehicle presence (road surface) is at least 10 s per day, grouped into connected areas of at least 6 m2. Found 5 areas (X1 to X5), each 1 to 9 m from an OSM crossing node. X2 and X3 are the two halves of the crossing over the Ring (OSM: crossing with island).
+- **Arms:** junction center = densest vehicle area; legs = peaks of vehicle presence by angle 15 to 42 m from the center; borders halfway between legs; core radius 12 m. Labelled N / E / S / W by the best angle match: N and S = Dr.-Willi-Reiland-Ring, E = Würzburger Straße, W = labelled with the nearest OSM road (Kurmainzer Ring), which needs checking.
+- The build adds `arm_in`, `arm_out` and `crossings` to the track tables and an `arm` column to the 15-minute counts. Because zones need the density, the order is: build, `python zones.py`, build again (`--steps tracks counts meta` is enough).
+- Thresholds are team choices, not from the literature.
 
 ### 5.5 Map alignment (done)
 
@@ -218,7 +227,7 @@ A Streamlit multipage app reading prebuilt files. Python all the way for the tea
 ### Layout
 ```
 dashboard/
-  app.py                 entry point (Overview page), sidebar filters
+  Overview.py            entry point (Overview page), sidebar filters
   pages/                 1_Time.py, 2_Space.py, 3_Routes.py, 4_Conflicts.py, 5_Replay.py, 6_Data_quality.py, 7_Method.py
   lib/                   data.py (loaders + cache), filters.py, plots.py, replay.py (builds the player HTML)
   assets/player.js       the replay player
@@ -229,7 +238,7 @@ build_dashboard_data.py
 map_alignment.py
 ```
 
-Run with `streamlit run dashboard/app.py`. Add `streamlit`, `plotly`, `pyarrow` to `requirements.txt`.
+Run with `streamlit run dashboard/Overview.py` (dependencies in `requirements.txt`).
 
 ## 7. Non-functional requirements
 
@@ -270,11 +279,11 @@ The dashboard is accepted when:
 |---|---|---|---|
 | M0 | Pipeline in the repo | **done**: `track_pipeline.py` (parse, duplicates, segment, stitch, variants), 14 tests on the 3 sample files | `track_stitching.py` |
 | M1 | Data bundle | **done** (without zones and routes): full-day build in about 5 minutes; numbers match the notebook within 4 tracks (the difference is the 89 duplicate rows now removed) | M0 |
-| M2 | App shell + Time + Data quality | Streamlit pages, sidebar filters, URL state, charts | M1 |
+| M2 | App shell + Time + Data quality | **done (first version)**: `dashboard/Overview.py`, `pages/1_Time.py`, `pages/2_Data_quality.py`, sidebar filters with URL state, smoke test | M1 |
 | M3 | Space | density map, side-by-side, dwell-time weighting | M1 |
 | M4 | Replay | player component with window picker, selection, variants | M1 |
 | M5 | Conflicts | events table/map, jump to replay, published comparison | M1, M4 |
-| M6 | Zones from the aligned map | `zones.json` from OSM crossings and arms, background map layer, arm split, routes (alignment itself is done) | `k305_map.json`; team review of zones |
+| M6 | Zones from the aligned map | zones and arm split **done**; background map layer used on Data quality; routes still open | team review of zones |
 | M7 | Polish | Method page, accessibility pass, README, acceptance test | all |
 
 M2 to M4 can run in parallel after M1.

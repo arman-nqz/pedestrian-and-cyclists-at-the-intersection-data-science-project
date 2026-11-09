@@ -71,20 +71,36 @@ def track_table(v):
 
 
 def counts_15min(tt):
-    """Per class and 15-minute bin: tracks that start in the bin, tracks present in the bin."""
+    """Per class, entry arm ('all' = every track) and 15-minute bin: tracks that start in the bin, tracks present."""
     rows = []
-    for ci, cls in enumerate(CLASSES):
-        sub = tt[tt["cls"] == cls]
-        s = (local_s(sub["t_start"]) // 900).astype(int)
-        e = (local_s(sub["t_end"]) // 900).astype(int)
-        e = np.maximum(e, s)
-        started = np.bincount(s, minlength=96)[:96]
-        span = e - s + 1
-        present = np.bincount(np.repeat(s, span) + (np.arange(span.sum()) - np.repeat(np.cumsum(span) - span, span)),
-                              minlength=96)[:96]
-        for b in range(96):
-            rows.append((cls, b, int(started[b]), int(present[b])))
-    return pd.DataFrame(rows, columns=["cls", "bin", "started", "present"])
+    arms = ["all"] + (sorted(tt["arm_in"].dropna().unique().tolist()) if "arm_in" in tt else [])
+    for cls in CLASSES:
+        for arm in arms:
+            sub = tt[tt["cls"] == cls]
+            if arm != "all":
+                sub = sub[sub["arm_in"] == arm]
+            s = (local_s(sub["t_start"]) // 900).astype(int)
+            e = np.maximum((local_s(sub["t_end"]) // 900).astype(int), s)
+            started = np.bincount(s, minlength=96)[:96]
+            span = e - s + 1
+            present = np.bincount(np.repeat(s, span) + (np.arange(span.sum()) - np.repeat(np.cumsum(span) - span, span)),
+                                  minlength=96)[:96]
+            for b in range(96):
+                rows.append((cls, arm, b, int(started[b]), int(present[b])))
+    return pd.DataFrame(rows, columns=["cls", "arm", "bin", "started", "present"])
+
+
+def add_zones(tt, v, zones_path):
+    """Entry / exit arm and the crossings each track uses (needs zones.json from zones.py)."""
+    import zones as zn
+    zones = json.loads(Path(zones_path).read_text(encoding="utf-8"))
+    tt["arm_in"] = zn.arm_of(tt["x_start"], tt["y_start"], zones)
+    tt["arm_out"] = zn.arm_of(tt["x_end"], tt["y_end"], zones)
+    cid = zn.crossing_of(v["x"].to_numpy(), v["y"].to_numpy(), zones)
+    used = pd.DataFrame({"trk": v["trk"].to_numpy(), "c": cid}).dropna()
+    used = used.drop_duplicates().groupby("trk")["c"].agg(lambda s: ",".join(sorted(s)))
+    tt["crossings"] = tt["trk"].map(used).fillna("")
+    return tt
 
 
 def density(v):
@@ -233,6 +249,8 @@ def main(argv=None):
     ap.add_argument("--compute-events", nargs="*", default=[], choices=list(tp.VARIANTS),
                     help="also run the near-miss functions on our tracks (slow)")
     ap.add_argument("--published-run", default="output/full_day_20261026_204014_631230")
+    ap.add_argument("--zones", default="dashboard/config/zones.json",
+                    help="zones.json from zones.py; zones.py needs a first build (density), so build, run zones.py, build again")
     args = ap.parse_args(argv)
 
     t_start = time.perf_counter()
@@ -249,8 +267,12 @@ def main(argv=None):
 
     variants, info = tp.make_variants(raw)
     tables = {}
+    zones_ok = Path(args.zones).exists()
     for name, v in variants.items():
         tables[name] = track_table(v)
+        if zones_ok:
+            add_zones(tables[name], v, args.zones)
+    print("zones: " + (f"arms and crossings added from {args.zones}" if zones_ok else f"{args.zones} missing, run zones.py and build again"))
 
     if "tracks" in args.steps:
         for name, tt in tables.items():
