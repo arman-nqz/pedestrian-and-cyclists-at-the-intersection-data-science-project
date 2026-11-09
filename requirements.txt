@@ -3,5 +3,6 @@ pandas>=2.0
 ipykernel>=6.29
 pyarrow>=14
 matplotlib>=3.7
-streamlit>=1.40
+streamlit>=1.67
 plotly>=5.20
+openpyxl>=3.1
