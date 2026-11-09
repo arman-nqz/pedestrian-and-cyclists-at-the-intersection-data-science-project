@@ -43,8 +43,10 @@ if c3.button("+10 s"):
     st.rerun()
 t_local = st.session_state["video_time"]
 st.query_params["t"] = video.hms(t_local)
-c4.caption(f"{day}, {video.hms(t_local)} local time. Recordings cover 06:00 to 13:00. Assumption: each video file "
-           "holds exactly one hour from the full hour; check the clock shown in the picture.")
+c4.caption(f"{day}, {video.hms(t_local)} local time. Recordings cover 06:00 to 13:00. Each video file holds one "
+           "hour from the full hour.")
+if c4.button("Replay the tracks with this video"):
+    st.switch_page("pages/5_Replay.py")
 
 cols = st.columns(2)
 for col, cam in zip(cols, video.CAMERAS):

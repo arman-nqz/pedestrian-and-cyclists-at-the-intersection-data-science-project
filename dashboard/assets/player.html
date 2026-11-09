@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  :root { --bg: #12263a; --panel: #1b3550; --ink: #eef3f8; --mut: #9fb3c8; --acc: #e8791b; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Source Sans Pro", Calibri, Arial, sans-serif; }
+  #wrap { display: flex; flex-wrap: wrap; gap: 10px; padding: 8px; align-items: flex-start; }
+  canvas { background: #0b1622; border-radius: 8px; max-width: 640px; height: auto; flex: 1 1 320px; min-width: 0; }
+  #side { background: var(--panel); border-radius: 8px; padding: 10px; width: 190px; font-size: 13px; flex: 0 0 auto; }
+  #side label { display: flex; align-items: center; gap: 6px; margin: 3px 0; cursor: pointer; }
+  .sw { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  #ctrl { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; padding: 0 8px 8px; }
+  button, select { background: var(--panel); color: var(--ink); border: 1px solid #3a5878; border-radius: 6px; padding: 5px 9px; font-size: 14px; cursor: pointer; }
+  button:hover { border-color: var(--acc); }
+  #play { min-width: 74px; background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+  input[type="range"] { accent-color: var(--acc); }
+  #slider { flex: 1; min-width: 160px; }
+  #clock { font-variant-numeric: tabular-nums; font-size: 19px; min-width: 120px; }
+  #counts, .hint { color: var(--mut); }
+  #counts { margin-top: 6px; line-height: 1.45; }
+  .hint { font-size: 12px; padding: 0 8px; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="cv" width="800" height="800"></canvas>
+  <div id="side">
+    <b>Show</b>
+    <div id="cls"></div>
+    <hr style="border-color:#3a5878" />
+    <label><input type="checkbox" id="focus" checked /> Dim motor vehicles</label>
+    <label><input type="checkbox" id="ids" /> Track ids</label>
+    <label><input type="checkbox" id="map" checked /> Map</label>
+    <label><input type="checkbox" id="sync" checked /> Video follows</label>
+    <div style="margin-top:6px">Trail: <span id="trv">3</span> s<br />
+      <input type="range" id="trail" min="0" max="10" step="0.5" value="3" style="width:100%" /></div>
+    <div id="counts"></div>
+  </div>
+</div>
+<div id="ctrl">
+  <button id="back" title="Back one frame (Left arrow)">&#9664;&#9664;</button><button id="play">Play</button><button id="fwd" title="Forward one frame (Right arrow)">&#9654;&#9654;</button>
+  <select id="speed"><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option><option>4</option><option>8</option></select>x
+  <span id="clock"></span>
+  <input type="range" id="slider" min="0" max="1000" value="0" />
+</div>
+<div class="hint">Space: play / pause, arrows: frame step and speed. The videos on the right follow this clock.</div>
+<script>
+const D = __DATA__;
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const S = cv.width / (2 * D.lim);
+const COL = { Pedestrian: "#3da5ff", Cyclist: "#ff9a2e", Motorcycle: "#c77dff", Car: "#9fb3c8", Van: "#8aa0b5", Truck: "#7a8da0", Bus: "#6f8296" };
+const isVru = (c) => c === "Pedestrian" || c === "Cyclist" || c === "Motorcycle";
+const T = D.T, F = D.F, dur = T[T.length - 1];
+const show = {}; D.C.forEach((c) => (show[c] = true));
+const hist = {};
+F.forEach((fr, i) => fr.forEach((o) => { (hist[o[0]] = hist[o[0]] || []).push([T[i], o[1], o[2]]); }));
+let cur = Math.min(Math.max(D.start || 0, 0), dur), playing = false, last = 0;
+const el = (id) => document.getElementById(id);
+D.C.forEach((c) => {
+  const l = document.createElement("label");
+  l.innerHTML = '<input type="checkbox" checked><span class="sw" style="background:' + COL[c] + '"></span>' + c;
+  l.firstChild.onchange = (e) => { show[c] = e.target.checked; draw(); };
+  el("cls").appendChild(l);
+});
+function frameAt(t) { let lo = 0, hi = T.length - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (T[m] <= t) lo = m; else hi = m - 1; } return lo; }
+const px = (x) => cv.width / 2 + x * S, py = (y) => cv.height / 2 - y * S;
+function clock(t) {
+  const s = D.local0 + t, h = Math.floor(s / 3600) % 24, m = Math.floor((s % 3600) / 60), ss = (s % 60).toFixed(1).padStart(4, "0");
+  return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + ss;
+}
+function path(xy) { ctx.beginPath(); xy.forEach((p, k) => (k ? ctx.lineTo(px(p[0]), py(p[1])) : ctx.moveTo(px(p[0]), py(p[1])))); }
+function drawMap() {
+  const M = D.map;
+  if (!M || !el("map").checked) return;
+  ctx.fillStyle = "#1c3047"; M.buildings.forEach((b) => { path(b); ctx.fill(); });
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.strokeStyle = "#24384f"; M.roads.forEach((r) => { ctx.lineWidth = r.w * S; path(r.xy); ctx.stroke(); });
+  ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2; ctx.strokeStyle = "#4d6a87"; M.footways.forEach((f) => { path(f); ctx.stroke(); }); ctx.setLineDash([]);
+  ctx.strokeStyle = "#2f8f5b"; ctx.lineWidth = 1.5; ctx.fillStyle = "rgba(47,143,91,0.12)";
+  M.crossings.forEach((c) => { path(c.xy); ctx.closePath(); ctx.fill(); ctx.stroke(); });
+  ctx.fillStyle = "#7e97b0"; ctx.font = "13px Calibri,Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  M.labels.forEach(([x, y, ang, name]) => { ctx.save(); ctx.translate(px(x), py(y)); ctx.rotate(ang * Math.PI / 180); ctx.fillText(name, 0, 0); ctx.restore(); });
+  ctx.fillStyle = "#5fc28a"; ctx.font = "bold 12px Calibri,Arial";
+  M.crossings.forEach((c) => ctx.fillText(c.id, px(c.cx), py(c.cy)));
+  ctx.textAlign = "start"; ctx.textBaseline = "alphabetic";
+}
+function grid() {
+  ctx.strokeStyle = "#17304a"; ctx.lineWidth = 1; ctx.fillStyle = "#5f7a96"; ctx.font = "11px Calibri,Arial";
+  for (let v = -40; v <= 40; v += 10) {
+    ctx.beginPath(); ctx.moveTo(px(v), 0); ctx.lineTo(px(v), cv.height); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, py(v)); ctx.lineTo(cv.width, py(v)); ctx.stroke();
+    ctx.fillText(v + " m", px(v) + 2, cv.height - 4); ctx.fillText(v + " m", 3, py(v) - 2);
+  }
+}
+function draw() {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  grid(); drawMap();
+  const i = frameAt(cur), fr = F[i], focus = el("focus").checked, trail = +el("trail").value, ids = el("ids").checked, cnt = {};
+  fr.forEach((o) => {
+    const m = D.M[o[0]]; if (!m) return;
+    const c = D.C[m[0]]; if (!show[c]) return;
+    cnt[c] = (cnt[c] || 0) + 1;
+    const v = isVru(c), a = focus && !v ? 0.35 : 1;
+    if (trail > 0) {
+      const h = hist[o[0]]; ctx.strokeStyle = COL[c]; ctx.globalAlpha = a * 0.6; ctx.lineWidth = v ? 2 : 1; ctx.beginPath();
+      let st = false;
+      for (let k = 0; k < h.length; k++) { const p = h[k]; if (p[0] > T[i]) break; if (p[0] < T[i] - trail) continue;
+        if (!st) { ctx.moveTo(px(p[1]), py(p[2])); st = true; } else ctx.lineTo(px(p[1]), py(p[2])); }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = a; ctx.fillStyle = COL[c];
+    if (v) {
+      const r = Math.max(5, (Math.min(m[1], m[2]) * S) / 2 + 2);
+      ctx.beginPath(); ctx.arc(px(o[1]), py(o[2]), r, 0, 6.283); ctx.fill();
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px(o[1]), py(o[2])); ctx.lineTo(px(o[1]) + Math.cos(o[3]) * r * 1.8, py(o[2]) - Math.sin(o[3]) * r * 1.8); ctx.stroke();
+    } else {
+      ctx.save(); ctx.translate(px(o[1]), py(o[2])); ctx.rotate(-o[3]); ctx.fillRect((-m[1] * S) / 2, (-m[2] * S) / 2, m[1] * S, m[2] * S); ctx.restore();
+    }
+    if (ids) { ctx.fillStyle = "#fff"; ctx.font = "11px Calibri,Arial"; ctx.fillText(o[0], px(o[1]) + 7, py(o[2]) - 7); }
+    ctx.globalAlpha = 1;
+  });
+  el("clock").textContent = clock(cur);
+  el("slider").value = Math.round((cur / dur) * 1000);
+  el("counts").innerHTML = "On screen now:<br>" + D.C.filter((c) => cnt[c]).map((c) => '<span class="sw" style="background:' + COL[c] + '"></span> ' + c + ": " + cnt[c]).join("<br>");
+  syncVideo();
+}
+// The Miovision videos are <video> elements on the Streamlit page around this iframe (same origin).
+function videos() { try { return [...window.parent.document.querySelectorAll("video")]; } catch (e) { return []; } }
+function syncVideo() {
+  if (!el("sync").checked || D.video_offset == null) return;
+  const want = D.video_offset + cur, rate = +el("speed").value;
+  videos().forEach((v) => {
+    v.muted = true;
+    if (Math.abs(v.currentTime - want) > (playing ? 0.6 : 0.15)) v.currentTime = want;
+    if (v.playbackRate !== rate) v.playbackRate = rate;
+    if (playing && v.paused) v.play().catch(() => {});
+    if (!playing && !v.paused) v.pause();
+  });
+}
+function tick(ts) {
+  if (!playing) return;
+  cur += ((ts - last) / 1000) * +el("speed").value; last = ts;
+  if (cur >= dur) { cur = dur; setPlay(false); }
+  draw(); requestAnimationFrame(tick);
+}
+function setPlay(p) { playing = p; el("play").textContent = p ? "Pause" : "Play"; if (p) { last = performance.now(); requestAnimationFrame(tick); } else draw(); }
+function step(d) { setPlay(false); cur = T[Math.min(T.length - 1, Math.max(0, frameAt(cur) + d))]; draw(); }
+el("play").onclick = () => setPlay(!playing);
+el("back").onclick = () => step(-1);
+el("fwd").onclick = () => step(1);
+el("slider").oninput = (e) => { cur = (e.target.value / 1000) * dur; draw(); };
+["focus", "ids", "map", "sync"].forEach((id) => (el(id).onchange = draw));
+el("speed").onchange = draw;
+el("trail").oninput = (e) => { el("trv").textContent = e.target.value; draw(); };
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space") { e.preventDefault(); setPlay(!playing); }
+  else if (e.code === "ArrowLeft") step(-1);
+  else if (e.code === "ArrowRight") step(1);
+  else if (e.code === "ArrowUp" || e.code === "ArrowDown") {
+    const s = el("speed"); s.selectedIndex = Math.max(0, Math.min(s.options.length - 1, s.selectedIndex + (e.code === "ArrowUp" ? 1 : -1))); draw();
+  }
+});
+draw();
+setTimeout(draw, 1500); // videos may mount after the iframe
+</script>
+</body>
+</html>

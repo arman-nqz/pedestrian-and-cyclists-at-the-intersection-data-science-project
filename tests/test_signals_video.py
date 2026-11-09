@@ -73,5 +73,19 @@ class VideoTests(unittest.TestCase):
             video.parse_hms("25:00:00")
 
 
+class ReplayTests(unittest.TestCase):
+    def test_window_merges_chunks_on_one_clock(self):
+        from lib import replay
+        start = 7 * 3600 + 20 * 60
+        if not replay.chunk_path("clean", start).exists():
+            self.skipTest("no replay data built")
+        w = replay.window("clean", start, 10)
+        self.assertEqual(w["local0"], start)
+        self.assertTrue(all(b > a for a, b in zip(w["T"], w["T"][1:])))  # no jump back at the chunk border
+        self.assertLess(w["T"][0], 1)
+        self.assertGreater(w["T"][-1], 590)
+        self.assertEqual(len(w["T"]), len(w["F"]))
+
+
 if __name__ == "__main__":
     unittest.main()
