@@ -155,6 +155,38 @@ def passes(v, cells=(0.5, 1.0, 2.0)):
     return out.astype({"tracks": "int32", "cell_m": "float32"})
 
 
+def overlaps(v, cell=1.0, max_pet=3.0, max_stay=10.0):
+    """PET-style overlap: VRU / motor vehicle pairs that occupy the same cell within `max_pet` seconds.
+
+    Per track and cell the occupancy interval [first, last] is taken; PET = time between one leaving and the other
+    entering (0 when the intervals overlap). Returns counts per cell, local hour, VRU class and 0.5 s PET bin.
+    ponytail: stays longer than `max_stay` s (people waiting, a track coming back) are dropped, so a pedestrian
+    standing on the road while cars pass is not counted; an interval tree per cell would keep them.
+    """
+    n = int(2 * LIM / cell)
+    occ = pd.DataFrame({"trk": v["trk"].to_numpy(), "cls": v["cls"].astype(str).to_numpy(), "t": v["t"].to_numpy(),
+                        "ix": np.clip(((v["x"].to_numpy() + LIM) / cell).astype(int), 0, n - 1),
+                        "iy": np.clip(((v["y"].to_numpy() + LIM) / cell).astype(int), 0, n - 1)})
+    occ = occ.groupby(["trk", "ix", "iy"]).agg(cls=("cls", "first"), a=("t", "min"), b=("t", "max")).reset_index()
+    occ = occ[(occ["b"] - occ["a"]) <= max_stay]
+    width = max_pet + max_stay  # |midpoint difference| of a qualifying pair is below this
+    occ["bk"] = (((occ["a"] + occ["b"]) / 2) // width).astype("int64")
+    vru = occ[occ["cls"].isin(VRU)]
+    veh = occ[~occ["cls"].isin(VRU)][["ix", "iy", "bk", "a", "b"]]
+    parts = []
+    for d in (-1, 0, 1):
+        m = vru.merge(veh.assign(bk=veh["bk"] + d), on=["ix", "iy", "bk"], suffixes=("", "_v"))
+        pet = np.maximum(np.maximum(m["a_v"] - m["b"], m["a"] - m["b_v"]), 0)
+        m = m.assign(pet=pet)[pet <= max_pet]
+        parts.append(m[["ix", "iy", "cls", "a", "pet"]])
+    m = pd.concat(parts, ignore_index=True)
+    m["hour"] = (local_s(m["a"]) // 3600).astype("int8")
+    m["pet_bin"] = (np.floor(m["pet"] / 0.5) * 0.5).astype("float32")
+    out = m.groupby(["ix", "iy", "hour", "cls", "pet_bin"]).size().rename("pairs").reset_index()
+    out["cell_m"] = np.float32(cell)
+    return out.astype({"ix": "int16", "iy": "int16", "pairs": "int32"})
+
+
 # ------------------------------------------------------------------ events
 def published_events(run_dir):
     """Events of the original pipeline, read from its CSV files (no rerun)."""
@@ -284,7 +316,7 @@ def main(argv=None):
     ap.add_argument("--date", default=DAY, help="which day's files to use (YYYY-MM-DD)")
     ap.add_argument("--min-score", type=float, default=MIN_SCORE, help="drop detections with a lower NSE score")
     ap.add_argument("--out", default="dashboard/data")
-    ap.add_argument("--steps", nargs="+", default=["tracks", "counts", "density", "events", "signals", "quality", "replay", "meta"])
+    ap.add_argument("--steps", nargs="+", default=["tracks", "counts", "density", "overlap", "events", "signals", "quality", "replay", "meta"])
     ap.add_argument("--signals-dir", default="database/traffic_signal_data")
     ap.add_argument("--reparse", action="store_true", help="ignore the cached parse of the raw json")
     ap.add_argument("--start", help="only files from this local time (HH:MM), for quick tests")
@@ -346,6 +378,11 @@ def main(argv=None):
             density(v).to_parquet(out / f"density_{name}.parquet")
             passes(v).to_parquet(out / f"passes_{name}.parquet")
         print("density and passes written")
+    if "overlap" in args.steps:
+        for name, v in variants.items():
+            o = overlaps(v)
+            o.to_parquet(out / f"overlap_{name}.parquet")
+            print(f"overlap {name}: {int(o['pairs'].sum()):,} VRU / vehicle cell pairs with PET <= 3 s")
     if "events" in args.steps:
         run = Path(args.published_run) if args.published_run else None
         if run and run.exists() and not partial:
