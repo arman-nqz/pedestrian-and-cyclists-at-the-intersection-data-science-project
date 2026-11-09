@@ -1,0 +1,5 @@
+variant,ttc_events,with_pedestrian,with_cyclist,median_min_ttc_s,events_ttc_below_0.1s,pet_proxy_near_miss,tracks_pedestrian,tracks_cyclist,tracks_car,runtime_s
+published,466,275,191,0.643,115,455,5285,2222,13860,392.9
+segmented,461,275,186,0.634,115,131,5285,2221,13861,353.9
+stitched,513,312,201,0.59,124,175,3506,1541,10465,190.7
+clean,275,177,98,0.722,62,80,859,613,5708,112.4
