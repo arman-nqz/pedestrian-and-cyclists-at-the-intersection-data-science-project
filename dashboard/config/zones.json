@@ -10,7 +10,7 @@
  },
  "junction": {
   "center": [
-   -6.25,
+   -6.75,
    -9.25
   ],
   "core_radius_m": 12.0,
@@ -20,35 +20,35 @@
     "compass": "E",
     "sensor_angle_deg": 77.5,
     "from_deg": 15.0,
-    "to_deg": 107.5,
-    "bearing_deg": 96.5,
+    "to_deg": 105.0,
+    "bearing_deg": 90.2,
     "road": "Würzburger Straße"
    },
    {
     "id": "N",
     "compass": "NE",
-    "sensor_angle_deg": 137.5,
-    "from_deg": 107.5,
-    "to_deg": 195.0,
-    "bearing_deg": 36.5,
+    "sensor_angle_deg": 132.5,
+    "from_deg": 105.0,
+    "to_deg": 167.5,
+    "bearing_deg": 35.2,
     "road": "Dr.-Willi-Reiland-Ring"
    },
    {
     "id": "W",
-    "compass": "W",
-    "sensor_angle_deg": 252.5,
-    "from_deg": 195.0,
-    "to_deg": 282.5,
-    "bearing_deg": 281.5,
-    "road": "Kurmainzer Ring"
+    "compass": "NW",
+    "sensor_angle_deg": 202.5,
+    "from_deg": 167.5,
+    "to_deg": 257.5,
+    "bearing_deg": 325.2,
+    "road": "Würzburger Straße"
    },
    {
     "id": "S",
     "compass": "SW",
     "sensor_angle_deg": 312.5,
-    "from_deg": 282.5,
+    "from_deg": 257.5,
     "to_deg": 15.0,
-    "bearing_deg": 221.5,
+    "bearing_deg": 215.2,
     "road": "Dr.-Willi-Reiland-Ring"
    }
   ]
@@ -57,106 +57,63 @@
   {
    "id": "X1",
    "center": [
-    -8.4,
-    11.39
+    -29.31,
+    5.49
    ],
    "polygon": [
     [
-     -13.75,
-     14.75
-    ],
-    [
-     -5.25,
-     6.25
-    ],
-    [
-     -4.75,
-     6.25
-    ],
-    [
-     -3.75,
-     8.25
-    ],
-    [
-     -5.75,
-     10.75
-    ],
-    [
-     -9.25,
-     14.75
-    ],
-    [
-     -10.25,
-     15.75
-    ],
-    [
-     -10.75,
-     15.75
-    ]
-   ],
-   "area_m2": 34.8,
-   "ped_dwell_s": 5964.4,
-   "cyc_dwell_s": 558.1,
-   "road": "Würzburger Straße",
-   "osm_crossing_node": "30371489",
-   "osm_crossing_distance_m": 9.4
-  },
-  {
-   "id": "X2",
-   "center": [
-    -29.0,
-    5.7
-   ],
-   "polygon": [
-    [
-     -33.25,
+     -32.75,
      3.25
+    ],
+    [
+     -32.25,
+     2.25
     ],
     [
      -31.75,
      1.75
     ],
     [
-     -30.75,
+     -31.25,
      1.75
     ],
     [
-     -29.25,
-     3.25
+     -27.25,
+     5.75
     ],
     [
-     -25.25,
+     -25.75,
      7.75
     ],
     [
-     -24.75,
-     8.75
-    ],
-    [
-     -25.25,
-     9.25
-    ],
-    [
-     -26.25,
-     9.75
+     -25.75,
+     8.25
     ],
     [
      -26.75,
-     9.75
+     9.25
+    ],
+    [
+     -27.25,
+     9.25
+    ],
+    [
+     -32.75,
+     3.75
     ]
    ],
-   "area_m2": 29.0,
-   "ped_dwell_s": 3961.1,
-   "cyc_dwell_s": 585.9,
+   "area_m2": 24.5,
+   "ped_dwell_s": 2858.3,
+   "cyc_dwell_s": 594.6,
    "road": "Dr.-Willi-Reiland-Ring",
    "osm_crossing_node": "2904989587",
-   "osm_crossing_distance_m": 6.1
+   "osm_crossing_distance_m": 8.9
   },
   {
-   "id": "X3",
+   "id": "X2",
    "center": [
-    -22.04,
-    13.22
+    -22.31,
+    12.79
    ],
    "polygon": [
     [
@@ -164,89 +121,46 @@
      10.75
     ],
     [
-     -24.25,
-     9.75
+     -24.75,
+     10.25
     ],
     [
      -23.75,
      9.75
     ],
     [
-     -18.25,
-     15.25
+     -19.25,
+     14.25
+    ],
+    [
+     -20.75,
+     15.75
     ],
     [
      -21.25,
-     16.75
+     15.75
     ],
     [
-     -24.75,
-     12.25
+     -22.25,
+     14.75
     ],
     [
      -25.25,
      11.25
     ]
    ],
-   "area_m2": 23.0,
-   "ped_dwell_s": 3116.3,
-   "cyc_dwell_s": 930.8,
-   "road": "Dr.-Willi-Reiland-Ring",
+   "area_m2": 18.0,
+   "ped_dwell_s": 2190.7,
+   "cyc_dwell_s": 722.8,
+   "road": "Würzburger Straße",
    "osm_crossing_node": "2904989586",
-   "osm_crossing_distance_m": 0.9
+   "osm_crossing_distance_m": 2.7
   },
   {
-   "id": "X4",
+   "id": "X3",
    "center": [
-    5.26,
-    -3.48
-   ],
-   "polygon": [
-    [
-     3.25,
-     -2.75
-    ],
-    [
-     4.25,
-     -4.25
-    ],
-    [
-     6.25,
-     -6.25
-    ],
-    [
-     7.25,
-     -4.25
-    ],
-    [
-     7.25,
-     -3.75
-    ],
-    [
-     6.25,
-     -2.25
-    ],
-    [
-     4.25,
-     -1.25
-    ],
-    [
-     3.25,
-     -1.75
-    ]
-   ],
-   "area_m2": 13.0,
-   "ped_dwell_s": 2113.4,
-   "cyc_dwell_s": 267.1,
-   "road": "Dr.-Willi-Reiland-Ring",
-   "osm_crossing_node": "2904989578",
-   "osm_crossing_distance_m": 8.9
-  },
-  {
-   "id": "X5",
-   "center": [
-    -24.14,
-    -13.43
+    -23.87,
+    -13.63
    ],
    "polygon": [
     [
@@ -254,36 +168,118 @@
      -12.75
     ],
     [
-     -25.25,
-     -13.75
-    ],
-    [
-     -24.25,
-     -14.75
-    ],
-    [
-     -22.75,
-     -15.75
-    ],
-    [
      -22.25,
+     -16.25
+    ],
+    [
+     -21.25,
      -15.25
     ],
     [
-     -22.25,
-     -14.25
-    ],
-    [
      -25.75,
-     -10.75
+     -10.25
     ]
    ],
    "area_m2": 10.2,
-   "ped_dwell_s": 927.4,
-   "cyc_dwell_s": 10.8,
-   "road": "Würzburger Straße",
+   "ped_dwell_s": 870.1,
+   "cyc_dwell_s": 30.5,
+   "road": "Dr.-Willi-Reiland-Ring",
    "osm_crossing_node": "2904989583",
-   "osm_crossing_distance_m": 7.7
+   "osm_crossing_distance_m": 2.2
+  },
+  {
+   "id": "X4",
+   "center": [
+    4.66,
+    -2.82
+   ],
+   "polygon": [
+    [
+     2.75,
+     -1.75
+    ],
+    [
+     3.75,
+     -3.25
+    ],
+    [
+     4.75,
+     -4.25
+    ],
+    [
+     6.25,
+     -4.25
+    ],
+    [
+     6.75,
+     -3.75
+    ],
+    [
+     4.25,
+     -1.25
+    ],
+    [
+     2.75,
+     -1.25
+    ]
+   ],
+   "area_m2": 8.5,
+   "ped_dwell_s": 903.4,
+   "cyc_dwell_s": 158.4,
+   "road": "Dr.-Willi-Reiland-Ring",
+   "osm_crossing_node": null,
+   "osm_crossing_distance_m": 11.9
+  },
+  {
+   "id": "X5",
+   "center": [
+    -18.7,
+    19.67
+   ],
+   "polygon": [
+    [
+     -20.25,
+     19.25
+    ],
+    [
+     -19.25,
+     18.25
+    ],
+    [
+     -18.25,
+     18.25
+    ],
+    [
+     -17.25,
+     19.25
+    ],
+    [
+     -17.25,
+     20.25
+    ],
+    [
+     -18.25,
+     21.25
+    ],
+    [
+     -18.75,
+     21.25
+    ],
+    [
+     -19.75,
+     20.75
+    ],
+    [
+     -20.25,
+     20.25
+    ]
+   ],
+   "area_m2": 8.0,
+   "ped_dwell_s": 2832.2,
+   "cyc_dwell_s": 422.9,
+   "road": "Würzburger Straße",
+   "osm_crossing_node": "2904989586",
+   "osm_crossing_distance_m": 8.2
   }
  ]
 }

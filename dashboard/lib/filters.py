@@ -60,8 +60,8 @@ def sidebar(show_time=True, show_classes=True):
 
 def limits_box():
     st.info(
-        "**Limits.** One recorded day (14 Oct 2026). Near-miss events are algorithm candidates, not collisions, "
+        "**Limits.** One recorded day (29 Oct 2026). Near-miss events are algorithm candidates, not collisions, "
         "and are not normalized by traffic volume. There is no scooter class (scooters are probably counted as "
-        "cyclists or pedestrians). No traffic-signal data yet. The OpenStreetMap layer is aligned to the sensor "
-        "to about 2 m."
+        "cyclists or pedestrians). Traffic-signal data and video exist (06:00 to 13:00) but are not shown yet. "
+        "The OpenStreetMap layer is aligned to the sensor to about 2 m."
     )

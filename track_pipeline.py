@@ -23,16 +23,25 @@ import track_stitching as tsx
 
 MIN_FRAMES = 3
 MIN_EXTENT_M = 2.0
-RAW_COLUMNS = ["t", "track_id", "class_name", "x", "y", "vx", "vy", "yaw", "length", "width", "file_idx"]
+RAW_COLUMNS = ["t", "track_id", "class_name", "x", "y", "vx", "vy", "yaw", "length", "width", "score", "file_idx"]
 VARIANT_COLUMNS = ["t", "trk", "seg_id", "cls", "x", "y", "vx", "vy", "yaw", "length", "width", "file_idx"]
 VARIANTS = ("segmented", "stitched", "clean")
 
 
-def list_files(data_dir):
-    files = sorted(Path(data_dir).glob("*.json"))
+def list_files(data_dir, date=None):
+    """The 5-minute object-list files, optionally only those of one date (YYYY-MM-DD)."""
+    files = sorted(Path(data_dir).glob(f"*{date}_*.json" if date else "*.json"))
     if not files:
-        raise FileNotFoundError(f"no json files in {data_dir}")
+        raise FileNotFoundError(f"no json files{' for ' + date if date else ''} in {data_dir}")
     return files
+
+
+def utc_offset_s(files):
+    """Local time offset from the first file's 'aggregation_start_local' (e.g. +01:00 -> 3600)."""
+    from datetime import datetime
+    with open(files[0], encoding="utf-8") as fh:
+        start = json.load(fh)["aggregation_start_local"]
+    return int(datetime.fromisoformat(start).utcoffset().total_seconds())
 
 
 def parse_files(files, progress=True):
@@ -48,9 +57,10 @@ def parse_files(files, progress=True):
             for o in frame["objects"]:
                 b = o["bounding_box"]
                 p, s, v = b["position"], b["scale"], o["velocity"]
-                rows.append((t, o["track_id"], o["class_name"], p["x"], p["y"], v["x"], v["y"], b["yaw"], s["x"], s["y"], i))
+                rows.append((t, o["track_id"], o["class_name"], p["x"], p["y"], v["x"], v["y"], b["yaw"], s["x"], s["y"],
+                             o.get("score", 1.0), i))  # the 14 Oct files have no score
         df = pd.DataFrame(rows, columns=RAW_COLUMNS)
-        df = df.astype({c: "float32" for c in ["x", "y", "vx", "vy", "yaw", "length", "width"]})
+        df = df.astype({c: "float32" for c in ["x", "y", "vx", "vy", "yaw", "length", "width", "score"]})
         df["file_idx"] = df["file_idx"].astype("int16")
         parts.append(df)
         if progress and ((i + 1) % 24 == 0 or i + 1 == len(files)):
@@ -60,13 +70,13 @@ def parse_files(files, progress=True):
     return raw
 
 
-def load_raw(data_dir, cache_path=None, reparse=False, limit_files=None):
-    """Parse (or load the cached parse of) the raw data."""
+def load_raw(data_dir, cache_path=None, reparse=False, limit_files=None, date=None):
+    """Parse (or load the cached parse of) the raw data. The cache keeps every score; filter afterwards."""
     cache_path = Path(cache_path) if cache_path else None
     if cache_path and cache_path.exists() and not reparse:
         print(f"loading cached raw table {cache_path}")
         return pd.read_parquet(cache_path)
-    files = list_files(data_dir)
+    files = list_files(data_dir, date)
     if limit_files:
         files = files[:limit_files]
     t0 = time.perf_counter()

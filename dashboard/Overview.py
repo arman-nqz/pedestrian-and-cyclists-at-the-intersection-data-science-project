@@ -11,13 +11,13 @@ from lib import data, filters  # noqa: E402
 st.set_page_config(page_title="K305 VRU dashboard", layout="wide")
 
 st.title("Pedestrians and cyclists at K305: when and where?")
-st.caption("Roadside LiDAR object lists, intersection K305 (Dr.-Willi-Reiland-Ring / Würzburger Straße, Aschaffenburg), "
-           "14 October 2026, 10 Hz.")
-
 f = filters.sidebar(show_time=False, show_classes=False)
 
 try:
     meta = data.meta()
+    st.caption(f"Roadside LiDAR object lists ({meta.get('source', 'NSE')}), intersection K305 (Dr.-Willi-Reiland-Ring / "
+               f"Würzburger Straße, Aschaffenburg), {meta['day']}, 10 Hz. Detections with a score below "
+               f"{meta.get('min_score', 0)} are left out ({meta.get('low_score_rows_removed', 0):,} rows).")
     tt = data.tracks(f["variant"])
     cn = data.counts(f["variant"])
 except data.MissingData as e:

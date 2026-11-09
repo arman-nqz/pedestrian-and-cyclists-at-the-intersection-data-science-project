@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """Build the data files the dashboard reads (see docs/DASHBOARD_SPEC.md, section 5).
 
-    python build_dashboard_data.py --data-dir <folder with the 288 json files>
-    python build_dashboard_data.py --data-dir <folder> --start 07:00 --minutes 60 --out dashboard/data_test   # quick test
+    python build_dashboard_data.py                       # 29 Oct 2026, NSE, from database/newsense/object_list
+    python build_dashboard_data.py --start 07:20 --minutes 10 --out dashboard/data_test   # quick test on window W1
 
 Steps (all by default, pick with --steps):
     tracks   tracks_<variant>.parquet            one row per track, for the three cleaning variants
@@ -32,8 +32,11 @@ import track_pipeline as tp
 import track_stitching as tsx
 
 SCHEMA = 1
-UTC_OFFSET_S = 7200          # local time on 2026-10-14 is CEST (UTC+2)
-DAY = "2026-10-14"
+UTC_OFFSET_S = 3600          # set in main() from the data; 29 Oct 2026 is CET (UTC+1)
+DAY = "2026-10-29"
+MIN_SCORE = 0.25             # NSE detection score threshold, same as near_miss_analysis.py
+# approximate sunrise / sunset in Aschaffenburg (local time), for shading only
+DAYLIGHT = {"2026-10-29": ("07:13", "16:57"), "2026-10-28": ("07:11", "16:59"), "2026-10-14": ("07:40", "18:35")}
 CLASSES = ["Pedestrian", "Cyclist", "Motorcycle", "Car", "Van", "Truck", "Bus"]
 VRU = ["Pedestrian", "Cyclist", "Motorcycle"]
 LIM = 46.0                   # half size of the map in meters
@@ -260,8 +263,11 @@ def git_commit():
 
 
 def main(argv=None):
+    global UTC_OFFSET_S, DAY
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--data-dir", required=True)
+    ap.add_argument("--data-dir", default="database/newsense/object_list")
+    ap.add_argument("--date", default=DAY, help="which day's files to use (YYYY-MM-DD)")
+    ap.add_argument("--min-score", type=float, default=MIN_SCORE, help="drop detections with a lower NSE score")
     ap.add_argument("--out", default="dashboard/data")
     ap.add_argument("--steps", nargs="+", default=["tracks", "counts", "density", "events", "quality", "replay", "meta"])
     ap.add_argument("--reparse", action="store_true", help="ignore the cached parse of the raw json")
@@ -270,7 +276,8 @@ def main(argv=None):
     ap.add_argument("--replay-variants", nargs="+", default=["clean"], choices=list(tp.VARIANTS))
     ap.add_argument("--compute-events", nargs="*", default=[], choices=list(tp.VARIANTS),
                     help="also run the near-miss functions on our tracks (slow)")
-    ap.add_argument("--published-run", default="output/full_day_20261026_204014_631230")
+    ap.add_argument("--published-run", default=None,
+                    help="near_miss_analysis.py output folder; default: newest output/k305_<date>_full_day_* folder")
     ap.add_argument("--zones", default="dashboard/config/zones.json",
                     help="zones.json from zones.py; zones.py needs a first build (density), so build, run zones.py, build again")
     args = ap.parse_args(argv)
@@ -278,14 +285,26 @@ def main(argv=None):
     t_start = time.perf_counter()
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+    DAY = args.date
+    all_files = tp.list_files(args.data_dir, DAY)
+    UTC_OFFSET_S = tp.utc_offset_s(all_files)
+    print(f"{DAY}: {len(all_files)} files, local time = UTC{UTC_OFFSET_S / 3600:+.0f}")
     partial = bool(args.start)
     if partial:
-        files = select_window(tp.list_files(args.data_dir), args.start, args.minutes)
+        files = select_window(all_files, args.start, args.minutes)
         print(f"partial build: {len(files)} files from {args.start}")
         raw = tp.parse_files(files)
     else:
-        raw = tp.load_raw(args.data_dir, out / "cache" / "raw.parquet", reparse=args.reparse)
-    print(f"{len(raw):,} rows")
+        raw = tp.load_raw(args.data_dir, out / "cache" / f"raw_{DAY}.parquet", reparse=args.reparse, date=DAY)
+    if "score" not in raw:  # cache from an older build
+        raw["score"] = np.float32(1.0)
+    n_all = len(raw)
+    raw = raw[raw["score"] >= args.min_score].reset_index(drop=True)
+    low_score = n_all - len(raw)
+    print(f"{n_all:,} rows, {low_score:,} with score < {args.min_score} removed ({low_score / max(n_all, 1):.0%})")
+    if args.published_run is None:
+        runs = sorted(Path("output").glob(f"k305_{DAY}_full_day_*"))
+        args.published_run = str(runs[-1]) if runs else ""
 
     variants, info = tp.make_variants(raw)
     tables = {}
@@ -310,8 +329,8 @@ def main(argv=None):
             passes(v).to_parquet(out / f"passes_{name}.parquet")
         print("density and passes written")
     if "events" in args.steps:
-        run = Path(args.published_run)
-        if run.exists() and not partial:
+        run = Path(args.published_run) if args.published_run else None
+        if run and run.exists() and not partial:
             ttc, pet = published_events(run)
             ttc.to_parquet(out / "events_published_ttc.parquet")
             pet.to_parquet(out / "events_published_pet.parquet")
@@ -323,7 +342,9 @@ def main(argv=None):
             ev.to_parquet(out / f"events_{name}_ttc.parquet")
             print(f"{name}: {len(ev):,} TTC events, {pet_n:,} PET-proxy near misses")
     if "quality" in args.steps:
-        (out / "quality.json").write_text(json.dumps(quality(raw, variants, info)), encoding="utf-8")
+        q = quality(raw, variants, info)
+        q["raw"].update({"rows_before_score_filter": int(n_all), "low_score_rows_removed": int(low_score), "min_score": args.min_score})
+        (out / "quality.json").write_text(json.dumps(q), encoding="utf-8")
         print("quality written")
     if "replay" in args.steps:
         for name in args.replay_variants:
@@ -331,6 +352,8 @@ def main(argv=None):
     if "meta" in args.steps:
         meta = {
             "schema": SCHEMA, "day": DAY, "utc_offset_s": UTC_OFFSET_S, "classes": CLASSES, "vru_classes": VRU,
+            "source": "NSE object list", "min_score": args.min_score, "low_score_rows_removed": int(low_score),
+            "daylight_local": DAYLIGHT.get(DAY), "published_run": Path(args.published_run).name if args.published_run else None,
             "variants": list(tp.VARIANTS), "default_variant": "clean", "bounds_m": [-LIM, LIM, -LIM, LIM], "density_cell_m": CELL,
             "dt_s": DT, "partial": partial, "window": {"start": args.start, "minutes": args.minutes} if partial else None,
             "rows": int(len(raw)),

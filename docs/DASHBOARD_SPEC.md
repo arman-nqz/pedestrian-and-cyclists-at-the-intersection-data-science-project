@@ -11,6 +11,10 @@ Status: draft, decisions of 2026-11-09 included. Branch: `stitching-comparison`.
 | 3 | Events | Default is the **original pipeline** (`published`) events. Events recomputed on stitched tracks stay available as a comparison |
 | 4 | Map | OSM extract `dashboard/config/k305_map.osm` is aligned to the sensor frame (rotation 276 deg, no mirror); result in `dashboard/config/k305_map.json`. Crossing zones and arms still to be defined from it |
 | 5 | Order of work | Map alignment first (done), then the data pipeline (M0/M1) |
+| 6 | Dataset | **29 October 2026 only** (decided after the professor's email); 14 October is dropped from the dashboard and kept only as test samples. Shared analysis windows: `docs/ANALYSIS_WINDOWS.md` |
+| 7 | NSE score | detections with a score below **0.25** are left out, as in `near_miss_analysis.py` |
+
+**29 October changes (build):** the build defaults to `database/newsense/object_list` and `--date 2026-10-29`, reads the local time offset from the data (CET, UTC+1), drops low scores, and picks the newest `output/k305_<date>_full_day_*` run of the original pipeline as the event source. The NSE sensor frame changed between 14 and 29 October (the main traffic axis turned by about 6 deg in raw sensor coordinates), so the map alignment and zones were redone for 29 October: rotation 282.25 deg, shift (-40, -11) m, no mirror; one-way check 102 of 114 points. Next: Ouster BlueCity tracks, NSE vs Ouster comparison on the four windows, signal states and video.
 
 ## 1. Purpose
 

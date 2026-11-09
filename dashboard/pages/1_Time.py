@@ -38,9 +38,10 @@ if per_hour:
 sel["time"] = sel["bin"].map(data.bin_label)
 
 fig = go.Figure()
-# approximate daylight for Aschaffenburg on 14 Oct (sunrise about 07:40, sunset about 18:35 local)
-for x0, x1 in (("00:00", "07:40"), ("18:35", "23:59")):
-    fig.add_vrect(x0=x0, x1=x1, fillcolor="rgba(30,40,80,0.08)", line_width=0, layer="below")
+daylight = data.meta().get("daylight_local")  # approximate sunrise / sunset, local time
+if daylight:
+    for x0, x1 in (("00:00", daylight[0]), (daylight[1], "23:59")):
+        fig.add_vrect(x0=x0, x1=x1, fillcolor="rgba(30,40,80,0.08)", line_width=0, layer="below")
 for cls in f["classes"]:
     s = sel[sel["cls"] == cls]
     fig.add_trace(go.Scatter(x=s["time"], y=s[metric], mode="lines+markers", name=cls,

@@ -20,7 +20,6 @@ CLASSES = ["Pedestrian", "Cyclist", "Motorcycle", "Car", "Van", "Truck", "Bus"]
 VRU = ["Pedestrian", "Cyclist", "Motorcycle"]
 COLORS = {"Pedestrian": "#2b7bd6", "Cyclist": "#e8791b", "Motorcycle": "#8e5bd0",
           "Car": "#7f8c99", "Van": "#95a3b0", "Truck": "#5f6b77", "Bus": "#4a5560"}
-UTC_OFFSET_S = 7200
 
 
 class MissingData(Exception):
