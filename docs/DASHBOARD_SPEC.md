@@ -1,6 +1,16 @@
 # K305 VRU Dashboard: Specification
 
-Status: draft for team review. Branch: `stitching-comparison`. Last updated: 2026-11-09.
+Status: draft, decisions of 2026-11-09 included. Branch: `stitching-comparison`. Last updated: 2026-11-09.
+
+## 0. Decisions (2026-11-09)
+
+| # | Question | Decision |
+|---|---|---|
+| 1 | Stack | **Streamlit** (Python). Sections 4.6 and 6 are rewritten for it. |
+| 2 | Default cleaning variant | **`clean`**, with a dropdown in the sidebar to switch to `stitched` or `segmented` |
+| 3 | Events | Default is the **original pipeline** (`published`) events. Events recomputed on stitched tracks stay available as a comparison |
+| 4 | Map | OSM extract `dashboard/config/k305_map.osm` is aligned to the sensor frame (rotation 276 deg, no mirror); result in `dashboard/config/k305_map.json`. Crossing zones and arms still to be defined from it |
+| 5 | Order of work | Map alignment first (done), then the data pipeline (M0/M1) |
 
 ## 1. Purpose
 
@@ -50,7 +60,7 @@ The published pipeline's events (`published`) can be shown for comparison.
 
 ## 3. Information architecture
 
-A single page app with a left filter panel and these views (tabs):
+A Streamlit app with a sidebar filter panel and one page per view:
 
 1. **Overview:** headline numbers, key findings, limits.
 2. **Time:** when VRUs appear.
@@ -64,7 +74,7 @@ A single page app with a left filter panel and these views (tabs):
 ### Global filters (apply to views 2–7 unless stated)
 - **Time range:** slider with 15-min steps, default whole day.
 - **Class:** Pedestrian, Cyclist, Motorcycle, motor vehicles (Car, Van, Truck, Bus). Default: all three VRU classes on, motor vehicles on in Space/Conflicts/Replay only.
-- **Cleaning variant:** `segmented` / `stitched` / `clean`. Default `stitched`. A visible label always names the active variant.
+- **Cleaning variant:** dropdown with `segmented` / `stitched` / `clean`. Default `clean`. A visible label always names the active variant. Because `clean` drops 83% of pedestrian tracks (it may remove people who wait), the Overview shows a one-line warning next to it and links to Data quality.
 - The selected time range and filters are kept when switching tabs, and stored in the URL so a view can be shared.
 
 ## 4. View requirements
@@ -100,7 +110,7 @@ A single page app with a left filter panel and these views (tabs):
 - **Overlap map:** zones where VRU and vehicle tracks are in the same place within a few seconds (PET-style). Parameters: cell size, time window; defaults documented in Method.
 - Each event has a **Replay** button that opens view 4.6 at the event time (start − 5 s), pauses, highlights the two tracks, and draws the line between them.
 - A **disclaimer** banner on the tab: events are algorithm-generated candidates, counts are not normalized by exposure, thresholds listed.
-- Comparison switch: show events from `published` (original pipeline) next to the active variant, matched by time and position, so users see what stitching and cleaning changed.
+- **Event source** dropdown: `published` (original pipeline, **default**) or recomputed on the active variant's tracks. The comparison switch shows both, matched by time and position, so users see what stitching and cleaning changed. Replay of a `published` event uses the original track ids; because those ids are not the stitched ids, the replay highlights the two objects by time and position when the active variant differs.
 
 ### 4.6 Replay (extends the existing `k305_player.html`)
 Must keep everything the current player does, and add:
@@ -108,8 +118,8 @@ Must keep everything the current player does, and add:
 | Requirement | Detail |
 |---|---|
 | Playback | play/pause, speed 0.25x to 8x, frame step, loop, keyboard shortcuts (Space, arrows) |
-| Time control | slider over the **whole day** (not only 5 minutes) plus a clock input (HH:MM:SS) and "jump to" from other views |
-| Data loading | load 5-minute chunks on demand, prefetch the next chunk; no gap in playback at chunk borders |
+| Time control | a **window picker** (start time + length 5 / 10 / 15 min) plus a clock input and "jump to" from other views; the slider in the player moves inside the window. Streamlit reruns the script on every widget change, so playback runs in the browser and the window is changed from Streamlit widgets |
+| Data loading | the selected window is read from prebuilt files (cached with `st.cache_data`) and embedded in the player; a "Next window" button continues without a gap in time |
 | Layers | class filters, dim motor vehicles, trails (length 0–10 s), track ids (stitched id shown as `uid.seg`), velocity arrows |
 | Selection | click a track: highlight it, show class, id, start and end time, duration, path length, mean speed, whether it was stitched (and from which pieces) |
 | Event mode | when opened from an event: highlight the pair, show distance and TTC over time as a small chart under the canvas |
@@ -161,39 +171,64 @@ Events for the dashboard are computed by the **existing** functions in `near_mis
 ### 5.4 Prerequisites that are not built yet
 | Item | Needed for | Owner / status |
 |---|---|---|
-| `zones.json`: crossing polygons and the N/E/S/W arms | arm split, routes, overlap zones | open; needs the aligned map |
-| Map alignment: transform from sensor x/y to the Google Maps image (control points, affine or similar) | background map | open; the image is `k305_map.png` in the notebook repo |
+| `zones.json`: crossing polygons and the N/E/S/W arms | arm split, routes, overlap zones | open; start from the OSM crossings in `k305_map.json` |
+| Map alignment of OSM to the sensor frame | background map, zones | **done**: `map_alignment.py`, result `dashboard/config/k305_map.json` (see section 5.5) |
 | Repo version of the full cleaning pipeline (parse + filter variants) | build script | partly: `track_stitching.py` exists; parse/filter still in the notebook |
 | Signal data | compliance view, phase-based overlap | not yet described by the team |
 
-The dashboard must work without these (features degrade as noted in each view).
+The dashboard must work without the open items (features degrade as noted in each view).
+
+### 5.5 Map alignment (done)
+
+`map_alignment.py --osm <map.osm> --data-dir <json folder> --out dashboard/config` finds the transform from OSM (latitude / longitude) to the sensor frame, using 36 of the 288 files:
+
+- **Result:** `q = R(-276 deg) @ (east, north) + (-34.5, -12.5) m`, **no mirror**. The OSM origin is the mean of the traffic-signal nodes.
+- **How it was found:** rotation search with FFT cross-correlation of the OSM roads against the density of moving vehicles, then a fine local search.
+- **Mirror question settled two independent ways:** (a) right-hand traffic: vehicles on the main axis keep right of the opposite flow in the sensor frame (8.4 m gap); (b) on the OSM one-way roads the recorded vehicle direction matches the drawn direction at 86 of 104 points (mirrored alternative: 9 of 102).
+- **Pedestrian check:** the mean log density of pedestrians on OSM footways is 0.64, random points 0.44.
+- **Accuracy:** not measured beyond the visual check in `alignment_check.png`; treat it as about 2 m. The OSM junction (signals mean) lies at the edge of the sensor window, so the map is trustworthy mainly where tracks exist.
 
 ## 6. Technical approach
 
-### Recommendation
-**Static web app, no backend.** Plain JavaScript (ES modules) with Canvas for the map and replay, and one charting library for the line/bar charts, loaded from a pinned local copy (no CDN needed at run time). Data files are fetched by `fetch()` from `dashboard/data/`. Served locally with `python -m http.server` from `dashboard/`, or opened from a build that inlines the small files.
+### Decision: Streamlit
 
-Why: it reuses the working replay player; it runs on any laptop; the build step in Python matches the team's skills; it can be handed over as a folder.
+A Streamlit multipage app reading prebuilt files. Python all the way for the team; the replay is the one custom piece.
+
+| Part | Approach |
+|---|---|
+| App shell | `streamlit` with one page per view (4.1 to 4.8); filters in the sidebar, stored in `st.session_state` and the URL query parameters |
+| Charts and maps | Plotly (line, bar, heatmap with `go.Heatmap`, scatter for events and routes); map features from `k305_map.json` drawn as lines |
+| Data | prebuilt Parquet / JSON in `dashboard/data/`, read with pandas and cached with `st.cache_data`; nothing parses the raw JSON at run time |
+| Replay | our JavaScript player (from `k305_player.html`) embedded with `st.components.v1.html`; the selected window's frames are passed as JSON; controls inside the player; window and variant chosen with Streamlit widgets |
+| Events to replay | the Conflicts page sets the replay window and the highlighted pair in `st.session_state`, then switches to the Replay page |
+
+### Known limits of this choice
+- Streamlit reruns the script on each widget change. Playback must therefore stay inside the embedded player; Streamlit cannot drive frames.
+- The player cannot send clicks back to Python without a custom component. Track selection and the details box therefore live inside the player. If we need clicks to filter other views, a small custom component is needed (extra work, optional).
+- Whole-day scrubbing is replaced by a window picker (5 to 15 min). A 15-min window is about 4 MB, so loading is quick.
 
 ### Alternatives considered
 | Option | For | Against |
 |---|---|---|
-| Streamlit / Dash | all Python, fast to start | custom replay with smooth playback is hard; state and reruns make the player jumpy |
+| Static JavaScript app | smooth replay with day-wide scrubbing, no Python server | the team would write much more JavaScript |
 | Jupyter + widgets | fits the notebook | not a standalone deliverable; slow playback |
-| Single HTML with embedded data | one file | full day does not fit; only works for chosen windows (what `k305_player.html` does now) |
-
-Decision to confirm with the team before building (section 11).
+| Single HTML with embedded data | one file | full day does not fit |
 
 ### Layout
 ```
 dashboard/
-  index.html
-  src/            main.js, state.js (filters, URL), views/*.js, replay/*.js, charts/*.js, data/loader.js
-  data/           generated, not committed
-  vendor/         pinned chart library
+  app.py                 entry point (Overview page), sidebar filters
+  pages/                 1_Time.py, 2_Space.py, 3_Routes.py, 4_Conflicts.py, 5_Replay.py, 6_Data_quality.py, 7_Method.py
+  lib/                   data.py (loaders + cache), filters.py, plots.py, replay.py (builds the player HTML)
+  assets/player.js       the replay player
+  config/                k305_map.json, k305_map.osm, alignment_check.png, zones.json (later)
+  data/                  generated, not committed
 docs/DASHBOARD_SPEC.md
 build_dashboard_data.py
+map_alignment.py
 ```
+
+Run with `streamlit run dashboard/app.py`. Add `streamlit`, `plotly`, `pyarrow` to `requirements.txt`.
 
 ## 7. Non-functional requirements
 
@@ -234,25 +269,29 @@ The dashboard is accepted when:
 |---|---|---|---|
 | M0 | Pipeline in the repo | parse, segment, stitch, filter variants as a module with tests on 3 sample files; build script skeleton | `track_stitching.py` |
 | M1 | Data bundle | all files in 5.2 except zones and routes; quality numbers match the notebook | M0 |
-| M2 | App shell + Time + Data quality | state/URL, filters, charts | M1 |
+| M2 | App shell + Time + Data quality | Streamlit pages, sidebar filters, URL state, charts | M1 |
 | M3 | Space | density map, side-by-side, dwell-time weighting | M1 |
-| M4 | Replay | full-day player with chunk loading, selection, variants | M1 |
+| M4 | Replay | player component with window picker, selection, variants | M1 |
 | M5 | Conflicts | events table/map, jump to replay, published comparison | M1, M4 |
-| M6 | Zones and map alignment | `zones.json`, background map, arm split, routes | team input |
+| M6 | Zones from the aligned map | `zones.json` from OSM crossings and arms, background map layer, arm split, routes (alignment itself is done) | `k305_map.json`; team review of zones |
 | M7 | Polish | Method page, accessibility pass, README, acceptance test | all |
 
 M2 to M4 can run in parallel after M1.
 
-## 11. Open questions for the team
+## 11. Questions
 
-1. **Stack:** confirm static JS app (section 6), or prefer Streamlit?
-2. **Default variant:** `stitched` or `clean`? The movement filter removes 83% of pedestrian tracks and may delete people who wait; this must be settled (see `STITCHING_COMPARISON.md`).
-3. **Events:** which pipeline's events are the "official" ones in the final report: original or recomputed on stitched tracks?
-4. **Replay size:** full 10 Hz for the whole day (about 300 MB before compression), or 5 Hz?
-5. **Map alignment:** who does the control points, and do we have a better image or an official layout?
-6. **Other datasets and signal data:** what are they, and should compliance or phase-based views be in scope?
+### Answered (2026-11-09)
+1. Stack: Streamlit.
+2. Default variant: `clean`, with a dropdown.
+3. Events: original pipeline by default.
+5. Map: OSM extract provided and aligned.
+
+### Still open
+4. **Replay size:** window length 5 / 10 / 15 min at full 10 Hz, or offer 5 Hz for longer windows?
+6. **Other datasets and signal data** (`dataset/` folder): what are they, and should compliance or phase-based views be in scope?
 7. **Event review:** do we want a "mark as real / false" feature to validate events? It needs somewhere to store labels (a JSON file in the repo is enough).
-8. **Hosting:** local only, or a published copy (for example the course page)? A published copy needs the data size cut.
+8. **Hosting:** local only, or a published copy (for example Streamlit Community Cloud)? A published copy needs the data size cut and the data files committed or hosted.
+9. **`clean` default:** the movement filter removes 83% of pedestrian tracks and 42% of the near-miss events in the 07:00 to 09:00 test. Is that what we want as the default once a sample of the removed events has been reviewed?
 
 ## 12. Risks
 
