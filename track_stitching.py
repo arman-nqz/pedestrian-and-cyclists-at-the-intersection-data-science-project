@@ -139,8 +139,11 @@ def link_ids(ep, links):
     return pd.Series(sid)
 
 
-def stitch_tracks(df, edge_quantile=0.999, edge_factor=0.9, **stitch_kw):
-    """Segment, stitch and return (df with trk / trk_s / class_final, links)."""
+def stitch_tracks(df, edge_quantile=0.999, edge_factor=0.9, return_details=False, **stitch_kw):
+    """Segment, stitch and return (df with trk / trk_s / class_final, links).
+
+    With return_details=True it returns (df, links, endpoints table, edge radius) instead.
+    """
     seg = segment_tracks(df)
     ep = build_endpoints(seg)
     radius = np.hypot(seg["x"].to_numpy()[::50], seg["y"].to_numpy()[::50])
@@ -153,6 +156,8 @@ def stitch_tracks(df, edge_quantile=0.999, edge_factor=0.9, **stitch_kw):
     counts = seg.groupby(["trk_s", "class_name"]).size().reset_index(name="n")
     top = counts.sort_values("n").groupby("trk_s").tail(1).set_index("trk_s")["class_name"]
     seg["class_final"] = seg["trk_s"].map(top)
+    if return_details:
+        return seg, links, ep, edge_r
     return seg, links
 
 

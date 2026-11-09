@@ -43,6 +43,7 @@ The course allows a dashboard as the final deliverable, so it must stand on its 
 | VRUs (professor) | Pedestrian, Cyclist, Motorcycle | Filter default: these three |
 | Coordinates | sensor-local meters, about x −45..42, y −45..45 | Not aligned to a map yet |
 | Track ids | continue across file borders, but are **reused** for different objects minutes apart | Always split tracks at time gaps; never trust `track_id` alone |
+| Duplicate rows | 89 rows (the same track at the same timestamp twice) | Removed at the start of the pipeline, otherwise dwell time and replay double count |
 | Tracks | 232,417 segments per day; stitching joins about 29% of them; 7.9–8.8 M rows after cleaning | Use stitched ids (`trk_s`) |
 | Time | local time is UTC+2 on 2026-10-14 | Show local clock |
 | Replay size | about 1.5 MB per busy 5-min chunk as JSON | Full day about 300 MB raw; needs chunking and compression |
@@ -140,30 +141,30 @@ Static page: definitions of every metric, all parameters with their defaults and
 
 The browser reads **prebuilt files**; it never parses the raw JSON.
 
-### 5.1 Build script
-`build_dashboard_data.py` (new) runs once and writes to `dashboard/data/` (not committed, listed in `.gitignore`; regenerate with one command):
+### 5.1 Build script (built)
+`build_dashboard_data.py` runs once and writes to `dashboard/data/` (not committed, in `.gitignore`; regenerate with one command):
 
 ```
-python build_dashboard_data.py --data-dir <folder with 288 json> --out dashboard/data
+python build_dashboard_data.py --data-dir <folder with the 288 json files>
+python build_dashboard_data.py --data-dir <folder> --start 07:00 --minutes 60 --out dashboard/data_test   # quick test
 ```
 
-Steps: parse → segment → stitch (`track_stitching.py`) → filter variants → derive features → aggregate → events → write files. Must be restartable (cache the parsed table as Parquet) and print progress.
+Steps: parse (cached as Parquet) -> drop duplicate rows -> split at gaps -> stitch (`track_stitching.py`) -> three variants (`track_pipeline.py`) -> tables -> files. Choose steps with `--steps`, choose replay variants with `--replay-variants`, add events recomputed on our tracks with `--compute-events clean stitched` (slow). Full day: about 5 minutes. Tests: `python -m unittest discover -s tests`.
 
-### 5.2 Output files and contracts
+### 5.2 Output files and contracts (as built)
 
 | File | Content | Used by |
 |---|---|---|
-| `meta.json` | day, utc offset, bounds, classes, variants, parameters, build time, git commit | all |
-| `tracks_<variant>.parquet` (or `.csv.gz`) | one row per track: `trk`, class, t_start, t_end, frames, length_m, mean_speed, x_start, y_start, x_end, y_end, zone_in, zone_out, stitched_from | tables, selection |
-| `counts_15min_<variant>.json` | per class, per 15-min bin, per arm: tracks started, tracks present | Time |
-| `density_<variant>_<class>_<hour>.json` | grid of dwell seconds per cell (0.5 m), per hour | Space |
-| `routes_<variant>_<class>.json` | clusters: representative polyline, track ids, counts | Routes |
-| `events_<variant>.json` | TTC events (min TTC, duration, pair ids, classes, x, y, t) and PET-proxy events | Conflicts |
-| `events_published.json` | events from the original pipeline | Conflicts comparison |
-| `quality.json` | stage counts, sensitivity table, stitch summary | Data quality |
-| `replay/<variant>/<HHMM>.json.gz` | one file per 5-minute chunk: frame times, per-frame `[trk, x, y, yaw]`, track metadata `[class, length, width]` | Replay |
+| `meta.json` | day, utc offset, bounds, classes, variants, default variant, parameters, track counts, build time, git commit | all |
+| `tracks_<variant>.parquet` | one row per track: `trk`, `cls`, `t_start`, `t_end`, `duration_s`, `frames`, `n_segments`, `path_m`, `extent_m`, `mean_speed`, `length_m`, `width_m`, `x_start`, `y_start`, `x_end`, `y_end` (zones are added later) | tables, selection |
+| `counts_15min_<variant>.parquet` | per class and 15-min bin (0..95): `started`, `present` (arm split added with zones) | Time |
+| `density_<variant>.parquet` | dwell seconds per class, local hour and 0.5 m cell (`cls`, `hour`, `ix`, `iy`, `dwell_s`; cell = 0.5 m, origin at -46 m) | Space |
+| `events_published_ttc.parquet`, `events_published_pet.parquet` | the original pipeline's near-miss events (2,583 TTC, 22,192 PET proxy), read from its CSV files | Conflicts |
+| `events_<variant>_ttc.parquet` | TTC events recomputed on our tracks, only with `--compute-events` | Conflicts comparison |
+| `quality.json` | tracks per stage, sensitivity table, stitching summary (gap histogram, join midpoints, joins per class), synthetic cut test, parameters, known issues | Data quality |
+| `replay/<variant>/<HHMM>.json.gz` | one 5-minute chunk per file: `T` frame times, `F` frames of `[trk, x, y, yaw]`, `M` track meta `[class index, length, width]`, `C` class list; default variant `clean` only (about 0.5 MB per busy chunk) | Replay |
 
-Contracts: every file starts with `{"schema": 1, ...}`; times are epoch seconds (UTC) plus the offset in `meta.json`; coordinates are sensor meters with 2 decimals (replay: 1 decimal).
+Contracts: JSON files carry `"schema": 1`; times are epoch seconds (UTC), local time is UTC+2 (`meta.json`); coordinates are sensor meters; the player's frame format is unchanged.
 
 ### 5.3 Event generation
 Events for the dashboard are computed by the **existing** functions in `near_miss_analysis.py` (imported, not reimplemented) on the tracks of the chosen variant, so that event track ids match the replay. Thresholds: TTC < 1.5 s, PET proxy < 1.5 s, as in the repo, and shown in the UI.
@@ -267,8 +268,8 @@ The dashboard is accepted when:
 
 | # | Milestone | Content | Depends on |
 |---|---|---|---|
-| M0 | Pipeline in the repo | parse, segment, stitch, filter variants as a module with tests on 3 sample files; build script skeleton | `track_stitching.py` |
-| M1 | Data bundle | all files in 5.2 except zones and routes; quality numbers match the notebook | M0 |
+| M0 | Pipeline in the repo | **done**: `track_pipeline.py` (parse, duplicates, segment, stitch, variants), 14 tests on the 3 sample files | `track_stitching.py` |
+| M1 | Data bundle | **done** (without zones and routes): full-day build in about 5 minutes; numbers match the notebook within 4 tracks (the difference is the 89 duplicate rows now removed) | M0 |
 | M2 | App shell + Time + Data quality | Streamlit pages, sidebar filters, URL state, charts | M1 |
 | M3 | Space | density map, side-by-side, dwell-time weighting | M1 |
 | M4 | Replay | player component with window picker, selection, variants | M1 |
