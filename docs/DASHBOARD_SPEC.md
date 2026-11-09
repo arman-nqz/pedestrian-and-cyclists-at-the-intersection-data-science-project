@@ -14,7 +14,7 @@ Status: draft, decisions of 2026-11-09 included. Branch: `stitching-comparison`.
 | 6 | Dataset | **29 October 2026 only** (decided after the professor's email); 14 October is dropped from the dashboard and kept only as test samples. Shared analysis windows: `docs/ANALYSIS_WINDOWS.md` |
 | 7 | NSE score | detections with a score below **0.25** are left out, as in `near_miss_analysis.py` |
 
-**29 October changes (build):** the build defaults to `database/newsense/object_list` and `--date 2026-10-29`, reads the local time offset from the data (CET, UTC+1), drops low scores, and picks the newest `output/k305_<date>_full_day_*` run of the original pipeline as the event source. The NSE sensor frame changed between 14 and 29 October (the main traffic axis turned by about 6 deg in raw sensor coordinates), so the map alignment and zones were redone for 29 October: rotation 282.25 deg, shift (-40, -11) m, no mirror; one-way check 102 of 114 points. Next: Ouster BlueCity tracks, NSE vs Ouster comparison on the four windows, signal states and video.
+**29 October changes (build):** the build defaults to `database/newsense/object_list` and `--date 2026-10-29`, reads the local time offset from the data (CET, UTC+1), drops low scores, and picks the newest `output/k305_<date>_full_day_*` run of the original pipeline as the event source. The NSE sensor frame changed between 14 and 29 October (the main traffic axis turned by about 6 deg in raw sensor coordinates), so the map alignment and zones were redone for 29 October: rotation 282.25 deg, shift (-40, -11) m, no mirror; one-way check 102 of 114 points. **NSE vs Ouster (done, first version):** `ouster_reader.py`, `nse_ouster.py`, `build_comparison_data.py` and the page `3_NSE_vs_Ouster.py`; results and method in `docs/NSE_VS_OUSTER.md`. The Ouster frame changed before W4, so each window has its own transform (`dashboard/config/ouster_to_nse.json`). Next: signal states and video.
 
 ## 1. Purpose
 
@@ -233,7 +233,7 @@ A Streamlit multipage app reading prebuilt files. Python all the way for the tea
 ```
 dashboard/
   Overview.py            entry point (Overview page), sidebar filters
-  pages/                 1_Time.py, 2_Space.py, (3_Routes.py, 4_Conflicts.py, 5_Replay.py,) 6_Data_quality.py, (7_Method.py)
+  pages/                 1_Time.py, 2_Space.py, 3_NSE_vs_Ouster.py, (4_Conflicts.py, 5_Replay.py,) 6_Data_quality.py, (7_Method.py)
   lib/                   data.py (loaders + cache), filters.py, plots.py, replay.py (builds the player HTML)
   assets/player.js       the replay player
   config/                k305_map.json, k305_map.osm, alignment_check.png, zones.json (later)

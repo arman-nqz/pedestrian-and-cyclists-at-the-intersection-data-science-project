@@ -64,6 +64,15 @@ def passes(variant):
 
 
 @st.cache_data
+def compare(name):
+    """Files written by build_comparison_data.py (dashboard/data/compare/)."""
+    p = DATA / "compare" / name
+    if not p.exists():
+        raise MissingData(f"`{p.relative_to(ROOT.parent)}` is missing. Build it with `python build_comparison_data.py`.")
+    return json.loads(p.read_text(encoding="utf-8")) if p.suffix == ".json" else pd.read_parquet(p)
+
+
+@st.cache_data
 def osm_map():
     p = CONFIG / "k305_map.json"
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None

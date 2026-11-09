@@ -1,0 +1,59 @@
+{
+ "schema": 1,
+ "formula": "q_nse = R(-rotation_deg) @ p_ouster + shift_m",
+ "per_window": {
+  "W1": {
+   "rotation_deg": 171.2108,
+   "shift_m": [
+    -18.5782,
+    1.6746
+   ],
+   "vote_peak_ratio": 7.89,
+   "refine_pairs": 17362,
+   "median_residual_m": 0.341
+  },
+  "W2": {
+   "rotation_deg": 171.1737,
+   "shift_m": [
+    -18.6067,
+    1.7539
+   ],
+   "vote_peak_ratio": 8.42,
+   "refine_pairs": 21339,
+   "median_residual_m": 0.344
+  },
+  "W3": {
+   "rotation_deg": 171.2152,
+   "shift_m": [
+    -18.638,
+    1.7793
+   ],
+   "vote_peak_ratio": 7.72,
+   "refine_pairs": 15199,
+   "median_residual_m": 0.383
+  },
+  "W4": {
+   "rotation_deg": 96.1538,
+   "shift_m": [
+    -7.3692,
+    -12.0811
+   ],
+   "vote_peak_ratio": 7.02,
+   "refine_pairs": 13939,
+   "median_residual_m": 0.409
+  }
+ },
+ "frame_groups": [
+  [
+   "W1",
+   "W2",
+   "W3"
+  ],
+  [
+   "W4"
+  ]
+ ],
+ "note": "Ouster frame changes between windows: groups [['W1', 'W2', 'W3'], ['W4']]",
+ "low_quality_windows": [],
+ "method": "Hough voting on moving vehicle pairs + Kabsch refinement (nse_ouster.estimate_transform); clocks: 0 s offset"
+}
