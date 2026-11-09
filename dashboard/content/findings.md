@@ -4,7 +4,7 @@ _29 October 2026, NSE object list (score at least 0.25), variant `clean` unless 
 - **07:00 to 08:00 is the busiest hour** for pedestrians, cyclists and motorcycles alike: the morning commute to the university. Pedestrians peak again at 13:00 and 15:00, cyclists at 15:00 and 16:00. See **Time**.
 
 **Who**
-- **Vulnerable road users (pedestrians, cyclists, motorcycles) are 20% of all tracks** in `clean` (3,831 pedestrian, 2,548 cyclist, 1,627 motorcycle tracks against 28,134 cars). In `stitched` they are 32%: the movement filter drops many short pedestrian tracks, so the true share is somewhere between.
+- **Vulnerable road users (pedestrians, cyclists, motorcycles) are 20% of all tracks** in `clean` (3,829 pedestrian, 2,551 cyclist, 1,626 motorcycle tracks against 28,138 cars). In `stitched` they are 32%: the movement filter drops many short pedestrian tracks, so the true share is somewhere between.
 
 **Where**
 - **Most pedestrian and cyclist trips link the E and N arms** (Würzburger Straße east and Dr.-Willi-Reiland-Ring north): 821 tracks E to N and 722 N to E, then W to S with 357. See **Space**.
