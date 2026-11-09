@@ -1,0 +1,13 @@
+{
+ "schema": 1,
+ "date": "2026-10-29",
+ "timezone": "CET (UTC+01:00)",
+ "utc_offset_s": 3600,
+ "note": "Four 10-minute windows where NSE and Ouster BlueCity object lists, traffic-signal logs and video all exist. Proposed to the four DS3a teams (Topics 4-7). Times are local (CET).",
+ "windows": [
+  {"id": "W1", "start_local": "07:20", "end_local": "07:30", "start_epoch_s": 1793254800, "end_epoch_s": 1793255400, "use": "develop and validate first"},
+  {"id": "W2", "start_local": "07:40", "end_local": "07:50", "start_epoch_s": 1793256000, "end_epoch_s": 1793256600, "note": "about 11% of Ouster frames missing"},
+  {"id": "W3", "start_local": "08:00", "end_local": "08:10", "start_epoch_s": 1793257200, "end_epoch_s": 1793257800},
+  {"id": "W4", "start_local": "08:20", "end_local": "08:30", "start_epoch_s": 1793258400, "end_epoch_s": 1793259000}
+ ]
+}
