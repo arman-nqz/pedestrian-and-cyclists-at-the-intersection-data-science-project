@@ -103,7 +103,22 @@ def add_zones(tt, v, zones_path):
     used = pd.DataFrame({"trk": v["trk"].to_numpy(), "c": cid}).dropna()
     used = used.drop_duplicates().groupby("trk")["c"].agg(lambda s: ",".join(sorted(s)))
     tt["crossings"] = tt["trk"].map(used).fillna("")
-    return tt
+    return tt, crossing_visits(v, cid)
+
+
+def crossing_visits(v, cid, max_gap_s=1.0):
+    """One row per stay of a track inside a crossing: trk, cls, crossing, t_enter, t_exit, mean speed."""
+    d = pd.DataFrame({"trk": v["trk"].to_numpy(), "cls": v["cls"].to_numpy(), "t": v["t"].to_numpy(), "c": cid,
+                      "speed": np.hypot(v["vx"].to_numpy(), v["vy"].to_numpy())})
+    d = d[d["c"].notna()]
+    if d.empty:
+        return pd.DataFrame(columns=["trk", "cls", "crossing", "t_enter", "t_exit", "duration_s", "mean_speed"])
+    new = (d["trk"].ne(d["trk"].shift()) | d["c"].ne(d["c"].shift()) | (d["t"].diff() > max_gap_s)).cumsum()
+    g = d.groupby(new)
+    out = pd.DataFrame({"trk": g["trk"].first(), "cls": g["cls"].first(), "crossing": g["c"].first(),
+                        "t_enter": g["t"].min(), "t_exit": g["t"].max(), "mean_speed": g["speed"].mean()})
+    out["duration_s"] = out["t_exit"] - out["t_enter"]
+    return out.reset_index(drop=True)
 
 
 def density(v):
@@ -269,7 +284,8 @@ def main(argv=None):
     ap.add_argument("--date", default=DAY, help="which day's files to use (YYYY-MM-DD)")
     ap.add_argument("--min-score", type=float, default=MIN_SCORE, help="drop detections with a lower NSE score")
     ap.add_argument("--out", default="dashboard/data")
-    ap.add_argument("--steps", nargs="+", default=["tracks", "counts", "density", "events", "quality", "replay", "meta"])
+    ap.add_argument("--steps", nargs="+", default=["tracks", "counts", "density", "events", "signals", "quality", "replay", "meta"])
+    ap.add_argument("--signals-dir", default="database/traffic_signal_data")
     ap.add_argument("--reparse", action="store_true", help="ignore the cached parse of the raw json")
     ap.add_argument("--start", help="only files from this local time (HH:MM), for quick tests")
     ap.add_argument("--minutes", type=int, default=60)
@@ -307,18 +323,20 @@ def main(argv=None):
         args.published_run = str(runs[-1]) if runs else ""
 
     variants, info = tp.make_variants(raw)
-    tables = {}
+    tables, visits = {}, {}
     zones_ok = Path(args.zones).exists()
     for name, v in variants.items():
         tables[name] = track_table(v)
         if zones_ok:
-            add_zones(tables[name], v, args.zones)
+            tables[name], visits[name] = add_zones(tables[name], v, args.zones)
     print("zones: " + (f"arms and crossings added from {args.zones}" if zones_ok else f"{args.zones} missing, run zones.py and build again"))
 
     if "tracks" in args.steps:
         for name, tt in tables.items():
             tt.to_parquet(out / f"tracks_{name}.parquet")
-        print("tracks written")
+        for name, vis in visits.items():
+            vis.to_parquet(out / f"crossing_visits_{name}.parquet")
+        print("tracks" + (" and crossing visits" if visits else "") + " written")
     if "counts" in args.steps:
         for name, tt in tables.items():
             counts_15min(tt).to_parquet(out / f"counts_15min_{name}.parquet")
@@ -341,6 +359,17 @@ def main(argv=None):
             ev, pet_n = compute_events(variants[name], name)
             ev.to_parquet(out / f"events_{name}_ttc.parquet")
             print(f"{name}: {len(ev):,} TTC events, {pet_n:,} PET-proxy near misses")
+    if "signals" in args.steps:
+        import signals as sg
+        sig_file = Path(args.signals_dir) / f"K305_{DAY.replace('-', '_')}.xlsx"
+        if sig_file.exists():
+            sig = sg.read_signals(sig_file)
+            sig.to_parquet(out / "signals.parquet")
+            groups = sg.signal_groups(sig)
+            (out / "signal_groups.json").write_text(json.dumps(groups, indent=1), encoding="utf-8")
+            print(f"signals: {len(sig):,} seconds, {sig['local'].iat[0]} to {sig['local'].iat[-1]}, {len(groups)} independent groups")
+        else:
+            print(f"signals: {sig_file} missing")
     if "quality" in args.steps:
         q = quality(raw, variants, info)
         q["raw"].update({"rows_before_score_filter": int(n_all), "low_score_rows_removed": int(low_score), "min_score": args.min_score})

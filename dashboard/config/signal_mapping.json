@@ -1,0 +1,161 @@
+{
+ "schema": 1,
+ "method": "python signal_mapping.py          # reads dashboard/data, writes dashboard/config/signal_mapping.json",
+ "variant": "stitched",
+ "crossings": {
+  "X1": {
+   "Pedestrian": {
+    "group": "F4",
+    "members": [
+     "F4",
+     "F1"
+    ],
+    "score": 0.731,
+    "green_share": 0.836,
+    "green_base": 0.105,
+    "lag_s": -4,
+    "entries": 323,
+    "clear": true,
+    "runner_up": {
+     "group": "F3",
+     "score": 0.285
+    }
+   },
+   "Cyclist": {
+    "group": "F4",
+    "members": [
+     "F4",
+     "F1"
+    ],
+    "score": 0.822,
+    "green_share": 0.927,
+    "green_base": 0.105,
+    "lag_s": -5,
+    "entries": 137,
+    "clear": true,
+    "runner_up": {
+     "group": "F3",
+     "score": 0.568
+    }
+   }
+  },
+  "X2": {
+   "Pedestrian": {
+    "group": "F4",
+    "members": [
+     "F4",
+     "F1"
+    ],
+    "score": 0.789,
+    "green_share": 0.894,
+    "green_base": 0.105,
+    "lag_s": -4,
+    "entries": 303,
+    "clear": true,
+    "runner_up": {
+     "group": "F3",
+     "score": 0.505
+    }
+   },
+   "Cyclist": {
+    "group": "F4",
+    "members": [
+     "F4",
+     "F1"
+    ],
+    "score": 0.787,
+    "green_share": 0.892,
+    "green_base": 0.105,
+    "lag_s": -5,
+    "entries": 158,
+    "clear": true,
+    "runner_up": {
+     "group": "F3",
+     "score": 0.637
+    }
+   }
+  },
+  "X3": {
+   "Pedestrian": {
+    "group": "F12",
+    "members": [
+     "F12",
+     "F13",
+     "F14",
+     "F15"
+    ],
+    "score": 0.417,
+    "green_share": 0.881,
+    "green_base": 0.464,
+    "lag_s": -4,
+    "entries": 84,
+    "clear": false,
+    "runner_up": {
+     "group": "R1",
+     "score": 0.387
+    }
+   }
+  },
+  "X4": {
+   "Pedestrian": {
+    "group": "F8",
+    "members": [
+     "F8",
+     "F7",
+     "F6",
+     "F5"
+    ],
+    "score": 0.393,
+    "green_share": 0.878,
+    "green_base": 0.485,
+    "lag_s": -4,
+    "entries": 139,
+    "clear": true,
+    "runner_up": {
+     "group": "F9",
+     "score": -0.024
+    }
+   }
+  },
+  "X5": {
+   "Pedestrian": {
+    "group": "F8",
+    "members": [
+     "F8",
+     "F7",
+     "F6",
+     "F5"
+    ],
+    "score": 0.011,
+    "green_share": 0.495,
+    "green_base": 0.485,
+    "lag_s": -4,
+    "entries": 220,
+    "clear": false,
+    "runner_up": {
+     "group": "F9",
+     "score": 0.002
+    }
+   },
+   "Cyclist": {
+    "group": "F8",
+    "members": [
+     "F8",
+     "F7",
+     "F6",
+     "F5"
+    ],
+    "score": 0.087,
+    "green_share": 0.571,
+    "green_base": 0.485,
+    "lag_s": -5,
+    "entries": 49,
+    "clear": false,
+    "runner_up": {
+     "group": "F12",
+     "score": 0.026
+    }
+   }
+  }
+ }
+}
