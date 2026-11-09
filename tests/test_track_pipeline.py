@@ -76,6 +76,18 @@ class PipelineTests(unittest.TestCase):
         d = bdd.density(v)
         self.assertAlmostEqual(float(d["dwell_s"].sum()), len(v) * bdd.DT, delta=1.0)
 
+    def test_passes_count_each_track_once_per_cell(self):
+        v = self.variants["clean"]
+        p = bdd.passes(v)
+        n_tracks = v["trk"].nunique()
+        for cell in (0.5, 1.0, 2.0):
+            q = p[p["cell_m"] == cell]
+            self.assertLessEqual(int(q["tracks"].max()), n_tracks)
+        # bigger cells merge small ones, so the total of distinct tracks over all cells can only go down
+        tot = p.groupby("cell_m")["tracks"].sum()
+        self.assertGreaterEqual(tot[0.5], tot[1.0])
+        self.assertGreaterEqual(tot[1.0], tot[2.0])
+
     def test_synthetic_cut_test_repairs_most_tracks(self):
         res = tsx.synthetic_cut_test(self.info["seg"], self.info["ep"], self.info["edge_r"], n=300)
         if len(res) >= 20:

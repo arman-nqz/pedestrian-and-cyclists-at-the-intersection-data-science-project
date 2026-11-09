@@ -115,6 +115,28 @@ def density(v):
     return out.drop(columns="rows").astype({"hour": "int8", "ix": "int16", "iy": "int16"})
 
 
+def passes(v, cells=(0.5, 1.0, 2.0)):
+    """Distinct tracks per class, local hour and cell, for several cell sizes.
+
+    Dwell time counts a person who waits 60 s like 60 people passing for 1 s; this counts each track once per cell
+    and hour. Computed per cell size because distinct counts cannot be added up into bigger cells.
+    """
+    hour = (local_s(v["t"]) // 3600).astype("int8")
+    parts = []
+    for cell in cells:
+        n = int(2 * LIM / cell)
+        d = pd.DataFrame({
+            "cls": v["cls"].to_numpy(), "hour": hour, "trk": v["trk"].to_numpy(),
+            "ix": np.clip(((v["x"].to_numpy() + LIM) / cell).astype(int), 0, n - 1).astype("int16"),
+            "iy": np.clip(((v["y"].to_numpy() + LIM) / cell).astype(int), 0, n - 1).astype("int16"),
+        }).drop_duplicates()
+        g = d.groupby(["cls", "hour", "ix", "iy"], observed=True).size().rename("tracks").reset_index()
+        g["cell_m"] = cell
+        parts.append(g)
+    out = pd.concat(parts, ignore_index=True)
+    return out.astype({"tracks": "int32", "cell_m": "float32"})
+
+
 # ------------------------------------------------------------------ events
 def published_events(run_dir):
     """Events of the original pipeline, read from its CSV files (no rerun)."""
@@ -285,7 +307,8 @@ def main(argv=None):
     if "density" in args.steps:
         for name, v in variants.items():
             density(v).to_parquet(out / f"density_{name}.parquet")
-        print("density written")
+            passes(v).to_parquet(out / f"passes_{name}.parquet")
+        print("density and passes written")
     if "events" in args.steps:
         run = Path(args.published_run)
         if run.exists() and not partial:

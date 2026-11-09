@@ -55,6 +55,16 @@ def counts(variant):
 
 
 @st.cache_data
+def density(variant):
+    return pd.read_parquet(_need(DATA / f"density_{variant}.parquet"))
+
+
+@st.cache_data
+def passes(variant):
+    return pd.read_parquet(_need(DATA / f"passes_{variant}.parquet"))
+
+
+@st.cache_data
 def osm_map():
     p = CONFIG / "k305_map.json"
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None

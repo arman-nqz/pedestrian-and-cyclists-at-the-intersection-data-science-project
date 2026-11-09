@@ -93,7 +93,7 @@ A Streamlit app with a sidebar filter panel and one page per view:
 - Hover shows the exact count and the share of all VRUs in that interval.
 
 ### 4.3 Space
-- **Density map:** 2D histogram of positions, 0.5 m cells (selectable 0.5 / 1 / 2 m), log or linear color scale, for the chosen classes and time range. Each position is weighted by time, so the unit is **seconds of presence per m²** (dwell time), not raw frame counts, to avoid over-weighting people who wait. A toggle shows raw detections for comparison.
+- **Density map:** 0.5 / 1 / 2 m cells, log or linear color scale, for the chosen classes and time range (whole hours). Two measures: **time spent** (seconds of presence per m², which equals detections x 0.1 s, so people who wait weigh a lot) and **tracks passing** (distinct tracks per cell and hour, so a waiting person counts once). *Correction of the first draft, which called dwell time an alternative to frame counts; they are the same thing.*
 - Side-by-side mode: two classes (for example Pedestrian vs Cyclist) with the same color scale.
 - Optional difference mode (A minus B, normalized).
 - Zoom and pan; cursor shows coordinates (m) and value.
@@ -159,6 +159,7 @@ Steps: parse (cached as Parquet) -> drop duplicate rows -> split at gaps -> stit
 | `tracks_<variant>.parquet` | one row per track: `trk`, `cls`, `t_start`, `t_end`, `duration_s`, `frames`, `n_segments`, `path_m`, `extent_m`, `mean_speed`, `length_m`, `width_m`, `x_start`, `y_start`, `x_end`, `y_end` (zones are added later) | tables, selection |
 | `counts_15min_<variant>.parquet` | per class and 15-min bin (0..95): `started`, `present` (arm split added with zones) | Time |
 | `density_<variant>.parquet` | dwell seconds per class, local hour and 0.5 m cell (`cls`, `hour`, `ix`, `iy`, `dwell_s`; cell = 0.5 m, origin at -46 m) | Space |
+| `passes_<variant>.parquet` | distinct tracks per class, local hour and cell, for cells of 0.5, 1 and 2 m (`cls`, `hour`, `ix`, `iy`, `tracks`, `cell_m`) | Space |
 | `events_published_ttc.parquet`, `events_published_pet.parquet` | the original pipeline's near-miss events (2,583 TTC, 22,192 PET proxy), read from its CSV files | Conflicts |
 | `events_<variant>_ttc.parquet` | TTC events recomputed on our tracks, only with `--compute-events` | Conflicts comparison |
 | `quality.json` | tracks per stage, sensitivity table, stitching summary (gap histogram, join midpoints, joins per class), synthetic cut test, parameters, known issues | Data quality |
@@ -228,7 +229,7 @@ A Streamlit multipage app reading prebuilt files. Python all the way for the tea
 ```
 dashboard/
   Overview.py            entry point (Overview page), sidebar filters
-  pages/                 1_Time.py, 2_Space.py, 3_Routes.py, 4_Conflicts.py, 5_Replay.py, 6_Data_quality.py, 7_Method.py
+  pages/                 1_Time.py, 2_Space.py, (3_Routes.py, 4_Conflicts.py, 5_Replay.py,) 6_Data_quality.py, (7_Method.py)
   lib/                   data.py (loaders + cache), filters.py, plots.py, replay.py (builds the player HTML)
   assets/player.js       the replay player
   config/                k305_map.json, k305_map.osm, alignment_check.png, zones.json (later)
@@ -280,7 +281,7 @@ The dashboard is accepted when:
 | M0 | Pipeline in the repo | **done**: `track_pipeline.py` (parse, duplicates, segment, stitch, variants), 14 tests on the 3 sample files | `track_stitching.py` |
 | M1 | Data bundle | **done** (without zones and routes): full-day build in about 5 minutes; numbers match the notebook within 4 tracks (the difference is the 89 duplicate rows now removed) | M0 |
 | M2 | App shell + Time + Data quality | **done (first version)**: `dashboard/Overview.py`, `pages/1_Time.py`, `pages/2_Data_quality.py`, sidebar filters with URL state, smoke test | M1 |
-| M3 | Space | density map, side-by-side, dwell-time weighting | M1 |
+| M3 | Space | **done**: `pages/2_Space.py` with time spent / tracks passing, cell size, log scale, together / side by side / difference, OSM and zone overlays, time spent on each crossing | M1 |
 | M4 | Replay | player component with window picker, selection, variants | M1 |
 | M5 | Conflicts | events table/map, jump to replay, published comparison | M1, M4 |
 | M6 | Zones from the aligned map | zones and arm split **done**; background map layer used on Data quality; routes still open | team review of zones |

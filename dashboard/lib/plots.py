@@ -41,5 +41,5 @@ def base_map(fig, show_osm=True, show_zones=True, row=None, col=None):
 def square_axes(fig, row=None, col=None):
     kw = {"row": row, "col": col} if row else {}
     fig.update_xaxes(range=[-LIM, LIM], title="x (m)", constrain="domain", **kw)
-    fig.update_yaxes(range=[-LIM, LIM], title="y (m)", scaleanchor="x" if not row else None, **kw)
+    fig.update_yaxes(range=[-LIM, LIM], title="y (m)", scaleanchor="x" if not row else None, constrain="domain", **kw)
     return fig

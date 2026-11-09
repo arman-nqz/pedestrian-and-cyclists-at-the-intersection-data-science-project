@@ -22,6 +22,15 @@ def _from_url():
             pass
 
 
+def _as_range(t):
+    """Always a (from, to) pair of 15-minute bins with from < to."""
+    if isinstance(t, (tuple, list)) and len(t) == 2:
+        a, b = int(t[0]), int(t[1])
+    else:
+        a, b = DEFAULTS["t_from"], DEFAULTS["t_to"]
+    return (a, b) if a < b else (min(a, 95), min(a, 95) + 1)
+
+
 def sidebar(show_time=True, show_classes=True):
     """Draw the sidebar and return the active filters as a dict."""
     _from_url()
@@ -37,10 +46,12 @@ def sidebar(show_time=True, show_classes=True):
             st.caption("`clean` drops tracks that barely move, about 83% of pedestrian tracks, "
                        "possibly including people who wait. See **Data quality**.")
         classes = st.multiselect("Classes", data.CLASSES, key="classes") if show_classes else st.session_state["classes"]
-        t = st.session_state["time"]
+        t = _as_range(st.session_state["time"])
         if show_time:
-            t = st.select_slider("Time (local)", options=list(range(97)), key="time",
-                                 format_func=lambda b: "24:00" if b == 96 else data.bin_label(b))
+            # value= (not key=) so the slider is always a range; the chosen range is stored by hand
+            t = _as_range(st.select_slider("Time (local)", options=list(range(97)), value=t,
+                                           format_func=lambda b: "24:00" if b == 96 else data.bin_label(b)))
+            st.session_state["time"] = t
         st.markdown(f"**Active variant:** `{variant}`")
 
     st.query_params.update({"variant": variant, "classes": ",".join(classes), "t": f"{t[0]}-{t[1]}"})
