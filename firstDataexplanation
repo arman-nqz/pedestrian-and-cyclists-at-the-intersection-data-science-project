@@ -1,17 +1,40 @@
-The data is stored in JSON format and organized into 5-minute intervals. The LiDAR object list is recorded at 10 Hz (10 frames per second).
+# Dataset Structure & Quick Guide
 
-Each frame contains a timestamp and a list of detected objects with the following information:
+This repository contains two dataset generations for Intersection K305:
 
-- frame_timestamp: Timestamp of the frame (seconds and nanosec).
-- timestamp_local: Local date and time of the frame.
-- objects: List of detected objects in the frame.
-  - track_id: Unique ID assigned to a tracked object.
-  - class_name: Type of object (e.g., Car, Pedestrian).
-  - score: Detection confidence score.
-  - bounding_box:
-    - position (x, y, z): 3D position of the object.
-    - yaw: Orientation of the object.
-    - scale (x, y, z): Object dimensions (length, width, height).
-  - velocity (x, y): Object velocity along the x and y axes.
+## 1. Legacy Baseline Dataset (14.10.2026)
+* **Location**: `database/k305_object_list_2026-10-14_aggregation_5min/`
+* **Format**: 5-minute JSON chunks recorded at 10 Hz (nominal 3,000 frames per file).
+* **Scope**: 288 files covering 24 hours.
+* **Fields per frame**:
+  - `frame_timestamp`: Timestamp of the frame (seconds and nanosec).
+  - `timestamp_local`: Local date and time of the frame.
+  - `objects`: List of detected objects:
+    - `track_id`: Unique ID assigned to a tracked object.
+    - `class_name`: Type of object (Pedestrian, Cyclist, Car, Van, Truck, Motorcycle, Bus).
+    - `score`: Static confidence score (1.0).
+    - `bounding_box`: 3D position (x, y, z), yaw orientation, 3D scale (x, y, z).
+    - `velocity`: 2D velocity along x and y axes (m/s).
 
-The same object can appear in multiple consecutive frames with its track_id, allowing its movement to be tracked over time.
+## 2. New Comprehensive Multi-Modal Dataset (28.10 & 29.10.2026)
+* **Location**: `database/Data from date of 28.10, 29.10./`
+* **Features**: Much cleaner data with improved ML tracking (flickering significantly reduced), continuous confidence scores, official signal logs, video, and ground truth zones:
+  - **`newsense/`**:
+    - `object_list/`: 10 Hz trajectories with continuous neural-network confidence scores (`score` $\in [0.20, 0.70+]$).
+    - `counting_zones/`: 23 virtual counting zones with directional counts (`[dir1, dir2]`) for vehicles and VRUs.
+    - `environment/`: ECoB weather and air quality logs (PM1/2.5/10, CO2, NO2, temperature, pressure, humidity).
+    - `visibility/`: 1 Hz meteorological visibility readings in meters.
+  - **`traffic signal data/`**:
+    - `K305_2026_10_28.xlsx` & `K305_2026_10_29.xlsx`
+    - Official Stadt Aschaffenburg VRS5000 controller logs (06:00 to 13:00, 25,200 rows @ 1 Hz, 76 status columns).
+    - Includes vehicle signals (`K1`..`K11`), pedestrian signals (`F1`..`F15`), cyclist signal (`R1`), loop detectors (`D...`), and push-buttons (`FT...`).
+  - **`mio vision/`**:
+    - Synchronized Scout camera videos (06:00 to 13:00) from two deployment units (`SCU3K2` and `SCU4YV`).
+    - 7 one-hour MP4 cuts per unit per day (720x480 @ 29.97 fps).
+  - **`ouster/`**:
+    - Raw PCAP streams from OS-1-128 LiDAR (128 channels).
+    - `settings/event_zones.json`: Exact polygon coordinates for 14 ground-truth intersection zones (crosswalks `CW-NB`, `CW-SB`, `CW-WB`, `Bike-EB`, `Intersection`, `PET` conflict space, queues, corridors).
+    - `settings/perception_config.json`: Tracker parameters (unicycle/bicycle kinematic models, anti-flicker tuning).
+    - `settings/extrinsic_parameters.json`: 6-DOF multi-sensor calibration matrices.
+
+For full mathematical specifications, schema dictionaries, and analysis guidelines, see [DATABASE_AND_PROJECT_GUIDE.md](file:///home/arman/Projects/pedestrian-and-cyclists-at-the-intersection-data-science-project/DATABASE_AND_PROJECT_GUIDE.md).
