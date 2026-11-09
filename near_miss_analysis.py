@@ -1,7 +1,7 @@
 """
 =============================================================================
 TRAFFIC NEAR-MISS ANALYSIS PIPELINE — Vectorised Edition
-Intersection K305 | Dataset: 2026-10-14
+Intersection K305 | Default dataset: 2026-10-29 (multi-modal)
 =============================================================================
 
 Academic References:
@@ -35,6 +35,15 @@ except ImportError as exc:
 # =============================================================================
 # GLOBAL CONFIGURATION — easily adjustable for future datasets
 # =============================================================================
+PROJECT_ROOT = Path(__file__).resolve().parent
+MULTIMODAL_DATA_ROOT = PROJECT_ROOT / "database" / "Data from date of 28.10, 29.10."
+DATASET_DIRS = {
+    "2026-10-28": MULTIMODAL_DATA_ROOT / "newsense" / "object_list" /
+                  "k305_object_list_2026-10-28_aggregation_5min",
+    "2026-10-29": MULTIMODAL_DATA_ROOT / "newsense" / "object_list" /
+                  "k305_object_list_2026-10-29_aggregation_5min",
+}
+
 CONFIG = {
     "TTC_THRESHOLD_SEC":        1.5,
     "PET_THRESHOLD_SEC":        1.5,
@@ -52,7 +61,9 @@ CONFIG = {
     "INCLUDE_NON_VRU":          False,
     "MOTORIZED_CLASSES":  {"Car","Truck","Bus","Van","Motorcycle"},
     "VULNERABLE_CLASSES": {"Pedestrian","Cyclist"},
-    "DATA_DIR":   "/home/arman/Projects/University data science project cameras/database/k305_object_list_2026-10-14_aggregation_5min",
+    "DATA_DIR":   str(DATASET_DIRS["2026-10-29"]),
+    "DATASET_DATE": "2026-10-29",
+    "MIN_DETECTION_SCORE":      0.25,
     "OUTPUT_DIR": "output",
     "BOUNDARY_BUFFER_SEC":      10.0,
 }
@@ -74,6 +85,15 @@ def parse_chunk(chunk:Dict) -> pd.DataFrame:
         ts  = frame["frame_timestamp"]["seconds"] + frame["frame_timestamp"]["nanosec"]*1e-9
         tsl = frame.get("timestamp_local","")
         for obj in frame.get("objects",[]):
+            # The enhanced ITS classifier supplies a continuous detection
+            # confidence.  Discard low-confidence edge reflections before
+            # they can enter smoothing, TTC, or PET calculations.
+            try:
+                score = float(obj.get("score", 1.0))
+            except (TypeError, ValueError):
+                score = 0.0
+            if score < CONFIG["MIN_DETECTION_SCORE"]:
+                continue
             bb  = obj.get("bounding_box",{})
             pos = bb.get("position",{})
             vel = obj.get("velocity",{})
@@ -87,9 +107,73 @@ def parse_chunk(chunk:Dict) -> pd.DataFrame:
             else: cat = CAT_OTHER
             rows.append((ts, tsl, int(obj["track_id"]), cn, cat,
                          pos.get("x",np.nan), pos.get("y",np.nan),
-                         vel.get("x",np.nan), vel.get("y",np.nan), r))
+                         vel.get("x",np.nan), vel.get("y",np.nan), r, score))
     if not rows: return pd.DataFrame()
-    return pd.DataFrame(rows, columns=["ts","tsl","tid","cls","cat","x","y","vx","vy","r"])
+    return pd.DataFrame(rows, columns=["ts","tsl","tid","cls","cat","x","y","vx","vy","r","score"])
+
+
+def map_timestamp_to_video(ts_local_str: str) -> Dict[str, object]:
+    """Map a local ISO-8601 event timestamp to its Miovision video segments.
+
+    ISO offsets are deliberately parsed from the value itself, so CET (+01:00)
+    and CEST (+02:00) input timestamps are both handled without conversion to
+    UTC.  The recordings cover local time from 06:00 inclusive to 13:00
+    exclusive; each returned playback offset is relative to its one-hour file.
+    """
+    unavailable = "No recording (video active 06:00-13:00)"
+    result: Dict[str, object] = {
+        "has_video": False,
+        "video_available": False,
+        "video_playback_offset": "",
+        "video_file_scu3k2": unavailable,
+        "video_file_scu4yv": unavailable,
+        "video_path_scu3k2": unavailable,
+        "video_path_scu4yv": unavailable,
+    }
+    if not ts_local_str:
+        return result
+
+    try:
+        # fromisoformat accepts +01:00/+02:00; normalising Z also supports
+        # standard UTC ISO strings should a future export contain one.
+        local_dt = datetime.fromisoformat(str(ts_local_str).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return result
+
+    if not 6 <= local_dt.hour < 13:
+        return result
+
+    date_dash = local_dt.date().isoformat()
+    date_underscore = local_dt.strftime("%Y_%m_%d")
+    part_idx = f"{local_dt.hour - 6 + 1:03d}"
+    offset_seconds = local_dt.minute * 60 + local_dt.second
+    offset_mm_ss = f"{offset_seconds // 60:02d}:{offset_seconds % 60:02d}"
+    base3 = f"Standard_SCU3K2_{date_dash}_0600.{part_idx}.mp4"
+    base4 = f"Standard_SCU4YV_{date_dash}_0600.{part_idx}.mp4"
+    video_dir = Path("database") / "Data from date of 28.10, 29.10." / "mio vision" / "miovision" / "K305" / date_underscore
+    result.update({
+        "has_video": True,
+        "video_available": True,
+        "video_playback_offset": offset_mm_ss,
+        "video_file_scu3k2": base3,
+        "video_file_scu4yv": base4,
+        "video_path_scu3k2": str(video_dir / f"Standard_SCU3K2_{date_dash}_0600" / base3),
+        "video_path_scu4yv": str(video_dir / f"Standard_SCU4YV_{date_dash}_0600" / base4),
+    })
+    return result
+
+
+def _attach_video_columns(events: pd.DataFrame, timestamp_column: str = "timestamp_local") -> pd.DataFrame:
+    """Return a copy of events enriched with the CSV video-validation fields."""
+    video_columns = ["video_available", "video_playback_offset", "video_file_scu3k2", "video_file_scu4yv"]
+    if events.empty:
+        return events.reindex(columns=[*events.columns, *[c for c in video_columns if c not in events]])
+    mapped = events[timestamp_column].fillna("").map(map_timestamp_to_video)
+    video_df = pd.DataFrame(mapped.tolist(), index=events.index)
+    result = events.copy()
+    for column in video_columns:
+        result[column] = video_df[column]
+    return result
 
 # =============================================================================
 # MODULE 2: PREPROCESSING (vectorised per-track smoothing)
@@ -145,9 +229,15 @@ def preprocess_chunk(df: pd.DataFrame, quality: Optional[Dict[str,int]] = None,
         # Tail rows are raw (unsmoothed); they are stripped from the output after smoothing.
         df = pd.concat([boundary_tail, df], ignore_index=True)
 
-    # Dedup: keep first occurrence per (ts,tid) – data already sorted by score asc
+    # Keep direct callers and deterministic tests using the legacy row schema
+    # compatible with score-aware de-duplication.
+    if "score" not in df.columns:
+        df = df.copy()
+        df["score"] = 1.0
+
+    # Dedup: retain the highest-confidence detection for each (timestamp, track).
     before_dedup = len(df)
-    df = df.sort_values(["tid", "ts"]).drop_duplicates(subset=["ts", "tid"])
+    df = df.sort_values(["tid", "ts", "score"], ascending=[True, True, False]).drop_duplicates(subset=["ts", "tid"])
     if quality is not None:
         quality["duplicate_rows_removed"] += before_dedup - len(df)
 
@@ -313,6 +403,8 @@ class PETAccumulator:
         # tid → cell → [timestamps]
         self.data: Dict[int,Dict[Tuple,List[float]]] = defaultdict(lambda: defaultdict(list))
         self.meta: Dict[int,Dict] = {}
+        # Exact frame-time to local ISO timestamp lookup for video validation.
+        self.local_timestamps: Dict[float,str] = {}
 
     def _cell(self,x,y):
         g=self.cell_g; return (math.floor(x/g),math.floor(y/g))
@@ -323,6 +415,7 @@ class PETAccumulator:
             if tid not in self.meta:
                 self.meta[tid]={"cls":row.cls,"cat":row.cat}
             self.data[tid][self._cell(row.x,row.y)].append(row.ts)
+            self.local_timestamps[float(row.ts)] = getattr(row, "tsl", "")
 
     def compute(self) -> List[Dict]:
         """Return grid-cell PET proxy events.
@@ -363,6 +456,7 @@ class PETAccumulator:
                         "zx":cell[0]*self.cell_g+self.cell_g/2,
                         "zy":cell[1]*self.cell_g+self.cell_g/2,
                         "ts":min(a1.min(),a2.min()),
+                        "tsl":self.local_timestamps.get(float(min(a1.min(), a2.min())), ""),
                         "tid1":v1["tid"],"tid2":v2["tid"],
                         "cls1":c1s,"cls2":c2s,
                         "cat1":c1,"cat2":c2,
@@ -585,37 +679,8 @@ def mk_breakdown(ttc_df,pet_df,out):
 # MODULE 6: SUMMARY
 # =============================================================================
 
-def consolidate_ttc_events(ttc_df:pd.DataFrame) -> pd.DataFrame:
-    """Collapse consecutive near-miss frames for a track pair into one event."""
-    columns=["event_start_timestamp","event_end_timestamp","duration_sec","frames_in_event",
-             "min_ttc_sec","track_id_1","track_id_2","class_1","class_2",
-             "interaction_type","x_mid","y_mid","timestamp_local"]
-    if ttc_df.empty or not ttc_df["nm"].any():
-        return pd.DataFrame(columns=columns)
-    data=ttc_df[ttc_df["nm"]].copy()
-    data["pair_lo"]=data[["tid1","tid2"]].min(axis=1)
-    data["pair_hi"]=data[["tid1","tid2"]].max(axis=1)
-    rows=[]
-    for _, group in data.groupby(["pair_lo","pair_hi"], sort=False):
-        group=group.sort_values("ts")
-        starts=np.r_[True, np.diff(group["ts"].to_numpy()) > CONFIG["EVENT_GAP_SEC"]]
-        for _, event in group.groupby(np.cumsum(starts), sort=False):
-            worst=event.loc[event["ttc"].idxmin()]
-            rows.append({
-                "event_start_timestamp":float(event["ts"].min()),
-                "event_end_timestamp":float(event["ts"].max()),
-                "duration_sec":round(float(event["ts"].max()-event["ts"].min()), 4),
-                "frames_in_event":int(len(event)), "min_ttc_sec":round(float(worst["ttc"]), 4),
-                "track_id_1":int(worst["tid1"]), "track_id_2":int(worst["tid2"]),
-                "class_1":worst["cls1"], "class_2":worst["cls2"], "interaction_type":worst["itype"],
-                "x_mid":round(float(worst["xmid"]), 4), "y_mid":round(float(worst["ymid"]), 4),
-                "timestamp_local":worst.get("tsl", ""),
-            })
-    return pd.DataFrame(rows, columns=columns).sort_values("min_ttc_sec", ignore_index=True)
-
-
 def summary(cls_dist,ttc_df,pet_df,n_frames,n_tracks,ttc_events=None,quality=None):
-    s={"intersection":"K305","date":"2026-10-14","total_frames":n_frames,
+    s={"intersection":"K305","date":CONFIG["DATASET_DATE"],"total_frames":n_frames,
        "total_tracks":n_tracks,"class_distribution":cls_dist,"ttc":{},"pet":{}}
     if not ttc_df.empty:
         nm=ttc_df[ttc_df["nm"]]
@@ -636,7 +701,7 @@ def summary(cls_dist,ttc_df,pet_df,n_frames,n_tracks,ttc_events=None,quality=Non
     if quality is not None: s["data_quality"]=dict(quality)
     return s
 
-def print_report(s):
+def print_report(s, ttc_events: Optional[pd.DataFrame] = None):
     SEP="="*72
     print(f"\n{SEP}\n  FINAL NEAR-MISS ANALYSIS REPORT — K305 | {s['date']}\n{SEP}")
     print(f"  Frames Analysed : {s['total_frames']:,}")
@@ -658,6 +723,20 @@ def print_report(s):
 
     sec("TIME-TO-COLLISION (TTC)",s.get("ttc",{}))
     sec("POST-ENCROACHMENT TIME (PET)",s.get("pet",{}))
+    if ttc_events is not None:
+        targets = ttc_events[(ttc_events["min_ttc_sec"] < 1.0) & ttc_events["video_available"]]
+        print("\n  ── VIDEO VALIDATION TARGETS (TOP NEAR-MISSES < 1.0s) ──")
+        if targets.empty:
+            print("  (no video-available TTC events below 1.0 s)")
+        else:
+            for rank, (_, event) in enumerate(targets.sort_values("min_ttc_sec").head(10).iterrows(), 1):
+                timestamp = str(event["timestamp_local"]).replace("T", " ")
+                # Each video is one hour long, so the playback offset is MM:SS.
+                offset = f"00:{event['video_playback_offset']}"
+                print(f"  Rank {rank}: Min TTC = {event['min_ttc_sec']:.2f}s | {timestamp} | "
+                      f"{event['class_1']} vs {event['class_2']}")
+                print(f"    Camera SCU3K2: {event['video_file_scu3k2']} @ {offset}")
+                print(f"    Camera SCU4YV: {event['video_file_scu4yv']} @ {offset}")
     print(f"\n{SEP}\n")
 
 # =============================================================================
@@ -790,15 +869,23 @@ def parse_args(argv=None):
     scope=parser.add_mutually_exclusive_group()
     scope.add_argument("--all", action="store_true", help="analyse every JSON chunk")
     scope.add_argument("--files", nargs="+", help="specific JSON filenames or paths")
-    parser.add_argument("--data-dir", default=CONFIG["DATA_DIR"])
+    parser.add_argument("--date", choices=sorted(DATASET_DIRS), default="2026-10-29",
+                        help="new dataset date (default: 2026-10-29); ignored when --data-dir is supplied")
+    parser.add_argument("--data-dir", default=None,
+                        help=f"override input directory (default: {CONFIG['DATA_DIR']})")
     parser.add_argument("--output-dir", default=CONFIG["OUTPUT_DIR"])
     parser.add_argument("--no-plots", action="store_true")
     parser.add_argument("--save-all", action="store_true", help="write all frame-level interactions")
     parser.add_argument("--include-non-vru", action="store_true")
     parser.add_argument("--ttc-threshold", type=float, default=CONFIG["TTC_THRESHOLD_SEC"])
     parser.add_argument("--pet-threshold", type=float, default=CONFIG["PET_THRESHOLD_SEC"])
+    parser.add_argument("--min-score", type=float, default=CONFIG["MIN_DETECTION_SCORE"],
+                        help="minimum continuous object-detection confidence (default: 0.25)")
     parser.add_argument("--self-test", action="store_true", help="run deterministic TTC tests and exit")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.data_dir is None:
+        args.data_dir = str(DATASET_DIRS[args.date])
+    return args
 
 
 def select_files(args):
@@ -819,7 +906,8 @@ def select_files(args):
 
 
 def consolidate_ttc_events(ttc_df):
-    cols=["event_start_timestamp","event_end_timestamp","duration_sec","frames_in_event","min_ttc_sec","track_id_1","track_id_2","class_1","class_2","interaction_type","x_mid","y_mid","timestamp_local"]
+    """Collapse consecutive TTC alarms and attach video-validation metadata."""
+    cols=["event_start_timestamp","event_end_timestamp","duration_sec","frames_in_event","min_ttc_sec","track_id_1","track_id_2","class_1","class_2","interaction_type","x_mid","y_mid","timestamp_local","video_available","video_playback_offset","video_file_scu3k2","video_file_scu4yv"]
     if ttc_df.empty or not ttc_df["nm"].any(): return pd.DataFrame(columns=cols)
     data=ttc_df[ttc_df["nm"]].copy()
     data["lo"]=data[["tid1","tid2"]].min(axis=1); data["hi"]=data[["tid1","tid2"]].max(axis=1)
@@ -830,7 +918,8 @@ def consolidate_ttc_events(ttc_df):
         for _, event in group.groupby(episode, sort=False):
             worst=event.loc[event["ttc"].idxmin()]
             rows.append({"event_start_timestamp":float(event.ts.min()),"event_end_timestamp":float(event.ts.max()),"duration_sec":round(float(event.ts.max()-event.ts.min()),4),"frames_in_event":len(event),"min_ttc_sec":round(float(worst.ttc),4),"track_id_1":int(worst.tid1),"track_id_2":int(worst.tid2),"class_1":worst.cls1,"class_2":worst.cls2,"interaction_type":worst.itype,"x_mid":round(float(worst.xmid),4),"y_mid":round(float(worst.ymid),4),"timestamp_local":worst.tsl})
-    return pd.DataFrame(rows,columns=cols).sort_values("min_ttc_sec",ignore_index=True)
+    events = pd.DataFrame(rows).sort_values("min_ttc_sec", ignore_index=True)
+    return _attach_video_columns(events).reindex(columns=cols)
 
 
 def _test_boundary_spanning():
@@ -925,8 +1014,11 @@ def run_ttc_self_tests():
 def main(argv=None):
     args=parse_args(argv)
     if args.self_test: run_ttc_self_tests(); return
-    if args.ttc_threshold<=0 or args.pet_threshold<=0: raise ValueError("thresholds must be positive")
-    CONFIG.update(TTC_THRESHOLD_SEC=args.ttc_threshold,PET_THRESHOLD_SEC=args.pet_threshold,INCLUDE_NON_VRU=args.include_non_vru)
+    if args.ttc_threshold<=0 or args.pet_threshold<=0 or not 0 <= args.min_score <= 1:
+        raise ValueError("thresholds must be positive and min-score must be between 0 and 1")
+    CONFIG.update(TTC_THRESHOLD_SEC=args.ttc_threshold, PET_THRESHOLD_SEC=args.pet_threshold,
+                  MIN_DETECTION_SCORE=args.min_score, INCLUDE_NON_VRU=args.include_non_vru,
+                  DATA_DIR=args.data_dir, DATASET_DATE=args.date)
     files,label=select_files(args)
     run_dir=Path(args.output_dir)/f"{label}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"; run_dir.mkdir(parents=True)
     started=time.perf_counter(); np.random.seed(42)
@@ -951,11 +1043,13 @@ def main(argv=None):
         print(f"[{i}/{len(files)}] {path.name}: frames={df.ts.nunique()} TTC={len(chunk_ttc)} near-miss frames={sum(r['nm'] for r in chunk_ttc)}")
     ttc_df=pd.DataFrame(ttc_rows); pet_df=pd.DataFrame(pet_acc.compute()); ttc_events=consolidate_ttc_events(ttc_df)
     rename_ttc={"ts":"timestamp","tsl":"timestamp_local","tid1":"track_id_1","tid2":"track_id_2","cls1":"class_1","cls2":"class_2","cat1":"category_1","cat2":"category_2","xmid":"x_mid","ymid":"y_mid","spd1":"speed_1","spd2":"speed_2","dist":"distance_m","ttc":"ttc_sec","nm":"is_near_miss_ttc","itype":"interaction_type"}
-    rename_pet={"cx":"cell_gx","cy":"cell_gy","zx":"zone_x","zy":"zone_y","ts":"timestamp","tid1":"track_id_1","tid2":"track_id_2","cls1":"class_1","cls2":"class_2","cat1":"category_1","cat2":"category_2","pet":"pet_sec","nm":"is_near_miss_pet","itype":"interaction_type"}
+    rename_pet={"cx":"cell_gx","cy":"cell_gy","zx":"zone_x","zy":"zone_y","ts":"timestamp","tsl":"timestamp_local","tid1":"track_id_1","tid2":"track_id_2","cls1":"class_1","cls2":"class_2","cat1":"category_1","cat2":"category_2","pet":"pet_sec","nm":"is_near_miss_pet","itype":"interaction_type"}
     ttc_events.to_csv(run_dir/"near_miss_ttc_events.csv",index=False)
-    pet_out=pet_df.rename(columns=rename_pet)
-    if pet_out.empty: pd.DataFrame(columns=list(rename_pet.values())).to_csv(run_dir/"near_miss_pet_proxy_events.csv",index=False)
-    else: pet_out[pet_out.is_near_miss_pet].sort_values("pet_sec").to_csv(run_dir/"near_miss_pet_proxy_events.csv",index=False)
+    pet_out=_attach_video_columns(pet_df.rename(columns=rename_pet), "timestamp_local")
+    if pet_out.empty:
+        pet_out.to_csv(run_dir/"near_miss_pet_proxy_events.csv",index=False)
+    else:
+        pet_out[pet_out.is_near_miss_pet].sort_values("pet_sec").to_csv(run_dir/"near_miss_pet_proxy_events.csv",index=False)
     if args.save_all: ttc_df.rename(columns=rename_ttc).to_csv(run_dir/"all_ttc_frame_interactions.csv",index=False); pet_out.to_csv(run_dir/"all_pet_proxy_interactions.csv",index=False)
     if not args.no_plots:
         cx=[] if ttc_df.empty else ttc_df.loc[ttc_df.nm,"xmid"].tolist(); cy=[] if ttc_df.empty else ttc_df.loc[ttc_df.nm,"ymid"].tolist()
@@ -965,7 +1059,7 @@ def main(argv=None):
     stats=summary({k:len(v) for k,v in cls_set.items()},ttc_df,pet_df,n_frames,sum(len(v) for v in cls_set.values()),ttc_events,quality)
     stats.update({"run_scope":label,"selected_files":[p.name for p in files],"output_directory":str(run_dir),"runtime_sec":round(time.perf_counter()-started,2),"pet_note":"PET is a 2 m grid-cell occupancy proxy, not a map-defined conflict-zone PET."})
     with open(run_dir/"run_report.json","w") as fh: json.dump(stats,fh,indent=2,default=lambda o:int(o) if isinstance(o,np.integer) else float(o) if isinstance(o,np.floating) else str(o))
-    print_report(stats); print(f"TTC near-miss events: {len(ttc_events):,}\nPET proxy near-miss events: {0 if pet_df.empty else int(pet_df.nm.sum()):,}\nDone in {stats['runtime_sec']} s. Share {run_dir/'run_report.json'} for review.")
+    print_report(stats, ttc_events); print(f"TTC near-miss events: {len(ttc_events):,}\nPET proxy near-miss events: {0 if pet_df.empty else int(pet_df.nm.sum()):,}\nDone in {stats['runtime_sec']} s. Share {run_dir/'run_report.json'} for review.")
     return ttc_df,pet_df,stats
 
 
