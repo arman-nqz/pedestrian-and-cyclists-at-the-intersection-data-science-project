@@ -18,6 +18,7 @@ a fine local search (0.25 degree, 0.5 m) on the road points. Needs numpy, matplo
 import argparse
 import json
 import math
+import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -236,7 +237,50 @@ def oneway_direction_check(ways, nodes, lat0, lon0, deg, shift, mirror, velfield
     return agree, tot
 
 
+GREEN = {"park", "village_green", "grass", "scrub", "pitch", "garden", "wood", "meadow"}
+
+
+def export_layers(osm_path, map_json):
+    """Add buildings, green areas, railway and road lane counts to k305_map.json, using its stored transform.
+
+    Background layers for the dashboard map; they do not change the alignment.
+    """
+    m = json.loads(Path(map_json).read_text(encoding="utf-8"))
+    lat0, lon0 = m["origin"]["lat"], m["origin"]["lon"]
+    tr = m["transform_enu_to_sensor"]
+    nodes, ways = parse_osm(osm_path)
+    tags = {w["id"]: w["tags"] for w in ways}
+
+    def xy(w):
+        return np.round(to_sensor(way_xy(w, nodes, lat0, lon0), tr["rotation_deg"], np.array(tr["shift_m"]), tr["mirror"]), 2)
+
+    def near(p, r=90):
+        return bool((np.hypot(p[:, 0], p[:, 1]) < r).any())
+
+    buildings, areas, railway = [], [], []
+    for w in ways:
+        t = w["tags"]
+        kind = ("building" if "building" in t else
+                "green" if t.get("leisure") in GREEN or t.get("landuse") in GREEN or t.get("natural") in GREEN else
+                "rail" if t.get("railway") in ("rail", "tram", "light_rail") else None)
+        if kind is None:
+            continue
+        p = xy(w)
+        if not near(p):
+            continue
+        f = {"id": w["id"], "name": t.get("name"), "xy": p.tolist()}
+        {"building": buildings, "green": areas, "rail": railway}[kind].append(f)
+    for f in m["roads"]:
+        f["lanes"] = tags.get(f["id"], {}).get("lanes")
+    m.update(buildings=buildings, areas=areas, railway=railway)
+    Path(map_json).write_text(json.dumps(m, ensure_ascii=False), encoding="utf-8")
+    print(f"layers: {len(buildings)} buildings, {len(areas)} green areas, {len(railway)} railway lines")
+
+
 def main(argv=None):
+    if argv is None and "--layers-only" in sys.argv:  # python map_alignment.py --layers-only <osm> <k305_map.json>
+        i = sys.argv.index("--layers-only")
+        return export_layers(sys.argv[i + 1], sys.argv[i + 2])
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--osm", required=True)
     ap.add_argument("--data-dir", required=True)
@@ -321,6 +365,7 @@ def main(argv=None):
     result["crossing_nodes"] = [c for c in result["crossing_nodes"] if np.hypot(c["x"], c["y"]) < 80]
     result["signal_nodes"] = [c for c in result["signal_nodes"] if np.hypot(c["x"], c["y"]) < 80]
     (out / "k305_map.json").write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+    export_layers(args.osm, out / "k305_map.json")
 
     # picture
     import matplotlib

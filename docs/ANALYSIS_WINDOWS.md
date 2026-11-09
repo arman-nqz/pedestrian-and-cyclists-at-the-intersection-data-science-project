@@ -1,6 +1,6 @@
 # Analysis windows for the 29 October 2026 dataset
 
-The professor asked the four DS3a teams (Topics 4 to 7) to use the same four 10-minute periods to compare **NSE** and **Ouster BlueCity**. This file records our proposal and why. Machine-readable version: `config/analysis_windows.json`.
+The professor asked the four DS3a teams (Topics 4 to 7) to use the same four 10-minute periods to compare **NSE** and **Ouster BlueCity**. This file records the windows and why. Machine-readable version: `config/analysis_windows.json`.
 
 ## Proposed windows (local time, CET = UTC+1)
 
@@ -45,27 +45,3 @@ Track id counts are raw (before cleaning or stitching) and are not directly comp
 4. **NSE scores:** the 29 October NSE objects have a `score`; a large share of pedestrian and cyclist detections score below 0.25. The threshold changes counts a lot, so all teams should state which one they use.
 5. **Ouster classes** are VEHICLE, LARGE_VEHICLE, PERSON, BICYCLE and UNKNOWN; UNKNOWN is the largest group by track ids. NSE has seven classes. A class mapping has to be agreed for any comparison.
 6. **Coordinates:** NSE and Ouster use different coordinate frames; positions cannot be compared without an alignment.
-
-## Draft message to the other teams
-
-> Subject: DS3a 29 Oct dataset: proposal for the four 10-minute windows
->
-> Hi all,
->
-> For the NSE vs Ouster BlueCity comparison we propose these four windows on 29 October 2026 (local time, CET):
->
-> - W1: 07:20 to 07:30 (to develop and validate first)
-> - W2: 07:40 to 07:50
-> - W3: 08:00 to 08:10
-> - W4: 08:20 to 08:30
->
-> Reason: the Ouster object lists only cover about 07:12 to 08:35 local time. Signals and video cover 06:00 to 13:00 and NSE covers the whole day, so these windows are the only period where all sources exist.
->
-> Two things that cost us time and may help you:
-> - The Ouster log file names are rotation times in UTC, not local start times (`..._07-00-00.000.gz` holds 07:55 to 08:00 CET). Use the timestamps inside the files.
-> - 29 October is CET (UTC+1), not summer time.
->
-> If you have another preference, please reply by [date]. Otherwise we suggest that everyone uses these.
->
-> Best regards,
-> Team Topic 4

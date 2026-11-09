@@ -93,7 +93,7 @@ def finish(fig, cols):
         fig.update_xaxes(range=[-LIM, LIM], title="x (m)", constrain="domain", **kw)
         fig.update_yaxes(range=[-LIM, LIM], title="y (m)" if c == 1 else None, scaleanchor=f"x{c if c > 1 else ''}", constrain="domain", **kw)
     fig.update_layout(height=640 if cols == 1 else 560, margin=dict(l=10, r=10, t=40, b=10),
-                      legend=dict(orientation="h", y=-0.08), plot_bgcolor="#f4f6f8")
+                      legend=dict(orientation="h", y=-0.08), plot_bgcolor=plots.LAND if show_osm else "#f4f6f8")
     return fig
 
 
