@@ -5,7 +5,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import streamlit as st  # noqa: E402
-import streamlit.components.v1 as components  # noqa: E402
 
 from lib import data, filters, replay, video  # noqa: E402
 
@@ -41,6 +40,9 @@ if c3.button("◀ Previous"):
 if c4.button("Next ▶"):
     st.session_state["video_time"] = start + minutes * 60
     st.rerun()
+ev_s = (st.session_state.get("replay_event") or {}).get("local_s", -1)
+if start + minutes * 60 <= ev_s < start + minutes * 60 + 10:  # event just past the window end: show the next 5 min too
+    minutes += 5
 # one window stays inside one video file (files are one hour each)
 minutes = min(minutes, (3600 - start % 3600) // 60)
 tweak = c5.number_input("Video offset (s)", value=0.0, step=0.5,
@@ -54,9 +56,18 @@ _, voff = video.video_for(day, start, video.CAMERAS[0])
 paths = [video.video_for(day, t, cam)[0] for cam in video.CAMERAS]
 sync = voff is not None and any(paths)
 
+event = st.session_state.get("replay_event")
 left, right = st.columns([3, 2])
 with left:
-    components.html(replay.player_html(win, t - start, (voff + tweak) if sync else None), height=780, scrolling=True)
+    if event:
+        e1, e2 = st.columns([4, 1])
+        e1.markdown(f"Highlighted event at **{video.hms(event['local_s'])}**: {event['label']} (red rings, "
+                    "dashed line between the two tracks)")
+        if e2.button("Clear"):
+            del st.session_state["replay_event"]
+            st.rerun()
+    # our own HTML (assets/player.html + prebuilt data); st.iframe keeps same-origin access for the video sync
+    st.iframe(replay.player_html(win, t - start, (voff + tweak) if sync else None, event), height="content")
     st.caption(f"{day}, {video.hms(start)} to {video.hms(start + minutes * 60)} local time, variant `{variant}`, "
                f"{len(win['T']):,} frames. Circles: pedestrians, cyclists, motorcycles (with heading); boxes: motor vehicles.")
 with right:

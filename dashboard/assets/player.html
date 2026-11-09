@@ -97,9 +97,12 @@ function draw() {
   ctx.clearRect(0, 0, cv.width, cv.height);
   grid(); drawMap();
   const i = frameAt(cur), fr = F[i], focus = el("focus").checked, trail = +el("trail").value, ids = el("ids").checked, cnt = {};
+  const E = D.event, hit = [];
   fr.forEach((o) => {
     const m = D.M[o[0]]; if (!m) return;
-    const c = D.C[m[0]]; if (!show[c]) return;
+    const c = D.C[m[0]];
+    if (E && E.ids.includes(Math.floor(o[0] / 1000))) hit.push(o);
+    if (!show[c]) return;
     cnt[c] = (cnt[c] || 0) + 1;
     const v = isVru(c), a = focus && !v ? 0.35 : 1;
     if (trail > 0) {
@@ -121,10 +124,23 @@ function draw() {
     if (ids) { ctx.fillStyle = "#fff"; ctx.font = "11px Calibri,Arial"; ctx.fillText(o[0], px(o[1]) + 7, py(o[2]) - 7); }
     ctx.globalAlpha = 1;
   });
+  if (E) drawEvent(E, hit);
   el("clock").textContent = clock(cur);
   el("slider").value = Math.round((cur / dur) * 1000);
   el("counts").innerHTML = "On screen now:<br>" + D.C.filter((c) => cnt[c]).map((c) => '<span class="sw" style="background:' + COL[c] + '"></span> ' + c + ": " + cnt[c]).join("<br>");
   syncVideo();
+}
+// Highlighted near-miss: the two tracks (by original track id = floor(id / 1000)) and a ring at the event position.
+function drawEvent(E, hit) {
+  const near = cur >= E.t - 2 && cur <= E.t_end + 2;
+  ctx.strokeStyle = "#ff3b3b"; ctx.lineWidth = 3;
+  hit.forEach((o) => { ctx.beginPath(); ctx.arc(px(o[1]), py(o[2]), 12, 0, 6.283); ctx.stroke(); });
+  if (hit.length >= 2) { ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(px(hit[0][1]), py(hit[0][2])); ctx.lineTo(px(hit[1][1]), py(hit[1][2])); ctx.stroke(); ctx.setLineDash([]); }
+  ctx.globalAlpha = near ? 0.5 + 0.5 * Math.abs(Math.sin(cur * 4)) : 0.35;
+  ctx.beginPath(); ctx.arc(px(E.x), py(E.y), 3 * S, 0, 6.283); ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = near ? "#ff3b3b" : "#ffb3b3"; ctx.font = "bold 15px Calibri,Arial";
+  ctx.fillText((near ? "NOW: " : "Event at " + clock(E.t).slice(0, 8) + ": ") + E.label, 10, 20);
 }
 // The Miovision videos are <video> elements on the Streamlit page around this iframe (same origin).
 function videos() { try { return [...window.parent.document.querySelectorAll("video")]; } catch (e) { return []; } }

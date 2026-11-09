@@ -55,7 +55,12 @@ def map_layer():
             "labels": plots._labels(osm["roads"])}
 
 
-def player_html(win, start_in_window, video_offset):
-    """`video_offset`: seconds into the video file at the window start (None = no video sync)."""
-    d = dict(win, start=start_in_window, video_offset=video_offset, map=map_layer())
+def player_html(win, start_in_window, video_offset, event=None):
+    """`video_offset`: seconds into the video file at the window start (None = no video sync).
+    `event`: {local_s, local_end, x, y, ids, label} to highlight, from the Conflicts page."""
+    ev = None
+    if event and win["local0"] <= event["local_s"] < win["local0"] + win["T"][-1] + 1:
+        ev = {"t": event["local_s"] - win["local0"], "t_end": event["local_end"] - win["local0"],
+              "x": event["x"], "y": event["y"], "ids": event["ids"], "label": event["label"]}
+    d = dict(win, start=start_in_window, video_offset=video_offset, map=map_layer(), event=ev)
     return TEMPLATE.read_text(encoding="utf-8").replace("__DATA__", json.dumps(d, separators=(",", ":")))
