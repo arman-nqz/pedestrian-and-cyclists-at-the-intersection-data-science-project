@@ -53,8 +53,6 @@ CONFIG = {
     "INTERACTION_RADIUS_M":     25.0,
     "TTC_LOOKAHEAD_SEC":        5.0,
     "TTC_MIN_CLOSING_SPEED":    0.1,
-    "PET_CONFLICT_ZONE_SIZE_M": 3.0,
-    "PET_GRID_CELL_M":          2.0,
     "PET_MAX_GAP_SEC":          10.0,
     "PET_VISIT_GAP_SEC":        0.25,
     "EVENT_GAP_SEC":            0.25,
@@ -67,6 +65,21 @@ CONFIG = {
     "OUTPUT_DIR": "output",
     "BOUNDARY_BUFFER_SEC":      10.0,
 }
+
+# Canonical source: the requested 07:34 LiDAR configuration.  Its geometry is
+# byte-identical to the 08:18, 09:04, and archived 07:34 copies; the 10:24
+# configuration has a changed zone set and is intentionally not used.
+EVENT_ZONES_PATH = (MULTIMODAL_DATA_ROOT / "ouster" / "10_29_7_34_29" /
+                    "10_29__7_34_29_configuration" / "settings" / "event_zones.json")
+PRIMARY_PET_CONFLICT_ZONES = ("CW-NB", "CW-SB", "CW-WB", "Bike-EB")
+PET_FALLBACK_ZONE = "PET"
+PET_EVENT_COLUMNS = [
+    "zone_name", "zone_id", "zone_center_x", "zone_center_y", "ts", "tsl",
+    "tid1", "tid2", "cls1", "cls2", "cat1", "cat2",
+    "entry_ts1", "exit_ts1", "entry_ts2", "exit_ts2",
+    "entry_tsl1", "exit_tsl1", "entry_tsl2", "exit_tsl2",
+    "pet", "nm", "itype",
+]
 
 # Numeric category codes for vectorised logic
 CAT_MOTOR = 1; CAT_VUL = 2; CAT_OTHER = 0
@@ -395,48 +408,105 @@ def run_ttc_on_chunk(df:pd.DataFrame) -> List[Dict]:
 # MODULE 4: PET ACCUMULATOR
 # =============================================================================
 
-class PETAccumulator:
-    """Streaming grid-cell occupancy accumulator."""
+def _point_in_polygon(x: float, y: float, vertices: Tuple[Tuple[float, float], ...]) -> bool:
+    """Return whether a LiDAR-frame point lies in a polygon (including edges)."""
+    inside = False
+    n = len(vertices)
+    for i in range(n):
+        x1, y1 = vertices[i]
+        x2, y2 = vertices[(i + 1) % n]
+        # Treat a point on an official zone boundary as inside that zone.
+        cross = (x - x1) * (y2 - y1) - (y - y1) * (x2 - x1)
+        if abs(cross) < 1e-9 and min(x1, x2) - 1e-9 <= x <= max(x1, x2) + 1e-9 and min(y1, y2) - 1e-9 <= y <= max(y1, y2) + 1e-9:
+            return True
+        if (y1 > y) != (y2 > y):
+            x_cross = (x2 - x1) * (y - y1) / (y2 - y1) + x1
+            if x < x_cross:
+                inside = not inside
+    return inside
 
-    def __init__(self):
-        self.cell_g  = CONFIG["PET_GRID_CELL_M"]
-        # tid → cell → [timestamps]
+
+def load_pet_conflict_zones(path: Path = EVENT_ZONES_PATH) -> Dict[str, Dict]:
+    """Load official LiDAR x/y polygons used for polygon-based PET.
+
+    Only mapped crosswalk/bike conflict zones are primary.  The broad official
+    ``PET`` polygon is retained as a fallback for points outside those primary
+    polygons, so sidewalk, queue, and vehicle-corridor zones cannot create PET
+    candidates by themselves.
+    """
+    with Path(path).open(encoding="utf-8") as fh:
+        raw_zones = json.load(fh).get("zones", [])
+    by_name = {zone.get("name"): zone for zone in raw_zones}
+    required = (*PRIMARY_PET_CONFLICT_ZONES, PET_FALLBACK_ZONE)
+    missing = [name for name in required if name not in by_name]
+    if missing:
+        raise ValueError(f"Official event-zone file is missing PET zones: {missing}")
+    zones = {}
+    for name in required:
+        zone = by_name[name]
+        vertices = tuple((float(v["x"]), float(v["y"])) for v in zone.get("vertices", []))
+        if len(vertices) < 3:
+            raise ValueError(f"Official PET zone {name!r} has fewer than three vertices")
+        zones[name] = {"id": zone.get("id"), "vertices": vertices,
+                       "center_x": float(np.mean([v[0] for v in vertices])),
+                       "center_y": float(np.mean([v[1] for v in vertices]))}
+    return zones
+
+
+class PETAccumulator:
+    """Streaming polygon-based PET accumulator using official LiDAR event zones."""
+
+    def __init__(self, zone_path: Path = EVENT_ZONES_PATH):
+        self.zones = load_pet_conflict_zones(zone_path)
+        # tid → official conflict-zone name → [timestamps]
         self.data: Dict[int,Dict[Tuple,List[float]]] = defaultdict(lambda: defaultdict(list))
         self.meta: Dict[int,Dict] = {}
         # Exact frame-time to local ISO timestamp lookup for video validation.
         self.local_timestamps: Dict[float,str] = {}
 
-    def _cell(self,x,y):
-        g=self.cell_g; return (math.floor(x/g),math.floor(y/g))
+    def _zone_names_for_point(self, x: float, y: float) -> List[str]:
+        """Assign a trajectory point to primary polygons, or the PET fallback."""
+        primary = [name for name in PRIMARY_PET_CONFLICT_ZONES
+                   if _point_in_polygon(x, y, self.zones[name]["vertices"])]
+        if primary:
+            return primary
+        return [PET_FALLBACK_ZONE] if _point_in_polygon(
+            x, y, self.zones[PET_FALLBACK_ZONE]["vertices"]) else []
 
     def update(self, df:pd.DataFrame):
         for row in df.itertuples(index=False):
             tid=row.tid
             if tid not in self.meta:
                 self.meta[tid]={"cls":row.cls,"cat":row.cat}
-            self.data[tid][self._cell(row.x,row.y)].append(row.ts)
+            if not (np.isfinite(row.x) and np.isfinite(row.y)):
+                continue
+            # Assignment uses the trajectory's native LiDAR x/y coordinates.
+            for zone_name in self._zone_names_for_point(float(row.x), float(row.y)):
+                self.data[tid][zone_name].append(float(row.ts))
             self.local_timestamps[float(row.ts)] = getattr(row, "tsl", "")
 
     def compute(self) -> List[Dict]:
-        """Return grid-cell PET proxy events.
+        """Return polygon-based PET events between motorized users and VRUs.
 
-        A visit is a contiguous sequence of observations in one cell.  This
-        prevents a track that revisits a cell later in the day from being
-        treated as one long encroachment.
+        A visit is a contiguous sequence of observations in one polygon; a
+        gap above 0.25 s starts a new visit, preventing later re-entry from
+        being mistaken for continuous encroachment.  PET is the gap between
+        two visits to the same physical conflict polygon (or zero if they
+        overlap), which is preferable to an arbitrary 2 m grid-cell proxy.
         """
         THRESH = CONFIG["PET_THRESHOLD_SEC"]
         MAXGAP = CONFIG["PET_MAX_GAP_SEC"]
         VISITGAP = CONFIG["PET_VISIT_GAP_SEC"]
-        cell_visits: Dict[Tuple,List[Dict]] = defaultdict(list)
-        for tid,cells in self.data.items():
-            for cell,times in cells.items():
+        zone_visits: Dict[str,List[Dict]] = defaultdict(list)
+        for tid,zones in self.data.items():
+            for zone_name,times in zones.items():
                 times=np.sort(np.asarray(times, dtype=float))
                 for visit in np.split(times, np.where(np.diff(times) > VISITGAP)[0] + 1):
                     if len(visit):
-                        cell_visits[cell].append({"tid":tid, "times":visit, **self.meta[tid]})
+                        zone_visits[zone_name].append({"tid":tid, "times":visit, **self.meta[tid]})
 
         results=[]
-        for cell,visits in cell_visits.items():
+        for zone_name,visits in zone_visits.items():
             if len(visits)<2: continue
             for i in range(len(visits)):
                 for j in range(i+1,len(visits)):
@@ -451,15 +521,23 @@ class PETAccumulator:
                     pet=_calc_pet(a1,a2)
                     if pet is None: continue
                     c1s,c2s=v1["cls"],v2["cls"]
+                    entry1,exit1=float(a1.min()),float(a1.max())
+                    entry2,exit2=float(a2.min()),float(a2.max())
+                    event_ts=min(entry1, entry2)
+                    zone=self.zones[zone_name]
                     results.append({
-                        "cx":cell[0],"cy":cell[1],
-                        "zx":cell[0]*self.cell_g+self.cell_g/2,
-                        "zy":cell[1]*self.cell_g+self.cell_g/2,
-                        "ts":min(a1.min(),a2.min()),
-                        "tsl":self.local_timestamps.get(float(min(a1.min(), a2.min())), ""),
+                        "zone_name":zone_name,"zone_id":zone["id"],
+                        "zone_center_x":zone["center_x"],"zone_center_y":zone["center_y"],
+                        "ts":event_ts,"tsl":self.local_timestamps.get(event_ts, ""),
                         "tid1":v1["tid"],"tid2":v2["tid"],
                         "cls1":c1s,"cls2":c2s,
                         "cat1":c1,"cat2":c2,
+                        "entry_ts1":entry1,"exit_ts1":exit1,
+                        "entry_ts2":entry2,"exit_ts2":exit2,
+                        "entry_tsl1":self.local_timestamps.get(entry1, ""),
+                        "exit_tsl1":self.local_timestamps.get(exit1, ""),
+                        "entry_tsl2":self.local_timestamps.get(entry2, ""),
+                        "exit_tsl2":self.local_timestamps.get(exit2, ""),
                         "pet":round(pet,4),
                         "nm": pet<THRESH,
                         "itype":f"{c1s}_vs_{c2s}",
@@ -582,7 +660,7 @@ def mk_pet_hist(pet_df,out):
     vals=pet_df["pet"].dropna().values
     n=25; vmin,vmax=0,CONFIG["PET_MAX_GAP_SEC"]
     counts,edges=_hist(vals,n,vmin,vmax)
-    cv=SVG(820,520,"PET Distribution — Zone Crossings (K305)")
+    cv=SVG(820,520,"Polygon-Based PET Distribution — Official Conflict Zones (K305)")
     ymax=float(counts.max())*1.15 or 10
     cv.axes(vmin,vmax,0,ymax,"PET (seconds)","Count")
     pw=cv.w-cv.pl-cv.pr; bw=pw/n
@@ -798,7 +876,7 @@ def legacy_main():
 
     print("[B] Computing PET...")
     pet_rows=pet_acc.compute()
-    pet_df=pd.DataFrame(pet_rows)
+    pet_df=pd.DataFrame(pet_rows, columns=PET_EVENT_COLUMNS)
     if not pet_df.empty:
         print(f"  Zone crossings   : {len(pet_df):,}  |  near-misses : {pet_df['nm'].sum():,}")
 
@@ -808,8 +886,13 @@ def legacy_main():
                 "cls1":"class_1","cls2":"class_2","cat1":"category_1","cat2":"category_2",
                 "xmid":"x_mid","ymid":"y_mid","spd1":"speed_1","spd2":"speed_2",
                 "dist":"distance_m","ttc":"ttc_sec","nm":"is_near_miss_ttc","itype":"interaction_type"}
-    rename_pet={"cx":"cell_gx","cy":"cell_gy","zx":"zone_x","zy":"zone_y","ts":"timestamp",
+    rename_pet={"ts":"timestamp","tsl":"timestamp_local","zone_id":"polygon_id",
+                "zone_center_x":"zone_center_x_m","zone_center_y":"zone_center_y_m",
                 "tid1":"track_id_1","tid2":"track_id_2","cls1":"class_1","cls2":"class_2",
+                "entry_ts1":"entry_timestamp_1","exit_ts1":"exit_timestamp_1",
+                "entry_ts2":"entry_timestamp_2","exit_ts2":"exit_timestamp_2",
+                "entry_tsl1":"entry_timestamp_local_1","exit_tsl1":"exit_timestamp_local_1",
+                "entry_tsl2":"entry_timestamp_local_2","exit_tsl2":"exit_timestamp_local_2",
                 "cat1":"category_1","cat2":"category_2","pet":"pet_sec","nm":"is_near_miss_pet","itype":"interaction_type"}
 
     if not ttc_df.empty:
@@ -833,7 +916,7 @@ def legacy_main():
     if not ttc_df.empty:
         nm=ttc_df[ttc_df["nm"]]; cx+=nm["xmid"].tolist(); cy+=nm["ymid"].tolist()
     if not pet_df.empty:
-        nm=pet_df[pet_df["nm"]]; cx+=nm["zx"].tolist(); cy+=nm["zy"].tolist()
+        nm=pet_df[pet_df["nm"]]; cx+=nm["zone_center_x"].tolist(); cy+=nm["zone_center_y"].tolist()
 
     mk_ttc_hist(ttc_df,OUT)
     mk_pet_hist(pet_df,OUT)
@@ -865,7 +948,7 @@ if __name__=="__main__":
 
 
 def parse_args(argv=None):
-    parser=argparse.ArgumentParser(description="K305 TTC and grid-cell PET proxy analysis")
+    parser=argparse.ArgumentParser(description="K305 TTC and polygon-based PET analysis")
     scope=parser.add_mutually_exclusive_group()
     scope.add_argument("--all", action="store_true", help="analyse every JSON chunk")
     scope.add_argument("--files", nargs="+", help="specific JSON filenames or paths")
@@ -1062,25 +1145,25 @@ def main(argv=None):
         xs.extend(df.x.values[::6]); ys.extend(df.y.values[::6])
         chunk_ttc=run_ttc_on_chunk(df); ttc_rows.extend(chunk_ttc); pet_acc.update(df)
         print(f"[{i}/{len(files)}] {path.name}: frames={df.ts.nunique()} TTC={len(chunk_ttc)} near-miss frames={sum(r['nm'] for r in chunk_ttc)}")
-    ttc_df=pd.DataFrame(ttc_rows); pet_df=pd.DataFrame(pet_acc.compute()); ttc_events=consolidate_ttc_events(ttc_df)
+    ttc_df=pd.DataFrame(ttc_rows); pet_df=pd.DataFrame(pet_acc.compute(), columns=PET_EVENT_COLUMNS); ttc_events=consolidate_ttc_events(ttc_df)
     rename_ttc={"ts":"timestamp","tsl":"timestamp_local","tid1":"track_id_1","tid2":"track_id_2","cls1":"class_1","cls2":"class_2","cat1":"category_1","cat2":"category_2","xmid":"x_mid","ymid":"y_mid","spd1":"speed_1","spd2":"speed_2","dist":"distance_m","ttc":"ttc_sec","nm":"is_near_miss_ttc","itype":"interaction_type"}
-    rename_pet={"cx":"cell_gx","cy":"cell_gy","zx":"zone_x","zy":"zone_y","ts":"timestamp","tsl":"timestamp_local","tid1":"track_id_1","tid2":"track_id_2","cls1":"class_1","cls2":"class_2","cat1":"category_1","cat2":"category_2","pet":"pet_sec","nm":"is_near_miss_pet","itype":"interaction_type"}
+    rename_pet={"ts":"timestamp","tsl":"timestamp_local","zone_id":"polygon_id","zone_center_x":"zone_center_x_m","zone_center_y":"zone_center_y_m","tid1":"track_id_1","tid2":"track_id_2","cls1":"class_1","cls2":"class_2","entry_ts1":"entry_timestamp_1","exit_ts1":"exit_timestamp_1","entry_ts2":"entry_timestamp_2","exit_ts2":"exit_timestamp_2","entry_tsl1":"entry_timestamp_local_1","exit_tsl1":"exit_timestamp_local_1","entry_tsl2":"entry_timestamp_local_2","exit_tsl2":"exit_timestamp_local_2","cat1":"category_1","cat2":"category_2","pet":"pet_sec","nm":"is_near_miss_pet","itype":"interaction_type"}
     ttc_events.to_csv(run_dir/"near_miss_ttc_events.csv",index=False)
     pet_out=_attach_video_columns(pet_df.rename(columns=rename_pet), "timestamp_local")
     if pet_out.empty:
-        pet_out.to_csv(run_dir/"near_miss_pet_proxy_events.csv",index=False)
+        pet_out.to_csv(run_dir/"near_miss_pet_events.csv",index=False)
     else:
-        pet_out[pet_out.is_near_miss_pet].sort_values("pet_sec").to_csv(run_dir/"near_miss_pet_proxy_events.csv",index=False)
-    if args.save_all: ttc_df.rename(columns=rename_ttc).to_csv(run_dir/"all_ttc_frame_interactions.csv",index=False); pet_out.to_csv(run_dir/"all_pet_proxy_interactions.csv",index=False)
+        pet_out[pet_out.is_near_miss_pet].sort_values("pet_sec").to_csv(run_dir/"near_miss_pet_events.csv",index=False)
+    if args.save_all: ttc_df.rename(columns=rename_ttc).to_csv(run_dir/"all_ttc_frame_interactions.csv",index=False); pet_out.to_csv(run_dir/"all_pet_interactions.csv",index=False)
     if not args.no_plots:
         cx=[] if ttc_df.empty else ttc_df.loc[ttc_df.nm,"xmid"].tolist(); cy=[] if ttc_df.empty else ttc_df.loc[ttc_df.nm,"ymid"].tolist()
-        if not pet_df.empty: cx+=pet_df.loc[pet_df.nm,"zx"].tolist(); cy+=pet_df.loc[pet_df.nm,"zy"].tolist()
+        if not pet_df.empty: cx+=pet_df.loc[pet_df.nm,"zone_center_x"].tolist(); cy+=pet_df.loc[pet_df.nm,"zone_center_y"].tolist()
         mk_ttc_hist(ttc_df,run_dir); mk_pet_hist(pet_df,run_dir); mk_heatmap(np.asarray(xs),np.asarray(ys),cx,cy,run_dir); mk_ttc_vs_pet(ttc_df,pet_df,run_dir); mk_hourly(ttc_df,pet_df,run_dir); mk_breakdown(ttc_df,pet_df,run_dir)
     quality["retained_rows"]=int(sum(len(t) for cells in pet_acc.data.values() for t in cells.values()))
     stats=summary({k:len(v) for k,v in cls_set.items()},ttc_df,pet_df,n_frames,sum(len(v) for v in cls_set.values()),ttc_events,quality)
-    stats.update({"run_id":run_id,"run_scope":label,"selected_files":[p.name for p in files],"output_directory":str(run_dir),"runtime_sec":round(time.perf_counter()-started,2),"pet_note":"PET is a 2 m grid-cell occupancy proxy, not a map-defined conflict-zone PET."})
+    stats.update({"run_id":run_id,"run_scope":label,"selected_files":[p.name for p in files],"output_directory":str(run_dir),"runtime_sec":round(time.perf_counter()-started,2),"pet_method":"polygon-based PET using official LiDAR conflict zones (CW-NB, CW-SB, CW-WB, Bike-EB; PET fallback)","pet_zone_source":str(EVENT_ZONES_PATH)})
     with open(run_dir/"run_report.json","w") as fh: json.dump(stats,fh,indent=2,default=lambda o:int(o) if isinstance(o,np.integer) else float(o) if isinstance(o,np.floating) else str(o))
-    print_report(stats, ttc_events); print(f"TTC near-miss events: {len(ttc_events):,}\nPET proxy near-miss events: {0 if pet_df.empty else int(pet_df.nm.sum()):,}\nDone in {stats['runtime_sec']} s. Share {run_dir/'run_report.json'} for review.")
+    print_report(stats, ttc_events); print(f"TTC near-miss events: {len(ttc_events):,}\nPolygon-based PET near-miss events: {0 if pet_df.empty else int(pet_df.nm.sum()):,}\nDone in {stats['runtime_sec']} s. Share {run_dir/'run_report.json'} for review.")
     return ttc_df,pet_df,stats
 
 
