@@ -9,8 +9,8 @@
 A high-throughput Data Science and Traffic Safety Engineering research pipeline for detecting, quantifying, and mapping near-miss traffic conflicts between motorized vehicles and Vulnerable Road Users (VRUs: pedestrians and cyclists) using roadside infrastructure LiDAR data.
 
 **Dashboard:** an interactive Streamlit dashboard for the 29 October 2026 data (when and where, conflicts, signals,
-NSE vs Ouster, replay with video) is described in [dashboard/README.md](dashboard/README.md).
-Start it with `streamlit run dashboard/Overview.py`.
+NSE vs Ouster, replay with video). Follow the [dashboard run tutorial](docs/RUN_DASHBOARD.md) for installation,
+data generation, and troubleshooting; [dashboard/README.md](dashboard/README.md) describes the pages and data.
 
 ---
 

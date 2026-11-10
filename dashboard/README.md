@@ -12,12 +12,13 @@ Data: **29 October 2026** (CET, UTC+1). NSE LiDAR object list for the whole day,
 
 ```bash
 pip install -r requirements.txt
+python build_dashboard_data.py --data-dir "database/Data from date of 28.10, 29.10./newsense/object_list/k305_object_list_2026-10-29_aggregation_5min"
 streamlit run dashboard/Overview.py
 ```
 
 Then open http://localhost:8501. Tested with Python 3.13 and Streamlit 1.67. The dashboard reads prebuilt files from
 `dashboard/data/` (not in git, see [Build the data](#build-the-data)); a page whose files are missing says which
-command to run.
+command to run. For a step-by-step setup guide and troubleshooting, see [docs/RUN_DASHBOARD.md](../docs/RUN_DASHBOARD.md).
 
 After pulling code changes, restart Streamlit: it reloads pages on save, but not the modules in `dashboard/lib/`.
 
