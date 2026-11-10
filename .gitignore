@@ -9,3 +9,7 @@
 !/database/k305_object_list_2026-10-14_aggregation_5min/k305_object_list_2026-10-14_00-10_to_00-14.json
 
 .venv/
+
+# Python bytecode caches (generated locally)
+__pycache__/
+*.py[cod]
