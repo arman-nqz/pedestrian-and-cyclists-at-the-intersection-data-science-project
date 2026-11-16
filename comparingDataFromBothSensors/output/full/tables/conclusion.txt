@@ -1,0 +1,21 @@
+Run mode: full. Decision rows: filtered variant, epoch B, ped and bike, scored metrics.
+Comparable rows: 24 (rows skipped as n/a: 0).
+NewSense better on 15 rows: class_multi_share[ped], confirmation_rate_moving[ped], flicker_track_share[ped], gap_mean_missing_share[ped], gap_track_share[ped], handovers_per_100[ped], implausible_step_share[ped], jitter_rms_m[ped], class_multi_share[bike], confirmation_rate_moving[bike], flicker_track_share[bike], gap_mean_missing_share[bike], gap_track_share[bike], implausible_step_share[bike], jitter_rms_m[bike]
+Ouster better on 9 rows: flicker_det_share[ped], frag_id_changes_per_min[ped], frag_mean_n_ids[ped], frag_share_n_ids_ge2[ped], flicker_det_share[bike], frag_id_changes_per_min[bike], frag_mean_n_ids[bike], frag_share_n_ids_ge2[bike], handovers_per_100[bike]
+Ties: 0
+Tally with all rows: NewSense 15, Ouster 9, ties 0 of 24; fragmentation rows NewSense 0, Ouster 6.
+Tally without gap_track_share, gap_mean_missing_share, class_multi_share (rows NewSense cannot lose by design): NewSense 9, Ouster 9, ties 0 of 18; fragmentation rows NewSense 0, Ouster 6.
+Headline numbers (epoch B, filtered):
+  frag_mean_n_ids [ped]: NewSense 2.273 vs Ouster 1.268 (n tracks 556/749; better: ouster)
+  frag_share_n_ids_ge2 [ped]: NewSense 0.595 vs Ouster 0.202 (n tracks 556/749; better: ouster)
+  flicker_track_share [ped]: NewSense 0.059 vs Ouster 0.219 (n tracks 2204/1194; better: newsense)
+  handovers_per_100 [ped]: NewSense 18.781 vs Ouster 31.960 (n tracks 2204/1194; better: newsense)
+  confirmation_rate_moving [ped]: NewSense 0.916 vs Ouster 0.605 (n tracks 677/1019; better: newsense)
+  frag_mean_n_ids [bike]: NewSense 2.390 vs Ouster 1.397 (n tracks 246/295; better: ouster)
+  frag_share_n_ids_ge2 [bike]: NewSense 0.667 vs Ouster 0.298 (n tracks 246/295; better: ouster)
+  flicker_track_share [bike]: NewSense 0.065 vs Ouster 0.074 (n tracks 555/364; better: newsense)
+  handovers_per_100 [bike]: NewSense 5.967 vs Ouster 4.986 (n tracks 555/364; better: ouster)
+  confirmation_rate_moving [bike]: NewSense 0.816 vs Ouster 0.738 (n tracks 386/412; better: newsense)
+  (frag rows: NewSense value = mean distinct NewSense IDs per Ouster track, i.e. NewSense fragmentation; Ouster value = mean distinct Ouster IDs per NewSense track.)
+Vehicle rows (context only; VRU evidence decides): NewSense 7, Ouster 4, ties 1.
+MIXED EVIDENCE: no sensor meets the decision rule. all rows: best is NewSense with 62% of rows, below the 2/3 majority; without structural rows: best is NewSense with 50% of rows, below the 2/3 majority.

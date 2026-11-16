@@ -1,0 +1,10 @@
+K305 Near-Miss Analysis Run
+Run folder: k305_2026-10-28_full_day_score-0p25_ttc-1p50_pet-1p50_20261109_213350_370703
+Dataset date: 2026-10-28
+Run scope: full_day
+Input directory: /home/arman/Projects/pedestrian-and-cyclists-at-the-intersection-data-science-project/database/Data from date of 28.10, 29.10./newsense/object_list/k305_object_list_2026-10-28_aggregation_5min
+Selected files: 224
+Minimum detection score: 0.25
+TTC threshold (strictly below): 1.5 s
+PET threshold (strictly below): 1.5 s
+Created local time: 2026-11-09T21:33:50.370983+01:00

@@ -1,0 +1,217 @@
+metric,group,epoch,variant,newsense,ouster,n_newsense,n_ouster,direction,scored,note,better
+class_multi_share,ped,B,filtered,0.0,0.0,65,95,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",tie
+confirmation_rate_moving,ped,B,filtered,0.9576806815059082,0.5223849372384938,34,85,higher,True,share of moving-track detections matched by the other sensor (miss vs false is ambiguous),newsense
+confirmation_rate_static,ped,B,filtered,0.7542892156862745,0.3654708520179372,35,43,higher,False,static detections: waiting people vs ghosts is ambiguous; context,n/a (context)
+flicker_det_share,ped,B,filtered,0.005623242736644799,0.012951408583853281,65,95,lower,True,share of detections in tracks shorter than 1 s,newsense
+flicker_track_share,ped,B,filtered,0.046153846153846156,0.29473684210526313,65,95,lower,True,share of tracks shorter than 1 s,newsense
+frag_id_changes_per_min,ped,B,filtered,6.594863632394794,4.189402240094525,31,34,lower,True,ID changes of this sensor per minute of matched time,ouster
+frag_mean_n_ids,ped,B,filtered,1.967741935483871,1.4411764705882353,31,34,lower,True,mean distinct IDs of this sensor per track of the other sensor,ouster
+frag_share_n_ids_ge2,ped,B,filtered,0.4838709677419355,0.3235294117647059,31,34,lower,True,share of the other sensor's tracks split into >= 2 IDs of this sensor,ouster
+gap_mean_missing_share,ped,B,filtered,0.0,0.01546433105143762,65,95,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,ped,B,filtered,0.0,0.10526315789473684,65,95,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,ped,B,filtered,14.0625,49.45054945054945,65,95,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,ped,B,filtered,0.0007590132827324478,0.017672907909820405,65,95,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,ped,B,filtered,0.06858019998475415,0.17308746524239377,65,95,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,ped,B,filtered,65.0,95.0,65,95,lower,False,tracks in region; context,n/a (context)
+static_long_count,ped,B,filtered,1.0,0.0,65,95,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,ped,B,filtered,0.0521087160262418,0.0,65,95,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,ped,B,filtered,3.1000620008041864,5.443305275609737,65,95,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,ped,B,filtered,0.0,0.04178483645301569,65,95,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+vru_traversals,ped,B,filtered,32.0,56.0,32,56,lower,False,valid VRU traversals; a fragmenting sensor counts higher; context,n/a (context)
+class_multi_share,bike,B,filtered,0.0,0.16666666666666666,18,12,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+confirmation_rate_moving,bike,B,filtered,0.9847494553376906,0.7826757090012331,13,17,higher,True,share of moving-track detections matched by the other sensor (miss vs false is ambiguous),newsense
+confirmation_rate_static,bike,B,filtered,0.6869565217391305,0.41277641277641275,6,3,higher,False,static detections: waiting people vs ghosts is ambiguous; context,n/a (context)
+flicker_det_share,bike,B,filtered,0.004847309743092583,0.0030942334739803095,18,12,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,bike,B,filtered,0.05555555555555555,0.08333333333333333,18,12,lower,True,share of tracks shorter than 1 s,newsense
+frag_id_changes_per_min,bike,B,filtered,10.304726215619041,2.561362860573172,8,12,lower,True,ID changes of this sensor per minute of matched time,n/a (too few tracks)
+frag_mean_n_ids,bike,B,filtered,1.875,1.1666666666666667,8,12,lower,True,mean distinct IDs of this sensor per track of the other sensor,n/a (too few tracks)
+frag_share_n_ids_ge2,bike,B,filtered,0.375,0.16666666666666666,8,12,lower,True,share of the other sensor's tracks split into >= 2 IDs of this sensor,n/a (too few tracks)
+gap_mean_missing_share,bike,B,filtered,0.0,0.019376748589228956,18,12,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,bike,B,filtered,0.0,0.25,18,12,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,bike,B,filtered,0.0,18.181818181818183,18,12,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,bike,B,filtered,0.0,0.0002824858757062147,18,12,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,bike,B,filtered,0.08692612696624033,0.1106738985531411,18,12,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,bike,B,filtered,18.0,12.0,18,12,lower,False,tracks in region; context,n/a (context)
+static_long_count,bike,B,filtered,1.0,2.0,18,12,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,bike,B,filtered,0.04992729035385361,0.09367088607594937,18,12,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,bike,B,filtered,5.8726517323047815,10.344753732555311,18,12,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,bike,B,filtered,0.0,0.0880450070323488,18,12,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+vru_traversals,bike,B,filtered,12.0,8.0,12,8,lower,False,valid VRU traversals; a fragmenting sensor counts higher; context,n/a (context)
+class_multi_share,veh,B,filtered,0.0,0.0,404,179,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",tie
+confirmation_rate_moving,veh,B,filtered,0.95757519494987,0.8295177658178703,372,341,higher,True,share of moving-track detections matched by the other sensor (miss vs false is ambiguous),newsense
+confirmation_rate_static,veh,B,filtered,0.43592613318410744,0.7710843373493976,56,20,higher,False,static detections: waiting people vs ghosts is ambiguous; context,n/a (context)
+flicker_det_share,veh,B,filtered,0.004839531329597555,0.0018491884117526197,404,179,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,veh,B,filtered,0.04455445544554455,0.09497206703910614,404,179,lower,True,share of tracks shorter than 1 s,newsense
+frag_id_changes_per_min,veh,B,filtered,0.7229554678309904,0.8030051312811363,153,294,lower,True,ID changes of this sensor per minute of matched time,newsense
+frag_mean_n_ids,veh,B,filtered,1.1437908496732025,1.0408163265306123,153,294,lower,True,mean distinct IDs of this sensor per track of the other sensor,ouster
+frag_share_n_ids_ge2,veh,B,filtered,0.1111111111111111,0.027210884353741496,153,294,lower,True,share of the other sensor's tracks split into >= 2 IDs of this sensor,ouster
+gap_mean_missing_share,veh,B,filtered,0.0,0.011902091086641975,404,179,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,veh,B,filtered,0.0,0.1005586592178771,404,179,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,veh,B,filtered,1.7500000000000002,3.3707865168539324,404,179,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,veh,B,filtered,0.0,0.0002657140326533022,404,179,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,veh,B,filtered,0.1601576550095311,0.22477006954668546,404,179,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,veh,B,filtered,404.0,179.0,404,179,lower,False,tracks in region; context,n/a (context)
+static_long_count,veh,B,filtered,6.0,0.0,404,179,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,veh,B,filtered,0.0377257032886172,0.0,404,179,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,veh,B,filtered,12.295764605892243,14.66782257367019,404,179,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,veh,B,filtered,0.0,0.06680560039918988,404,179,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,ped,A,filtered,0.0,0.07894736842105263,60,38,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+confirmation_rate_moving,ped,A,filtered,0.9582812890332251,0.5537033995730005,28,42,higher,True,share of moving-track detections matched by the other sensor (miss vs false is ambiguous),newsense
+confirmation_rate_static,ped,A,filtered,0.9301285634432644,0.225,38,14,higher,False,static detections: waiting people vs ghosts is ambiguous; context,n/a (context)
+flicker_det_share,ped,A,filtered,0.014710799063858242,0.0022131791247233528,60,38,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,ped,A,filtered,0.15,0.15789473684210525,60,38,lower,True,share of tracks shorter than 1 s,tie
+frag_id_changes_per_min,ped,A,filtered,9.117017070156795,1.1603207321004259,23,31,lower,True,ID changes of this sensor per minute of matched time,ouster
+frag_mean_n_ids,ped,A,filtered,3.217391304347826,1.064516129032258,23,31,lower,True,mean distinct IDs of this sensor per track of the other sensor,ouster
+frag_share_n_ids_ge2,ped,A,filtered,0.7391304347826086,0.03225806451612903,23,31,lower,True,share of the other sensor's tracks split into >= 2 IDs of this sensor,ouster
+gap_mean_missing_share,ped,A,filtered,0.0,0.014930041211522901,60,38,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,ped,A,filtered,0.0,0.18421052631578946,60,38,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,ped,A,filtered,22.033898305084744,21.62162162162162,60,38,lower,True,ID handovers per 100 tracks,tie
+implausible_step_share,ped,A,filtered,0.009625126646403243,0.011460497099061672,60,38,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,ped,A,filtered,0.06512258678398622,0.10588654301961711,60,38,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,ped,A,filtered,60.0,38.0,60,38,lower,False,tracks in region; context,n/a (context)
+static_long_count,ped,A,filtered,3.0,2.0,60,38,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,ped,A,filtered,0.128217987295219,0.025058899121867637,60,38,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,ped,A,filtered,3.925333340394192,4.164353001008057,60,38,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,ped,A,filtered,0.0,0.04190761761976155,60,38,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+vru_traversals,ped,A,filtered,24.0,24.0,24,24,lower,False,valid VRU traversals; a fragmenting sensor counts higher; context,n/a (context)
+class_multi_share,bike,A,filtered,0.0,0.30434782608695654,29,23,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+confirmation_rate_moving,bike,A,filtered,0.9776195320447609,0.6413987326918563,17,32,higher,True,share of moving-track detections matched by the other sensor (miss vs false is ambiguous),newsense
+confirmation_rate_static,bike,A,filtered,0.835742444152431,0.9580838323353293,15,3,higher,False,static detections: waiting people vs ghosts is ambiguous; context,n/a (context)
+flicker_det_share,bike,A,filtered,0.018754688672168042,0.0005954743946010321,29,23,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,bike,A,filtered,0.1724137931034483,0.043478260869565216,29,23,lower,True,share of tracks shorter than 1 s,ouster
+frag_id_changes_per_min,bike,A,filtered,2.5440217034179056,20.506329464618265,18,13,lower,True,ID changes of this sensor per minute of matched time,newsense
+frag_mean_n_ids,bike,A,filtered,1.6666666666666667,1.3076923076923077,18,13,lower,True,mean distinct IDs of this sensor per track of the other sensor,ouster
+frag_share_n_ids_ge2,bike,A,filtered,0.5,0.3076923076923077,18,13,lower,True,share of the other sensor's tracks split into >= 2 IDs of this sensor,ouster
+gap_mean_missing_share,bike,A,filtered,0.0,0.03737316709836286,29,23,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,bike,A,filtered,0.0,0.2608695652173913,29,23,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,bike,A,filtered,3.4482758620689653,17.391304347826086,29,23,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,bike,A,filtered,0.0,0.001597763131615738,29,23,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,bike,A,filtered,0.08907717121995672,0.14036445331968453,29,23,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,bike,A,filtered,29.0,23.0,29,23,lower,False,tracks in region; context,n/a (context)
+static_long_count,bike,A,filtered,2.0,0.0,29,23,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,bike,A,filtered,0.18079519879969994,0.0,29,23,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,bike,A,filtered,6.337453400355192,11.793737756116554,29,23,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,bike,A,filtered,0.0,0.0702659785629218,29,23,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+vru_traversals,bike,A,filtered,10.0,20.0,10,20,lower,False,valid VRU traversals; a fragmenting sensor counts higher; context,n/a (context)
+class_multi_share,veh,A,filtered,0.0,0.0,339,169,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",tie
+confirmation_rate_moving,veh,A,filtered,0.9367225184056868,0.8091071622060895,342,314,higher,True,share of moving-track detections matched by the other sensor (miss vs false is ambiguous),newsense
+confirmation_rate_static,veh,A,filtered,0.891566265060241,0.8591549295774648,24,11,higher,False,static detections: waiting people vs ghosts is ambiguous; context,n/a (context)
+flicker_det_share,veh,A,filtered,0.0021267168808152413,0.0006173185925136091,339,169,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,veh,A,filtered,0.02064896755162242,0.03550295857988166,339,169,lower,True,share of tracks shorter than 1 s,newsense
+frag_id_changes_per_min,veh,A,filtered,0.7392851741616009,0.765177763543727,150,275,lower,True,ID changes of this sensor per minute of matched time,tie
+frag_mean_n_ids,veh,A,filtered,1.1333333333333333,1.04,150,275,lower,True,mean distinct IDs of this sensor per track of the other sensor,ouster
+frag_share_n_ids_ge2,veh,A,filtered,0.09333333333333334,0.02909090909090909,150,275,lower,True,share of the other sensor's tracks split into >= 2 IDs of this sensor,ouster
+gap_mean_missing_share,veh,A,filtered,0.0,0.012129983645517798,339,169,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,veh,A,filtered,0.0,0.10650887573964497,339,169,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,veh,A,filtered,1.2121212121212122,2.4539877300613497,339,169,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,veh,A,filtered,0.0,0.00019747235387045813,339,169,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,veh,A,filtered,0.1511191524440291,0.20101746932592643,339,169,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,veh,A,filtered,339.0,169.0,339,169,lower,False,tracks in region; context,n/a (context)
+static_long_count,veh,A,filtered,4.0,0.0,339,169,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,veh,A,filtered,0.02165115935607739,0.0,339,169,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,veh,A,filtered,12.625608884398996,14.785887778144806,339,169,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,veh,A,filtered,0.0,0.01066277568887143,339,169,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,ped,B,raw,0.0,0.0,121,95,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",tie
+flicker_det_share,ped,B,raw,0.006479231748235567,0.012951408583853281,121,95,lower,True,share of detections in tracks shorter than 1 s,newsense
+flicker_track_share,ped,B,raw,0.049586776859504134,0.29473684210526313,121,95,lower,True,share of tracks shorter than 1 s,newsense
+gap_mean_missing_share,ped,B,raw,0.0,0.01546433105143762,121,95,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,ped,B,raw,0.0,0.10526315789473684,121,95,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,ped,B,raw,21.008403361344538,54.94505494505495,121,95,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,ped,B,raw,0.0004693733865289838,0.017672907909820405,121,95,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,ped,B,raw,0.07022273536609813,0.17308746524239377,121,95,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,ped,B,raw,121.0,95.0,121,95,lower,False,tracks in region; context,n/a (context)
+static_long_count,ped,B,raw,2.0,0.0,121,95,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,ped,B,raw,0.047205831308573414,0.0,121,95,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,ped,B,raw,2.843582511709564,5.443305275609737,121,95,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,ped,B,raw,0.0,0.04178483645301569,121,95,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,bike,B,raw,0.0,0.16666666666666666,19,12,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+flicker_det_share,bike,B,raw,0.004791566842357451,0.0030942334739803095,19,12,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,bike,B,raw,0.05263157894736842,0.08333333333333333,19,12,lower,True,share of tracks shorter than 1 s,newsense
+gap_mean_missing_share,bike,B,raw,0.0,0.019376748589228956,19,12,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,bike,B,raw,0.0,0.25,19,12,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,bike,B,raw,0.0,36.36363636363637,19,12,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,bike,B,raw,0.0,0.0002824858757062147,19,12,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,bike,B,raw,0.08715762484292817,0.1106738985531411,19,12,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,bike,B,raw,19.0,12.0,19,12,lower,False,tracks in region; context,n/a (context)
+static_long_count,bike,B,raw,1.0,2.0,19,12,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,bike,B,raw,0.04935313847628174,0.09367088607594937,19,12,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,bike,B,raw,5.861148747358292,10.344753732555311,19,12,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,bike,B,raw,0.0,0.0880450070323488,19,12,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,veh,B,raw,0.0,0.0,412,179,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",tie
+flicker_det_share,veh,B,raw,0.005681498565562243,0.0018491884117526197,412,179,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,veh,B,raw,0.050970873786407765,0.09497206703910614,412,179,lower,True,share of tracks shorter than 1 s,newsense
+gap_mean_missing_share,veh,B,raw,0.0,0.011902091086641975,412,179,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,veh,B,raw,0.0,0.1005586592178771,412,179,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,veh,B,raw,1.9656019656019657,5.056179775280898,412,179,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,veh,B,raw,0.0,0.0002657140326533022,412,179,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,veh,B,raw,0.15988018614196847,0.22477006954668546,412,179,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,veh,B,raw,412.0,179.0,412,179,lower,False,tracks in region; context,n/a (context)
+static_long_count,veh,B,raw,6.0,0.0,412,179,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,veh,B,raw,0.03749226528660629,0.0,412,179,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,veh,B,raw,12.291991965993383,14.66782257367019,412,179,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,veh,B,raw,0.0,0.06680560039918988,412,179,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,unk,B,raw,,0.0,0,110,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",n/a (too few tracks)
+flicker_det_share,unk,B,raw,,0.27553118574366003,0,110,lower,True,share of detections in tracks shorter than 1 s,n/a (too few tracks)
+flicker_track_share,unk,B,raw,,0.7,0,110,lower,True,share of tracks shorter than 1 s,n/a (too few tracks)
+gap_mean_missing_share,unk,B,raw,,0.022524787196807318,0,110,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",n/a (too few tracks)
+gap_track_share,unk,B,raw,,0.03636363636363636,0,110,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",n/a (too few tracks)
+handovers_per_100,unk,B,raw,,17.272727272727273,0,110,lower,True,ID handovers per 100 tracks,n/a (too few tracks)
+implausible_step_share,unk,B,raw,,,0,110,lower,True,share of frame steps above the group speed limit,n/a (too few tracks)
+jitter_rms_m,unk,B,raw,,0.6886707848921838,0,110,lower,True,"RMS second difference of position, moving tracks",n/a (too few tracks)
+n_tracks,unk,B,raw,,110.0,0,110,lower,False,tracks in region; context,n/a (context)
+static_long_count,unk,B,raw,,2.0,0,110,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,unk,B,raw,,0.2083618917066484,0,110,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,unk,B,raw,,17.85867177866756,0,110,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,unk,B,raw,,1.0,0,110,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,ped,A,raw,0.0,0.07894736842105263,92,38,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+flicker_det_share,ped,A,raw,0.010473442342631185,0.0022131791247233528,92,38,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,ped,A,raw,0.10869565217391304,0.15789473684210525,92,38,lower,True,share of tracks shorter than 1 s,newsense
+gap_mean_missing_share,ped,A,raw,0.0,0.014930041211522901,92,38,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,ped,A,raw,0.0,0.18421052631578946,92,38,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,ped,A,raw,30.76923076923077,45.94594594594595,92,38,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,ped,A,raw,0.007555315704263357,0.011460497099061672,92,38,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,ped,A,raw,0.06459352226753831,0.10588654301961711,92,38,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,ped,A,raw,92.0,38.0,92,38,lower,False,tracks in region; context,n/a (context)
+static_long_count,ped,A,raw,7.0,2.0,92,38,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,ped,A,raw,0.1706743614406327,0.025058899121867637,92,38,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,ped,A,raw,3.6238830729548077,4.164353001008057,92,38,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,ped,A,raw,0.0,0.04190761761976155,92,38,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,bike,A,raw,0.0,0.30434782608695654,33,23,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+flicker_det_share,bike,A,raw,0.024297119055883373,0.0005954743946010321,33,23,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,bike,A,raw,0.21212121212121213,0.043478260869565216,33,23,lower,True,share of tracks shorter than 1 s,ouster
+gap_mean_missing_share,bike,A,raw,0.0,0.03737316709836286,33,23,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,bike,A,raw,0.0,0.2608695652173913,33,23,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,bike,A,raw,6.0606060606060606,21.73913043478261,33,23,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,bike,A,raw,0.0,0.001597763131615738,33,23,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,bike,A,raw,0.09574016375294908,0.14036445331968453,33,23,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,bike,A,raw,33.0,23.0,33,23,lower,False,tracks in region; context,n/a (context)
+static_long_count,bike,A,raw,2.0,0.0,33,23,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,bike,A,raw,0.16730301978479695,0.0,33,23,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,bike,A,raw,6.274150069996947,11.793737756116554,33,23,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,bike,A,raw,0.0,0.0702659785629218,33,23,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,veh,A,raw,0.0,0.0,349,169,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",tie
+flicker_det_share,veh,A,raw,0.003309124985357854,0.0006173185925136091,349,169,lower,True,share of detections in tracks shorter than 1 s,ouster
+flicker_track_share,veh,A,raw,0.03151862464183381,0.03550295857988166,349,169,lower,True,share of tracks shorter than 1 s,newsense
+gap_mean_missing_share,veh,A,raw,0.0,0.012129983645517798,349,169,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+gap_track_share,veh,A,raw,0.0,0.10650887573964497,349,169,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",newsense
+handovers_per_100,veh,A,raw,1.4705882352941175,2.4539877300613497,349,169,lower,True,ID handovers per 100 tracks,newsense
+implausible_step_share,veh,A,raw,0.0,0.00019747235387045813,349,169,lower,True,share of frame steps above the group speed limit,newsense
+jitter_rms_m,veh,A,raw,0.15155255744402793,0.20101746932592643,349,169,lower,True,"RMS second difference of position, moving tracks",newsense
+n_tracks,veh,A,raw,349.0,169.0,349,169,lower,False,tracks in region; context,n/a (context)
+static_long_count,veh,A,raw,5.0,0.0,349,169,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,veh,A,raw,0.024979500995665926,0.0,349,169,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,veh,A,raw,12.623467389263238,14.785887778144806,349,169,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,veh,A,raw,0.0,0.01066277568887143,349,169,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)
+class_multi_share,unk,A,raw,,0.0,0,135,lower,True,"share of tracks spanning more than one known group; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",n/a (too few tracks)
+flicker_det_share,unk,A,raw,,0.2944,0,135,lower,True,share of detections in tracks shorter than 1 s,n/a (too few tracks)
+flicker_track_share,unk,A,raw,,0.7037037037037037,0,135,lower,True,share of tracks shorter than 1 s,n/a (too few tracks)
+gap_mean_missing_share,unk,A,raw,,0.015598938098938099,0,135,lower,True,"mean share of missing frames inside tracks; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",n/a (too few tracks)
+gap_track_share,unk,A,raw,,0.022222222222222223,0,135,lower,True,"share of tracks with at least one missing frame; NewSense is exactly 0 in every row, which may be structural (e.g. one class per track, no gaps reported), not measured quality",n/a (too few tracks)
+handovers_per_100,unk,A,raw,,22.962962962962962,0,135,lower,True,ID handovers per 100 tracks,n/a (too few tracks)
+implausible_step_share,unk,A,raw,,,0,135,lower,True,share of frame steps above the group speed limit,n/a (too few tracks)
+jitter_rms_m,unk,A,raw,,0.6176208117212575,0,135,lower,True,"RMS second difference of position, moving tracks",n/a (too few tracks)
+n_tracks,unk,A,raw,,135.0,0,135,lower,False,tracks in region; context,n/a (context)
+static_long_count,unk,A,raw,,2.0,0,135,lower,False,static tracks >= 10 s; context,n/a (context)
+static_long_det_share,unk,A,raw,,0.15253333333333333,0,135,lower,False,share of detections in static long tracks; context,n/a (context)
+step_speed_p99,unk,A,raw,,17.41801159762095,0,135,lower,False,99th percentile step speed; context,n/a (context)
+unk_det_share,unk,A,raw,,1.0,0,135,lower,False,share of unk detections; context (NewSense has no unk class),n/a (context)

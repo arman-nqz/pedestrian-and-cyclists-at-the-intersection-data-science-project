@@ -1,0 +1,17 @@
+epoch,window,group,n,sensor
+A,1793257200,bike,8,newsense
+A,1793257200,ped,11,newsense
+A,1793257500,bike,2,newsense
+A,1793257500,ped,13,newsense
+B,1793261700,bike,7,newsense
+B,1793261700,ped,11,newsense
+B,1793262000,bike,5,newsense
+B,1793262000,ped,21,newsense
+A,1793257200,bike,17,ouster
+A,1793257200,ped,13,ouster
+A,1793257500,bike,3,ouster
+A,1793257500,ped,11,ouster
+B,1793261700,bike,1,ouster
+B,1793261700,ped,26,ouster
+B,1793262000,bike,7,ouster
+B,1793262000,ped,30,ouster

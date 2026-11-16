@@ -12,6 +12,10 @@
 # Generated dashboard data (rebuild with build_dashboard_data.py)
 /dashboard/data/
 
-# Python caches
+
+# Python bytecode caches (generated locally)
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Office lock files
+.~lock.*#

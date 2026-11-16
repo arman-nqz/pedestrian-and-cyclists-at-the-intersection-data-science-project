@@ -1,0 +1,9 @@
+region_cells,sensor,variant,epoch,det_share_in_region,tracks_in_region
+450,newsense,filtered,A,0.584260556608698,428
+450,newsense,filtered,B,0.6562609078354301,487
+450,newsense,raw,A,0.42469120011694195,474
+450,newsense,raw,B,0.4500086958202091,552
+450,ouster,filtered,A,0.3873063539391007,230
+450,ouster,filtered,B,0.3919234092664388,286
+450,ouster,raw,A,0.3843779450127703,365
+450,ouster,raw,B,0.39054189384666743,396
