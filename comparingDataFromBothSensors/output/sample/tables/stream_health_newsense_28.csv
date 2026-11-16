@@ -1,0 +1,2 @@
+sensor,day,epoch,n_frames,frames_per_5min,min_window_frame_ratio,gap_share_gt_0p15s,gaps_ge_0p2s,duplicate_ts,longest_gap_s
+newsense,28,B,6001,3000.5,1.0,0.0,0,0,0.10026240348815918
