@@ -13,3 +13,6 @@
 # Python bytecode caches (generated locally)
 __pycache__/
 *.py[cod]
+
+# Office lock files
+.~lock.*#
