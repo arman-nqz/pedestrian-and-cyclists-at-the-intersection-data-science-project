@@ -1,0 +1,5 @@
+night_static_vru_tracks,night_cells,epoch,detections,n_det,share_in_night_static_cells
+29,7,A,unconfirmed (unmatched),32790,0.49612686794754496
+29,7,A,confirmed (matched),59330,0.02238327995954829
+29,7,B,unconfirmed (unmatched),93614,0.1554681992009742
+29,7,B,confirmed (matched),32616,0.030138582290900173
