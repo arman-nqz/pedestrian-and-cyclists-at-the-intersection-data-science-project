@@ -1,0 +1,589 @@
+{
+ "NS_FULL": {
+  "sensor": "NS",
+  "scope": "FULL",
+  "segments": 8744,
+  "id_events": {
+   "reappearance_gt5s": 671,
+   "teleport_gt15m": 59
+  },
+  "groups": {
+   "CYC": {
+    "segments": 1231,
+    "duration_p50": 4.6,
+    "duration_p90": 26.6,
+    "share_lt1s": 0.089,
+    "share_ge30s": 0.086,
+    "total_path_km": 11.47,
+    "moving_segments": 500,
+    "moving_path_p50": 12.741,
+    "moving_birth_interior": 0.23,
+    "moving_death_interior": 0.172,
+    "stitch_links": 755,
+    "stitchable_share": 0.613,
+    "segments_per_stitched_object": 2.586,
+    "accel_noise_p50": 1.318,
+    "accel_noise_p90": 4.853,
+    "n_accel_segments": 627,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.0,
+    "first_label": {
+     "Cyclist": 1231
+    },
+    "top_transitions": {}
+   },
+   "MOTO": {
+    "segments": 685,
+    "duration_p50": 2.7,
+    "duration_p90": 13.2,
+    "share_lt1s": 0.099,
+    "share_ge30s": 0.023,
+    "total_path_km": 5.68,
+    "moving_segments": 341,
+    "moving_path_p50": 8.855,
+    "moving_birth_interior": 0.279,
+    "moving_death_interior": 0.067,
+    "stitch_links": 299,
+    "stitchable_share": 0.436,
+    "segments_per_stitched_object": 1.775,
+    "accel_noise_p50": 0.827,
+    "accel_noise_p90": 2.773,
+    "n_accel_segments": 398,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.001,
+    "first_label": {
+     "Motorcycle": 684,
+     "Van": 1
+    },
+    "top_transitions": {
+     "Van>Motorcycle": 1
+    }
+   },
+   "PED": {
+    "segments": 3345,
+    "duration_p50": 4.8,
+    "duration_p90": 33.7,
+    "share_lt1s": 0.064,
+    "share_ge30s": 0.113,
+    "total_path_km": 22.02,
+    "moving_segments": 770,
+    "moving_path_p50": 9.757,
+    "moving_birth_interior": 0.17,
+    "moving_death_interior": 0.14,
+    "stitch_links": 1739,
+    "stitchable_share": 0.52,
+    "segments_per_stitched_object": 2.083,
+    "accel_noise_p50": 0.756,
+    "accel_noise_p90": 1.292,
+    "n_accel_segments": 832,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.0,
+    "first_label": {
+     "Pedestrian": 3345
+    },
+    "top_transitions": {}
+   },
+   "VEH": {
+    "segments": 3483,
+    "duration_p50": 6.499,
+    "duration_p90": 23.0,
+    "share_lt1s": 0.045,
+    "share_ge30s": 0.085,
+    "total_path_km": 136.44,
+    "moving_segments": 2869,
+    "moving_path_p50": 51.101,
+    "moving_birth_interior": 0.228,
+    "moving_death_interior": 0.028,
+    "stitch_links": 1507,
+    "stitchable_share": 0.433,
+    "segments_per_stitched_object": 1.763,
+    "accel_noise_p50": 1.463,
+    "accel_noise_p90": 2.436,
+    "n_accel_segments": 3086,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.0,
+    "first_label": {
+     "Car": 2840,
+     "Van": 436,
+     "Truck": 148,
+     "Bus": 59
+    },
+    "top_transitions": {}
+   }
+  },
+  "reappearance_per_1000_segments": 76.74,
+  "teleport_per_1000_segments": 6.75,
+  "reappearance_per_hour": 485.1
+ },
+ "NS_REGION": {
+  "sensor": "NS",
+  "scope": "REGION",
+  "segments": 8683,
+  "id_events": {
+   "reappearance_gt5s": 706,
+   "teleport_gt15m": 59
+  },
+  "groups": {
+   "CYC": {
+    "segments": 1222,
+    "duration_p50": 4.601,
+    "duration_p90": 27.0,
+    "share_lt1s": 0.088,
+    "share_ge30s": 0.087,
+    "total_path_km": 11.44,
+    "moving_segments": 500,
+    "moving_path_p50": 12.607,
+    "moving_birth_interior": 0.226,
+    "moving_death_interior": 0.172,
+    "stitch_links": 753,
+    "stitchable_share": 0.616,
+    "segments_per_stitched_object": 2.606,
+    "accel_noise_p50": 1.333,
+    "accel_noise_p90": 4.853,
+    "n_accel_segments": 627,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.0,
+    "first_label": {
+     "Cyclist": 1222
+    },
+    "top_transitions": {}
+   },
+   "MOTO": {
+    "segments": 675,
+    "duration_p50": 2.7,
+    "duration_p90": 12.8,
+    "share_lt1s": 0.099,
+    "share_ge30s": 0.022,
+    "total_path_km": 5.62,
+    "moving_segments": 340,
+    "moving_path_p50": 8.855,
+    "moving_birth_interior": 0.279,
+    "moving_death_interior": 0.065,
+    "stitch_links": 294,
+    "stitchable_share": 0.436,
+    "segments_per_stitched_object": 1.772,
+    "accel_noise_p50": 0.81,
+    "accel_noise_p90": 2.773,
+    "n_accel_segments": 397,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.0,
+    "first_label": {
+     "Motorcycle": 675
+    },
+    "top_transitions": {}
+   },
+   "PED": {
+    "segments": 3295,
+    "duration_p50": 4.7,
+    "duration_p90": 32.1,
+    "share_lt1s": 0.066,
+    "share_ge30s": 0.108,
+    "total_path_km": 21.77,
+    "moving_segments": 771,
+    "moving_path_p50": 9.707,
+    "moving_birth_interior": 0.167,
+    "moving_death_interior": 0.139,
+    "stitch_links": 1686,
+    "stitchable_share": 0.512,
+    "segments_per_stitched_object": 2.048,
+    "accel_noise_p50": 0.765,
+    "accel_noise_p90": 1.298,
+    "n_accel_segments": 831,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.0,
+    "first_label": {
+     "Pedestrian": 3295
+    },
+    "top_transitions": {}
+   },
+   "VEH": {
+    "segments": 3491,
+    "duration_p50": 6.4,
+    "duration_p90": 17.799,
+    "share_lt1s": 0.05,
+    "share_ge30s": 0.071,
+    "total_path_km": 133.38,
+    "moving_segments": 2875,
+    "moving_path_p50": 50.331,
+    "moving_birth_interior": 0.208,
+    "moving_death_interior": 0.008,
+    "stitch_links": 1482,
+    "stitchable_share": 0.425,
+    "segments_per_stitched_object": 1.738,
+    "accel_noise_p50": 1.456,
+    "accel_noise_p90": 2.463,
+    "n_accel_segments": 3091,
+    "coasted_samples": 0,
+    "coasted_sample_share": 0.0,
+    "coast_run_p50": null,
+    "coast_run_p95": null,
+    "coast_run_max": 0,
+    "share_with_label_switch": 0.0,
+    "first_label": {
+     "Car": 2849,
+     "Van": 434,
+     "Truck": 148,
+     "Bus": 60
+    },
+    "top_transitions": {}
+   }
+  },
+  "reappearance_per_1000_segments": 81.31,
+  "teleport_per_1000_segments": 6.79,
+  "reappearance_per_hour": 510.4
+ },
+ "NS_doubles_FULL": {
+  "pairs_any": 1055,
+  "pairs_persistent_ge10_frames": 628,
+  "persistent_frames_total": 19972,
+  "persistent_by_classes": {
+   "Cyclist+Pedestrian": 375,
+   "Cyclist+Motorcycle": 171,
+   "Motorcycle+Pedestrian": 82
+  },
+  "persistent_frames_p50": 21
+ },
+ "OU_FULL": {
+  "sensor": "OU",
+  "scope": "FULL",
+  "segments": 17827,
+  "id_events": {
+   "reappearance_gt5s": 412
+  },
+  "groups": {
+   "VEH": {
+    "segments": 6118,
+    "duration_p50": 7.801,
+    "duration_p90": 47.9,
+    "share_lt1s": 0.214,
+    "share_ge30s": 0.162,
+    "total_path_km": 358.34,
+    "moving_segments": 3768,
+    "moving_path_p50": 101.928,
+    "moving_birth_interior": 0.129,
+    "moving_death_interior": 0.104,
+    "stitch_links": 3410,
+    "stitchable_share": 0.557,
+    "segments_per_stitched_object": 2.259,
+    "accel_noise_p50": 0.799,
+    "accel_noise_p90": 1.409,
+    "n_accel_segments": 4452,
+    "coasted_samples": 56689,
+    "coasted_sample_share": 0.0601,
+    "coast_run_p50": 2,
+    "coast_run_p95": 5,
+    "coast_run_max": 15,
+    "share_with_label_switch": 0.96,
+    "first_label": {
+     "UNKNOWN": 5871,
+     "VEHICLE": 244,
+     "LARGE_VEHICLE": 3
+    },
+    "top_transitions": {
+     "UNKNOWN>VEHICLE": 5717,
+     "UNKNOWN>LARGE_VEHICLE": 154,
+     "LARGE_VEHICLE>VEHICLE": 139,
+     "VEHICLE>LARGE_VEHICLE": 137
+    }
+   },
+   "PED": {
+    "segments": 3024,
+    "duration_p50": 3.8,
+    "duration_p90": 37.0,
+    "share_lt1s": 0.259,
+    "share_ge30s": 0.133,
+    "total_path_km": 45.08,
+    "moving_segments": 1595,
+    "moving_path_p50": 16.685,
+    "moving_birth_interior": 0.296,
+    "moving_death_interior": 0.288,
+    "stitch_links": 1384,
+    "stitchable_share": 0.458,
+    "segments_per_stitched_object": 1.844,
+    "accel_noise_p50": 0.482,
+    "accel_noise_p90": 1.375,
+    "n_accel_segments": 1867,
+    "coasted_samples": 19070,
+    "coasted_sample_share": 0.0533,
+    "coast_run_p50": 2,
+    "coast_run_p95": 5,
+    "coast_run_max": 10,
+    "share_with_label_switch": 0.971,
+    "first_label": {
+     "UNKNOWN": 2924,
+     "PERSON": 97,
+     "BICYCLE": 3
+    },
+    "top_transitions": {
+     "UNKNOWN>PERSON": 2874,
+     "PERSON>BICYCLE": 155,
+     "BICYCLE>PERSON": 106,
+     "UNKNOWN>BICYCLE": 50
+    }
+   },
+   "CYC": {
+    "segments": 1173,
+    "duration_p50": 5.8,
+    "duration_p90": 31.699,
+    "share_lt1s": 0.243,
+    "share_ge30s": 0.11,
+    "total_path_km": 36.52,
+    "moving_segments": 926,
+    "moving_path_p50": 28.275,
+    "moving_birth_interior": 0.212,
+    "moving_death_interior": 0.335,
+    "stitch_links": 546,
+    "stitchable_share": 0.465,
+    "segments_per_stitched_object": 1.871,
+    "accel_noise_p50": 0.739,
+    "accel_noise_p90": 1.297,
+    "n_accel_segments": 920,
+    "coasted_samples": 8258,
+    "coasted_sample_share": 0.0603,
+    "coast_run_p50": 2,
+    "coast_run_p95": 5,
+    "coast_run_max": 10,
+    "share_with_label_switch": 0.973,
+    "first_label": {
+     "UNKNOWN": 1132,
+     "BICYCLE": 33,
+     "PERSON": 8
+    },
+    "top_transitions": {
+     "UNKNOWN>BICYCLE": 957,
+     "PERSON>BICYCLE": 222,
+     "UNKNOWN>PERSON": 175,
+     "BICYCLE>PERSON": 62
+    }
+   },
+   "UNK": {
+    "segments": 7512,
+    "duration_p50": 0.5,
+    "duration_p90": 2.9,
+    "share_lt1s": 0.768,
+    "share_ge30s": 0.008,
+    "total_path_km": 25.03,
+    "moving_segments": 1407,
+    "moving_path_p50": 6.417,
+    "moving_birth_interior": 0.307,
+    "moving_death_interior": 0.405,
+    "stitch_links": 5626,
+    "stitchable_share": 0.749,
+    "segments_per_stitched_object": 3.983,
+    "accel_noise_p50": 0.0,
+    "accel_noise_p90": 3.106,
+    "n_accel_segments": 1484,
+    "coasted_samples": 33524,
+    "coasted_sample_share": 0.2752,
+    "coast_run_p50": 3,
+    "coast_run_p95": 5,
+    "coast_run_max": 27,
+    "share_with_label_switch": 0.183,
+    "first_label": {
+     "UNKNOWN": 7512
+    },
+    "top_transitions": {
+     "UNKNOWN>VEHICLE": 699,
+     "UNKNOWN>PERSON": 513,
+     "UNKNOWN>BICYCLE": 139,
+     "UNKNOWN>LARGE_VEHICLE": 20,
+     "PERSON>BICYCLE": 14,
+     "BICYCLE>PERSON": 13
+    }
+   }
+  },
+  "reappearance_per_1000_segments": 23.11,
+  "teleport_per_1000_segments": 0.0,
+  "reappearance_per_hour": 297.8
+ },
+ "OU_REGION": {
+  "sensor": "OU",
+  "scope": "REGION",
+  "segments": 8219,
+  "id_events": {
+   "reappearance_gt5s": 176
+  },
+  "groups": {
+   "PED": {
+    "segments": 1263,
+    "duration_p50": 9.3,
+    "duration_p90": 43.599,
+    "share_lt1s": 0.14,
+    "share_ge30s": 0.188,
+    "total_path_km": 21.82,
+    "moving_segments": 876,
+    "moving_path_p50": 19.874,
+    "moving_birth_interior": 0.135,
+    "moving_death_interior": 0.113,
+    "stitch_links": 595,
+    "stitchable_share": 0.471,
+    "segments_per_stitched_object": 1.891,
+    "accel_noise_p50": 0.581,
+    "accel_noise_p90": 1.414,
+    "n_accel_segments": 977,
+    "coasted_samples": 4536,
+    "coasted_sample_share": 0.0224,
+    "coast_run_p50": 1,
+    "coast_run_p95": 5,
+    "coast_run_max": 9,
+    "share_with_label_switch": 0.746,
+    "first_label": {
+     "UNKNOWN": 917,
+     "PERSON": 337,
+     "BICYCLE": 9
+    },
+    "top_transitions": {
+     "UNKNOWN>PERSON": 905,
+     "PERSON>BICYCLE": 86,
+     "BICYCLE>PERSON": 48,
+     "UNKNOWN>BICYCLE": 12
+    }
+   },
+   "VEH": {
+    "segments": 2940,
+    "duration_p50": 8.699,
+    "duration_p90": 31.299,
+    "share_lt1s": 0.071,
+    "share_ge30s": 0.102,
+    "total_path_km": 155.9,
+    "moving_segments": 2635,
+    "moving_path_p50": 62.38,
+    "moving_birth_interior": 0.015,
+    "moving_death_interior": 0.003,
+    "stitch_links": 1128,
+    "stitchable_share": 0.384,
+    "segments_per_stitched_object": 1.623,
+    "accel_noise_p50": 0.805,
+    "accel_noise_p90": 1.398,
+    "n_accel_segments": 2732,
+    "coasted_samples": 5891,
+    "coasted_sample_share": 0.0155,
+    "coast_run_p50": 3,
+    "coast_run_p95": 5,
+    "coast_run_max": 8,
+    "share_with_label_switch": 0.272,
+    "first_label": {
+     "VEHICLE": 2116,
+     "UNKNOWN": 782,
+     "LARGE_VEHICLE": 42
+    },
+    "top_transitions": {
+     "UNKNOWN>VEHICLE": 753,
+     "UNKNOWN>LARGE_VEHICLE": 29,
+     "LARGE_VEHICLE>VEHICLE": 25,
+     "VEHICLE>LARGE_VEHICLE": 24
+    }
+   },
+   "CYC": {
+    "segments": 532,
+    "duration_p50": 9.7,
+    "duration_p90": 44.802,
+    "share_lt1s": 0.066,
+    "share_ge30s": 0.15,
+    "total_path_km": 14.86,
+    "moving_segments": 459,
+    "moving_path_p50": 25.888,
+    "moving_birth_interior": 0.105,
+    "moving_death_interior": 0.118,
+    "stitch_links": 253,
+    "stitchable_share": 0.476,
+    "segments_per_stitched_object": 1.907,
+    "accel_noise_p50": 0.787,
+    "accel_noise_p90": 1.375,
+    "n_accel_segments": 480,
+    "coasted_samples": 2035,
+    "coasted_sample_share": 0.0244,
+    "coast_run_p50": 1,
+    "coast_run_p95": 5,
+    "coast_run_max": 10,
+    "share_with_label_switch": 0.415,
+    "first_label": {
+     "BICYCLE": 315,
+     "UNKNOWN": 207,
+     "PERSON": 10
+    },
+    "top_transitions": {
+     "UNKNOWN>BICYCLE": 151,
+     "PERSON>BICYCLE": 80,
+     "UNKNOWN>PERSON": 56,
+     "BICYCLE>PERSON": 22
+    }
+   },
+   "UNK": {
+    "segments": 3484,
+    "duration_p50": 0.6,
+    "duration_p90": 4.2,
+    "share_lt1s": 0.684,
+    "share_ge30s": 0.009,
+    "total_path_km": 10.28,
+    "moving_segments": 656,
+    "moving_path_p50": 6.294,
+    "moving_birth_interior": 0.162,
+    "moving_death_interior": 0.145,
+    "stitch_links": 2669,
+    "stitchable_share": 0.766,
+    "segments_per_stitched_object": 4.275,
+    "accel_noise_p50": 0.795,
+    "accel_noise_p90": 3.591,
+    "n_accel_segments": 811,
+    "coasted_samples": 13094,
+    "coasted_sample_share": 0.1905,
+    "coast_run_p50": 3,
+    "coast_run_p95": 5,
+    "coast_run_max": 27,
+    "share_with_label_switch": 0.114,
+    "first_label": {
+     "UNKNOWN": 3484
+    },
+    "top_transitions": {
+     "UNKNOWN>PERSON": 206,
+     "UNKNOWN>VEHICLE": 144,
+     "UNKNOWN>BICYCLE": 38,
+     "BICYCLE>PERSON": 10,
+     "UNKNOWN>LARGE_VEHICLE": 9,
+     "PERSON>BICYCLE": 6
+    }
+   }
+  },
+  "reappearance_per_1000_segments": 21.41,
+  "teleport_per_1000_segments": 0.0,
+  "reappearance_per_hour": 127.2
+ },
+ "OU_doubles_FULL": {
+  "pairs_any": 597,
+  "pairs_persistent_ge10_frames": 1,
+  "persistent_frames_total": 13,
+  "persistent_by_classes": {
+   "BICYCLE+UNKNOWN": 1
+  },
+  "persistent_frames_p50": 13
+ }
+}

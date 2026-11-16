@@ -1,0 +1,53 @@
+{
+ "robust_km": {
+  "NS": {
+   "VEH": 113.81,
+   "CYC": 6.51,
+   "MOTO": 4.07,
+   "PED": 9.52
+  },
+  "OU": {
+   "PED": 14.16,
+   "CYC": 10.16,
+   "VEH": 126.27,
+   "UNK": 7.93
+  }
+ },
+ "NS_T1_CYC_MOTO": 19.1,
+ "NS_T1_CYC_ONLY": 23.0,
+ "NS_T1_CYC_as_CORR01c": 14.2,
+ "NS_T1_PED": 22.8,
+ "NS_T1_VEH": 2.0,
+ "OU_T1_CYC_MOTO": 5.3,
+ "OU_T1_CYC_ONLY": 5.3,
+ "OU_T1_CYC_as_CORR01c": 5.3,
+ "OU_T1_PED": 15.3,
+ "OU_T1_VEH": 0.8,
+ "NS_T2_CYC_MOTO": 28.5,
+ "NS_T2_CYC_ONLY": 33.9,
+ "NS_T2_CYC_as_CORR01c": 20.9,
+ "NS_T2_PED": 33.4,
+ "NS_T2_VEH": 5.7,
+ "OU_T2_CYC_MOTO": 9.1,
+ "OU_T2_CYC_ONLY": 9.1,
+ "OU_T2_CYC_as_CORR01c": 9.1,
+ "OU_T2_PED": 20.8,
+ "OU_T2_VEH": 1.7,
+ "NS_T3_CYC_MOTO": 31.3,
+ "NS_T3_CYC_ONLY": 36.7,
+ "NS_T3_CYC_as_CORR01c": 22.6,
+ "NS_T3_PED": 37.2,
+ "NS_T3_VEH": 9.4,
+ "OU_T3_CYC_MOTO": 10.0,
+ "OU_T3_CYC_ONLY": 10.0,
+ "OU_T3_CYC_as_CORR01c": 10.0,
+ "OU_T3_PED": 22.3,
+ "OU_T3_VEH": 2.2,
+ "ratio_T2": {
+  "PED": 1.6,
+  "CYC_MOTO": 3.1,
+  "CYC_ONLY": 3.7,
+  "VEH": 3.4
+ },
+ "audit_cross_check_T2": "final_audit/data/fa6_fragmentation.json: NS CYC+MOTO 28.3, CYC only 33.5, OU 8.9 (raw re-implementation)"
+}

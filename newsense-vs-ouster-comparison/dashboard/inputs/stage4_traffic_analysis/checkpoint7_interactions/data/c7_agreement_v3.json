@@ -1,0 +1,40 @@
+{
+ "NS_TTC_moving": {
+  "n": 31,
+  "any_level": 7,
+  "severe_both": 1
+ },
+ "NS_PET_moving": {
+  "n": 12,
+  "any_level": 5,
+  "severe_both": 4
+ },
+ "NS_PROX_moving": {
+  "n": 15,
+  "any_level": 3,
+  "severe_both": 3
+ },
+ "OU_TTC_moving": {
+  "n": 35,
+  "any_level": 4,
+  "severe_both": 1
+ },
+ "OU_PET_moving": {
+  "n": 19,
+  "any_level": 5,
+  "severe_both": 4
+ },
+ "OU_PROX_moving": {
+  "n": 17,
+  "any_level": 1,
+  "severe_both": 1
+ },
+ "NS_TTC_lt3_stationary": {
+  "n": 789,
+  "in_NS_hotspot_cells": 393
+ },
+ "OU_TTC_lt3_stationary": {
+  "n": 193,
+  "in_NS_hotspot_cells": 9
+ }
+}

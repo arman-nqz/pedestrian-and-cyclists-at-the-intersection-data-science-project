@@ -1,0 +1,13 @@
+# private Python environment created by the start files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+# camera recordings are NOT shared through Git (copy them locally into videos/)
+videos/*
+!videos/PUT_VIDEOS_HERE.txt
+*.mp4
+# each user's own dataset location (written by run_dashboard.py --dataset)
+config/local_paths.json
+.streamlit/secrets.toml

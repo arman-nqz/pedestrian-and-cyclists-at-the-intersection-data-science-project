@@ -1,0 +1,7 @@
+sensor,group,tracks,total_track_hours,total_path_km,median_step_dt_s,duration_lt1s,duration_1_5s,duration_5_30s,duration_ge30s,duration_median_s,share_tracks_jump_C2,jumps_C2,jumps_per_track_hour_C2,jumps_per_km_C2,share_tracks_jump_C2_dom,jumps_C2_dom,jumps_per_track_hour_C2_dom,jumps_per_km_C2_dom,share_tracks_jump_S20,jumps_S20,jumps_per_track_hour_S20,jumps_per_km_S20,share_tracks_jump_D2,jumps_D2,jumps_per_track_hour_D2,jumps_per_km_D2,share_tracks_jump_D3,jumps_D3,jumps_per_track_hour_D3,jumps_per_km_D3,C2_jumps_dt_lt_0p05,C2_jumps_on_coasted,C2_jumps_label_not_dominant
+NS,PED,3295,14.37,21.76,0.1,0.073,0.441,0.378,0.108,4.7,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0,0,0
+NS,CYC,1222,3.54,11.43,0.1,0.095,0.439,0.38,0.086,4.6,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.004,5,1.41,0.44,0,0,0
+NS,VEH,3492,10.09,133.34,0.1,0.054,0.306,0.569,0.071,6.4,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.003,11,1.09,0.08,0.0,0,0.0,0.0,0.017,59,5.85,0.44,0,0,0
+OU,PED,1263,6.16,21.74,0.1,0.147,0.228,0.437,0.188,9.3,0.222,577,93.67,26.54,0.239,641,104.06,29.48,0.058,86,13.96,3.96,0.062,92,14.93,4.23,0.014,19,3.08,0.87,0,184,0
+OU,CYC,532,2.52,14.78,0.1,0.07,0.171,0.609,0.15,9.7,0.015,9,3.57,0.61,0.0,0,0.0,0.0,0.015,8,3.18,0.54,0.0,0,0.0,0.0,0.088,50,19.86,3.38,0,4,9
+OU,VEH,2940,11.39,155.66,0.1,0.072,0.101,0.725,0.102,8.7,0.0,0,0.0,0.0,0.0,0,0.0,0.0,0.044,189,16.6,1.21,0.0,0,0.0,0.0,0.114,411,36.09,2.64,0,0,0

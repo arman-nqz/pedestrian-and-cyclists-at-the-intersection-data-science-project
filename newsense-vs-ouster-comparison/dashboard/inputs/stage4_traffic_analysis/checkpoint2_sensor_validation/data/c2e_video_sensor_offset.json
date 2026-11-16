@@ -1,0 +1,98 @@
+{
+ "definition": "Delta = T_sensor - T_video_ref for the same physical motion (T_video_ref = SCU3K2 overlay mapped with Stage 3 v2 model)",
+ "scans": [
+  {
+   "file": "c2e_timescan_newsense_002_2400_600.json",
+   "sensor": "newsense",
+   "subset": "all",
+   "motion": "motion_scu3k2_002_2400_600.csv",
+   "best_delta_refined_s": 2.914,
+   "peak_score": 5.653,
+   "score_at_0": 4.501
+  },
+  {
+   "file": "c2e_timescan_newsense_003_600_600.json",
+   "sensor": "newsense",
+   "subset": "all",
+   "motion": "motion_scu3k2_003_600_600.csv",
+   "best_delta_refined_s": 2.797,
+   "peak_score": 5.78,
+   "score_at_0": 4.422
+  },
+  {
+   "file": "c2e_timescan_newsense_near_left.json",
+   "sensor": "newsense",
+   "subset": "near_left",
+   "motion": "motion_scu3k2_002_1200_600.csv",
+   "best_delta_refined_s": 2.882,
+   "peak_score": 7.218,
+   "score_at_0": 3.73
+  },
+  {
+   "file": "c2e_timescan_newsense_near_right.json",
+   "sensor": "newsense",
+   "subset": "near_right",
+   "motion": "motion_scu3k2_002_1200_600.csv",
+   "best_delta_refined_s": 2.91,
+   "peak_score": 6.972,
+   "score_at_0": 5.301
+  },
+  {
+   "file": "c2e_timescan_newsense_v4.json",
+   "sensor": "newsense",
+   "subset": "all",
+   "motion": "motion_scu3k2_002_1200_600.csv",
+   "best_delta_refined_s": 2.59,
+   "peak_score": 6.173,
+   "score_at_0": 4.598
+  },
+  {
+   "file": "c2e_timescan_ouster_002_2400_600.json",
+   "sensor": "ouster",
+   "subset": "all",
+   "motion": "motion_scu3k2_002_2400_600.csv",
+   "best_delta_refined_s": 2.899,
+   "peak_score": 5.786,
+   "score_at_0": 4.496
+  },
+  {
+   "file": "c2e_timescan_ouster_003_600_600.json",
+   "sensor": "ouster",
+   "subset": "all",
+   "motion": "motion_scu3k2_003_600_600.csv",
+   "best_delta_refined_s": 2.793,
+   "peak_score": 4.105,
+   "score_at_0": 3.641
+  },
+  {
+   "file": "c2e_timescan_ouster_near_left.json",
+   "sensor": "ouster",
+   "subset": "near_left",
+   "motion": "motion_scu3k2_002_1200_600.csv",
+   "best_delta_refined_s": 2.935,
+   "peak_score": 6.875,
+   "score_at_0": 3.575
+  },
+  {
+   "file": "c2e_timescan_ouster_near_right.json",
+   "sensor": "ouster",
+   "subset": "near_right",
+   "motion": "motion_scu3k2_002_1200_600.csv",
+   "best_delta_refined_s": 2.833,
+   "peak_score": 6.949,
+   "score_at_0": 5.113
+  },
+  {
+   "file": "c2e_timescan_ouster_v4.json",
+   "sensor": "ouster",
+   "subset": "all",
+   "motion": "motion_scu3k2_002_1200_600.csv",
+   "best_delta_refined_s": 2.894,
+   "peak_score": 6.238,
+   "score_at_0": 4.512
+  }
+ ],
+ "estimate_s": 2.81,
+ "spread_sd_s": 0.11,
+ "n_estimates": 6
+}

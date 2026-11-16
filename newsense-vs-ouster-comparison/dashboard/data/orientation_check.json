@@ -1,0 +1,12 @@
+{
+ "NS": {
+  "n": 177646,
+  "share_within_20deg": 0.98,
+  "median_abs_diff_deg": 2.0
+ },
+ "OU": {
+  "n": 397836,
+  "share_within_20deg": 1.0,
+  "median_abs_diff_deg": 0.4
+ }
+}

@@ -1,0 +1,692 @@
+{
+ "SCU3K2_1028_002.csv": {
+  "source_csv": "video/SCU3K2_1028_002.csv",
+  "frames": 107880,
+  "frame_interval_s": 0.033366699932331594,
+  "candidates": 3541,
+  "kept_ticks": 3515,
+  "rejected": 26,
+  "seconds_spanned": 3597,
+  "pts_s_per_overlay_s": 1.0000121324359545,
+  "overlay_vs_pts_ppm": -12.13,
+  "resid_ms_p50": 8.37,
+  "resid_ms_max": 16.72,
+  "anchor": {
+   "file": "SCU3K2_1028_002.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-28 07:00:06",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_anchor_SCU3K2_1028_002_5.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793167201.4437394,
+  "overlay_at_pts0_local": "2026-10-28T07:00:01.443+01:00",
+  "overlay_last_frame_local": "2026-10-28T08:00:00.966+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-28 07:59:56",
+    "source": "Stage 3 frames/ovl_anchor_SCU3K2_1028_002_3595.jpg",
+    "predicted_local": "2026-10-28T07:59:56.395+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2498.531856,
+    "text_read": "2026-10-28 07:41:39",
+    "source": "audit/o_bnd_A_2498.537.jpg",
+    "predicted_local": "2026-10-28T07:41:39.945+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2498.631956,
+    "text_read": "2026-10-28 07:41:40",
+    "source": "audit/o_bnd_A_2498.637.jpg",
+    "predicted_local": "2026-10-28T07:41:40.045+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU3K2_1029_001.csv": {
+  "source_csv": "v2/video/SCU3K2_1029_001.csv",
+  "frames": 107894,
+  "frame_interval_s": 0.033366700036146925,
+  "candidates": 3597,
+  "kept_ticks": 3597,
+  "rejected": 0,
+  "seconds_spanned": 3599,
+  "pts_s_per_overlay_s": 1.0000121652742435,
+  "overlay_vs_pts_ppm": -12.17,
+  "resid_ms_p50": 8.37,
+  "resid_ms_max": 20.92,
+  "anchor": {
+   "file": "SCU3K2_1029_001.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 06:00:05",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU3K2_001_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793250000.9891603,
+  "overlay_at_pts0_local": "2026-10-29T06:00:00.989+01:00",
+  "overlay_last_frame_local": "2026-10-29T07:00:00.978+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 06:59:55",
+    "source": "v2/frames/ovl_SCU3K2_001_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T06:59:55.940+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU3K2_1029_002.csv": {
+  "source_csv": "video/SCU3K2_1029_002.csv",
+  "frames": 107873,
+  "frame_interval_s": 0.03336669994067042,
+  "candidates": 3598,
+  "kept_ticks": 3597,
+  "rejected": 1,
+  "seconds_spanned": 3598,
+  "pts_s_per_overlay_s": 1.000012206658025,
+  "overlay_vs_pts_ppm": -12.21,
+  "resid_ms_p50": 8.34,
+  "resid_ms_max": 16.71,
+  "anchor": {
+   "file": "SCU3K2_1029_002.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 07:00:06",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_anchor_SCU3K2_002_5.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793253601.7126765,
+  "overlay_at_pts0_local": "2026-10-29T07:00:01.712+01:00",
+  "overlay_last_frame_local": "2026-10-29T08:00:01.001+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 07:59:56",
+    "source": "Stage 3 frames/ovl_anchor_SCU3K2_002_3595.jpg",
+    "predicted_local": "2026-10-29T07:59:56.663+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2068.968967,
+    "text_read": "2026-10-29 07:34:30",
+    "source": "Stage 3 frames/SCU3K2_1029_002_2069.jpg",
+    "predicted_local": "2026-10-29T07:34:30.656+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU3K2_1029_003.csv": {
+  "source_csv": "video/SCU3K2_1029_003.csv",
+  "frames": 107880,
+  "frame_interval_s": 0.033366699932331594,
+  "candidates": 3590,
+  "kept_ticks": 3588,
+  "rejected": 2,
+  "seconds_spanned": 3597,
+  "pts_s_per_overlay_s": 1.0000122236823643,
+  "overlay_vs_pts_ppm": -12.22,
+  "resid_ms_p50": 8.32,
+  "resid_ms_max": 16.72,
+  "anchor": {
+   "file": "SCU3K2_1029_003.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 08:00:06",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_anchor_SCU3K2_003_5.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793257201.4686246,
+  "overlay_at_pts0_local": "2026-10-29T08:00:01.468+01:00",
+  "overlay_last_frame_local": "2026-10-29T09:00:00.990+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 08:59:56",
+    "source": "Stage 3 frames/ovl_anchor_SCU3K2_003_3595.jpg",
+    "predicted_local": "2026-10-29T08:59:56.419+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 9.976633,
+    "text_read": "2026-10-29 08:00:11",
+    "source": "Stage 3 frames/view_SCU3K2_003_10.jpg",
+    "predicted_local": "2026-10-29T08:00:11.445+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 900.0,
+    "text_read": "2026-10-29 08:15:01",
+    "source": "Stage 3 frames/small_900.jpg",
+    "predicted_local": "2026-10-29T08:15:01.457+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 1319.986644,
+    "text_read": "2026-10-29 08:22:01",
+    "source": "Stage 3 frames/small_1320.jpg",
+    "predicted_local": "2026-10-29T08:22:01.439+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 1800.0,
+    "text_read": "2026-10-29 08:30:01",
+    "source": "Stage 3 frames/view_SCU3K2_003_1800.jpg",
+    "predicted_local": "2026-10-29T08:30:01.446+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU3K2_1029_004.csv": {
+  "source_csv": "v2/video/SCU3K2_1029_004.csv",
+  "frames": 107882,
+  "frame_interval_s": 0.03336669993789453,
+  "candidates": 3598,
+  "kept_ticks": 3596,
+  "rejected": 2,
+  "seconds_spanned": 3596,
+  "pts_s_per_overlay_s": 1.000012187867404,
+  "overlay_vs_pts_ppm": -12.19,
+  "resid_ms_p50": 8.36,
+  "resid_ms_max": 16.71,
+  "anchor": {
+   "file": "SCU3K2_1029_004.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 09:00:06",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU3K2_004_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793260801.3912752,
+  "overlay_at_pts0_local": "2026-10-29T09:00:01.391+01:00",
+  "overlay_last_frame_local": "2026-10-29T10:00:00.980+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 252.485811,
+    "text_read": "2026-10-29 09:04:13",
+    "source": "Stage 3 frames/view_SCU3K2_004_252.5.jpg",
+    "predicted_local": "2026-10-29T09:04:13.874+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 09:59:56",
+    "source": "v2/frames/ovl_SCU3K2_004_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T09:59:56.342+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU3K2_1029_005.csv": {
+  "source_csv": "video/SCU3K2_1029_005.csv",
+  "frames": 107877,
+  "frame_interval_s": 0.0333666999332567,
+  "candidates": 3599,
+  "kept_ticks": 3597,
+  "rejected": 2,
+  "seconds_spanned": 3596,
+  "pts_s_per_overlay_s": 1.000012207174755,
+  "overlay_vs_pts_ppm": -12.21,
+  "resid_ms_p50": 8.35,
+  "resid_ms_max": 16.73,
+  "anchor": {
+   "file": "SCU3K2_1029_005.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 10:00:06",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_anchor_SCU3K2_1029_005_5.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793264401.5475266,
+  "overlay_at_pts0_local": "2026-10-29T10:00:01.547+01:00",
+  "overlay_last_frame_local": "2026-10-29T11:00:00.969+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 10:59:56",
+    "source": "Stage 3 frames/ovl_anchor_SCU3K2_1029_005_3595.jpg",
+    "predicted_local": "2026-10-29T10:59:56.498+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 998.398389,
+    "text_read": "2026-10-29 10:16:39",
+    "source": "audit/o_bnd_C_998.415.jpg",
+    "predicted_local": "2026-10-29T10:16:39.933+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 998.498489,
+    "text_read": "2026-10-29 10:16:40",
+    "source": "audit/o_bnd_C_998.515.jpg",
+    "predicted_local": "2026-10-29T10:16:40.033+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU3K2_1029_006.csv": {
+  "source_csv": "v2/video/SCU3K2_1029_006.csv",
+  "frames": 107872,
+  "frame_interval_s": 0.03336669993788877,
+  "candidates": 3599,
+  "kept_ticks": 3598,
+  "rejected": 1,
+  "seconds_spanned": 3597,
+  "pts_s_per_overlay_s": 1.0000122091248718,
+  "overlay_vs_pts_ppm": -12.21,
+  "resid_ms_p50": 8.31,
+  "resid_ms_max": 16.69,
+  "anchor": {
+   "file": "SCU3K2_1029_006.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 11:00:06",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU3K2_006_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793268001.7371747,
+  "overlay_at_pts0_local": "2026-10-29T11:00:01.737+01:00",
+  "overlay_last_frame_local": "2026-10-29T12:00:00.992+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 11:59:56",
+    "source": "v2/frames/ovl_SCU3K2_006_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T11:59:56.688+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU3K2_1029_007.csv": {
+  "source_csv": "v2/video/SCU3K2_1029_007.csv",
+  "frames": 107980,
+  "frame_interval_s": 0.033366700006482744,
+  "candidates": 3603,
+  "kept_ticks": 3602,
+  "rejected": 1,
+  "seconds_spanned": 3601,
+  "pts_s_per_overlay_s": 1.0000122071178874,
+  "overlay_vs_pts_ppm": -12.21,
+  "resid_ms_p50": 8.34,
+  "resid_ms_max": 16.68,
+  "anchor": {
+   "file": "SCU3K2_1029_007.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 12:00:06",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU3K2_007_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793271601.2594802,
+  "overlay_at_pts0_local": "2026-10-29T12:00:01.259+01:00",
+  "overlay_last_frame_local": "2026-10-29T13:00:04.118+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 12:59:56",
+    "source": "v2/frames/ovl_SCU3K2_007_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T12:59:56.210+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU4YV_1029_001.csv": {
+  "source_csv": "v2/video/SCU4YV_1029_001.csv",
+  "frames": 107899,
+  "frame_interval_s": 0.033366700031511244,
+  "candidates": 3593,
+  "kept_ticks": 3592,
+  "rejected": 1,
+  "seconds_spanned": 3599,
+  "pts_s_per_overlay_s": 1.0000117956218617,
+  "overlay_vs_pts_ppm": -11.8,
+  "resid_ms_p50": 8.31,
+  "resid_ms_max": 16.77,
+  "anchor": {
+   "file": "SCU4YV_1029_001.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 06:00:05",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU4YV_001_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793250000.8417308,
+  "overlay_at_pts0_local": "2026-10-29T06:00:00.841+01:00",
+  "overlay_last_frame_local": "2026-10-29T07:00:00.999+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 06:59:55",
+    "source": "v2/frames/ovl_SCU4YV_001_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T06:59:55.794+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU4YV_1029_002.csv": {
+  "source_csv": "video/SCU4YV_1029_002.csv",
+  "frames": 107876,
+  "frame_interval_s": 0.03336669993974508,
+  "candidates": 3389,
+  "kept_ticks": 3309,
+  "rejected": 80,
+  "seconds_spanned": 3597,
+  "pts_s_per_overlay_s": 1.000011787087135,
+  "overlay_vs_pts_ppm": -11.79,
+  "resid_ms_p50": 8.32,
+  "resid_ms_max": 20.76,
+  "anchor": {
+   "file": "SCU4YV_1029_002.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 07:00:06",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_anchor_SCU4YV_002_5.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793253601.6002204,
+  "overlay_at_pts0_local": "2026-10-29T07:00:01.600+01:00",
+  "overlay_last_frame_local": "2026-10-29T08:00:00.990+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 07:59:56",
+    "source": "Stage 3 frames/ovl_anchor_SCU4YV_002_3595.jpg",
+    "predicted_local": "2026-10-29T07:59:56.552+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 9.976633,
+    "text_read": "2026-10-29 07:00:11",
+    "source": "Stage 3 frames/SCU4YV_1029_002_10.jpg",
+    "predicted_local": "2026-10-29T07:00:11.576+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2047.881211,
+    "text_read": "2026-10-29 07:34:09",
+    "source": "Stage 3 frames/tanker_SCU4YV_2047.9.jpg",
+    "predicted_local": "2026-10-29T07:34:09.457+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2049.382711,
+    "text_read": "2026-10-29 07:34:10",
+    "source": "Stage 3 frames/tanker_SCU4YV_2049.4.jpg",
+    "predicted_local": "2026-10-29T07:34:10.958+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2050.884211,
+    "text_read": "2026-10-29 07:34:12",
+    "source": "Stage 3 frames/tanker_SCU4YV_2050.9.jpg",
+    "predicted_local": "2026-10-29T07:34:12.460+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU4YV_1029_003.csv": {
+  "source_csv": "video/SCU4YV_1029_003.csv",
+  "frames": 107881,
+  "frame_interval_s": 0.03336669993511309,
+  "candidates": 3533,
+  "kept_ticks": 3512,
+  "rejected": 21,
+  "seconds_spanned": 3597,
+  "pts_s_per_overlay_s": 1.000011710682647,
+  "overlay_vs_pts_ppm": -11.71,
+  "resid_ms_p50": 8.38,
+  "resid_ms_max": 16.71,
+  "anchor": {
+   "file": "SCU4YV_1029_003.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 08:00:06",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_anchor_SCU4YV_003_5.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793257201.4242346,
+  "overlay_at_pts0_local": "2026-10-29T08:00:01.424+01:00",
+  "overlay_last_frame_local": "2026-10-29T09:00:00.981+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 08:59:56",
+    "source": "Stage 3 frames/ovl_anchor_SCU4YV_003_3595.jpg",
+    "predicted_local": "2026-10-29T08:59:56.377+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2238.538533,
+    "text_read": "2026-10-29 08:37:19",
+    "source": "audit/o_bnd_B_2238.552.jpg",
+    "predicted_local": "2026-10-29T08:37:19.936+01:00",
+    "consistent": true
+   },
+   {
+    "pts": 2238.638633,
+    "text_read": "2026-10-29 08:37:20",
+    "source": "audit/o_bnd_B_2238.652.jpg",
+    "predicted_local": "2026-10-29T08:37:20.036+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU4YV_1029_004.csv": {
+  "source_csv": "v2/video/SCU4YV_1029_004.csv",
+  "frames": 107883,
+  "frame_interval_s": 0.033366699931406535,
+  "candidates": 3345,
+  "kept_ticks": 3240,
+  "rejected": 105,
+  "seconds_spanned": 3597,
+  "pts_s_per_overlay_s": 1.0000117948942597,
+  "overlay_vs_pts_ppm": -11.79,
+  "resid_ms_p50": 8.26,
+  "resid_ms_max": 19.94,
+  "anchor": {
+   "file": "SCU4YV_1029_004.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 09:00:06",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU4YV_004_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793260801.3486738,
+  "overlay_at_pts0_local": "2026-10-29T09:00:01.348+01:00",
+  "overlay_last_frame_local": "2026-10-29T10:00:00.972+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 09:59:56",
+    "source": "v2/frames/ovl_SCU4YV_004_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T09:59:56.301+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU4YV_1029_005.csv": {
+  "source_csv": "v2/video/SCU4YV_1029_005.csv",
+  "frames": 107874,
+  "frame_interval_s": 0.033366699934181863,
+  "candidates": 3245,
+  "kept_ticks": 3102,
+  "rejected": 143,
+  "seconds_spanned": 3597,
+  "pts_s_per_overlay_s": 1.0000118030652163,
+  "overlay_vs_pts_ppm": -11.8,
+  "resid_ms_p50": 8.31,
+  "resid_ms_max": 24.81,
+  "anchor": {
+   "file": "SCU4YV_1029_005.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 10:00:06",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU4YV_005_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793264401.673327,
+  "overlay_at_pts0_local": "2026-10-29T10:00:01.673+01:00",
+  "overlay_last_frame_local": "2026-10-29T11:00:00.996+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 10:59:56",
+    "source": "v2/frames/ovl_SCU4YV_005_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T10:59:56.625+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU4YV_1029_006.csv": {
+  "source_csv": "v2/video/SCU4YV_1029_006.csv",
+  "frames": 107884,
+  "frame_interval_s": 0.03336669993418796,
+  "candidates": 3170,
+  "kept_ticks": 2974,
+  "rejected": 196,
+  "seconds_spanned": 3596,
+  "pts_s_per_overlay_s": 1.0000116356034219,
+  "overlay_vs_pts_ppm": -11.64,
+  "resid_ms_p50": 8.37,
+  "resid_ms_max": 24.04,
+  "anchor": {
+   "file": "SCU4YV_1029_006.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 11:00:06",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU4YV_006_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793268001.3303757,
+  "overlay_at_pts0_local": "2026-10-29T11:00:01.330+01:00",
+  "overlay_last_frame_local": "2026-10-29T12:00:00.988+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 11:59:56",
+    "source": "v2/frames/ovl_SCU4YV_006_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T11:59:56.283+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "SCU4YV_1029_007.csv": {
+  "source_csv": "v2/video/SCU4YV_1029_007.csv",
+  "frames": 107988,
+  "frame_interval_s": 0.033366700000926036,
+  "candidates": 3058,
+  "kept_ticks": 2862,
+  "rejected": 196,
+  "seconds_spanned": 3600,
+  "pts_s_per_overlay_s": 1.0000116889059498,
+  "overlay_vs_pts_ppm": -11.69,
+  "resid_ms_p50": 8.44,
+  "resid_ms_max": 24.63,
+  "anchor": {
+   "file": "SCU4YV_1029_007.csv",
+   "pts": 4.971633,
+   "overlay_text": "2026-10-29 12:00:06",
+   "role": "anchor",
+   "source": "v2/frames/ovl_SCU4YV_007_5.jpg (montage_new_anchors.png)"
+  },
+  "overlay_at_pts0_epoch": 1793271601.5217829,
+  "overlay_at_pts0_local": "2026-10-29T12:00:01.521+01:00",
+  "overlay_last_frame_local": "2026-10-29T13:00:04.649+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 3594.994989,
+    "text_read": "2026-10-29 12:59:56",
+    "source": "v2/frames/ovl_SCU4YV_007_3595.jpg (montage_new_anchors.png)",
+    "predicted_local": "2026-10-29T12:59:56.474+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "clip_073429_to_074429.csv": {
+  "source_csv": "video/clip_073429_to_074429.csv",
+  "frames": 6000,
+  "frame_interval_s": 0.09999999999999999,
+  "candidates": 600,
+  "kept_ticks": 587,
+  "rejected": 13,
+  "seconds_spanned": 599,
+  "pts_s_per_overlay_s": 1.0,
+  "overlay_vs_pts_ppm": 0.0,
+  "resid_ms_p50": 0.0,
+  "resid_ms_max": 0.0,
+  "anchor": {
+   "file": "clip_073429_to_074429.csv",
+   "pts": 0.0,
+   "overlay_text": "2026-10-29 07:34:30",
+   "role": "anchor",
+   "source": "Stage 3 frames/OUSTER10_0734_0.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793255670.75,
+  "overlay_at_pts0_local": "2026-10-29T07:34:30.750+01:00",
+  "overlay_last_frame_local": "2026-10-29T07:44:30.650+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": [
+   {
+    "pts": 300.0,
+    "text_read": "2026-10-29 07:39:30",
+    "source": "v2: read from frames/OUSTER10_0734_300.jpg",
+    "predicted_local": "2026-10-29T07:39:30.750+01:00",
+    "consistent": true
+   }
+  ]
+ },
+ "clip_090414_to_091414.csv": {
+  "source_csv": "video/clip_090414_to_091414.csv",
+  "frames": 6000,
+  "frame_interval_s": 0.09999999999999999,
+  "candidates": 600,
+  "kept_ticks": 592,
+  "rejected": 8,
+  "seconds_spanned": 599,
+  "pts_s_per_overlay_s": 1.0,
+  "overlay_vs_pts_ppm": 0.0,
+  "resid_ms_p50": 0.0,
+  "resid_ms_max": 0.0,
+  "anchor": {
+   "file": "clip_090414_to_091414.csv",
+   "pts": 0.0,
+   "overlay_text": "2026-10-29 09:04:15",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_clip_090414_to_091414_0.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793261055.45,
+  "overlay_at_pts0_local": "2026-10-29T09:04:15.450+01:00",
+  "overlay_last_frame_local": "2026-10-29T09:14:15.350+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": []
+ },
+ "clip_102443_to_103443.csv": {
+  "source_csv": "video/clip_102443_to_103443.csv",
+  "frames": 6000,
+  "frame_interval_s": 0.09999999999999999,
+  "candidates": 600,
+  "kept_ticks": 600,
+  "rejected": 0,
+  "seconds_spanned": 599,
+  "pts_s_per_overlay_s": 1.0,
+  "overlay_vs_pts_ppm": 0.0,
+  "resid_ms_p50": 0.0,
+  "resid_ms_max": 0.0,
+  "anchor": {
+   "file": "clip_102443_to_103443.csv",
+   "pts": 0.0,
+   "overlay_text": "2026-10-29 10:24:44",
+   "role": "anchor",
+   "source": "Stage 3 frames/ovl_clip_102443_to_103443_0.jpg"
+  },
+  "overlay_at_pts0_epoch": 1793265884.55,
+  "overlay_at_pts0_local": "2026-10-29T10:24:44.550+01:00",
+  "overlay_last_frame_local": "2026-10-29T10:34:44.450+01:00",
+  "mapping": "overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s",
+  "checks": []
+ }
+}

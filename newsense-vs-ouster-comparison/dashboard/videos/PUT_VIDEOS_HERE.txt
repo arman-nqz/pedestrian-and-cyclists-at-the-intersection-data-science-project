@@ -1,0 +1,10 @@
+Put the 4 camera video files into THIS folder, then (re)start the dashboard:
+
+  Standard_SCU3K2_2026-10-29_0600.002.mp4   (camera 1, 07:00-08:00, ~177 MB)
+  Standard_SCU3K2_2026-10-29_0600.003.mp4   (camera 1, 08:00-09:00, ~177 MB)
+  Standard_SCU4YV_2026-10-29_0600.002.mp4   (camera 2, 07:00-08:00, ~177 MB)
+  Standard_SCU4YV_2026-10-29_0600.003.mp4   (camera 2, 08:00-09:00, ~177 MB)
+
+They are the original MioVision recordings of 29 Oct 2026 from the team dataset
+(all_data_for_four_teams/mio vision/K305/2026_10_29/...). They are not in GitHub.
+Do not rename them. Without them the dashboard works, but the video panels stay empty.

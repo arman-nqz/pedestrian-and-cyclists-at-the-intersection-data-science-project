@@ -1,0 +1,40 @@
+{
+ "note": "Authoritative sources used by the dashboard. V2 (FINAL_PACKAGE_V2) is the source of truth for all reported results; V1 files are never read. Paths are relative to ~/Downloads/K305_Analysis_Outputs. All files are opened read-only.",
+ "files": {
+  "v2_comparison_csv": {"path": "FINAL_PACKAGE_V2/FINAL_SENSOR_COMPARISON.csv", "role": "KPI values, definitions, sample sizes, limitations (Overview, all pages)"},
+  "v2_change_log": {"path": "FINAL_PACKAGE_V2/V2_CHANGE_LOG.md", "role": "Verification that the 13 corrections are applied"},
+  "v2_validation": {"path": "FINAL_PACKAGE_V2/V2_VALIDATION_REPORT.md", "role": "V2 consistency status"},
+  "v2_report": {"path": "FINAL_PACKAGE_V2/FINAL_RESEARCH_REPORT.md", "role": "Narrative reference"},
+  "v2_limitations": {"path": "FINAL_PACKAGE_V2/FINAL_LIMITATIONS_AND_UNCERTAINTIES.md", "role": "Data-quality page"},
+  "register_v4": {"path": "stage4_traffic_analysis/register/issue_correction_register.csv", "role": "Interactive issue register (v4, 56 entries)"},
+  "unresolved": {"path": "stage4_traffic_analysis/final_audit/UNRESOLVED_ISSUES.md", "role": "Open audit issues"},
+  "corr02": {"path": "stage4_traffic_analysis/corrections/corr02_breaks_per_robust_km.json", "role": "Corrected break rates (V2)"},
+  "corr01b": {"path": "stage4_traffic_analysis/corrections/corr01b_robust_path.json", "role": "Robust moving path (V2)"},
+  "c3_metrics": {"path": "stage4_traffic_analysis/checkpoint3_tracks/data/c3_track_metrics.json", "role": "Durations, double labels, coasting (C3; unchanged in V2)"},
+  "c3_reappearance": {"path": "stage4_traffic_analysis/checkpoint3_tracks/data/c3_reappearance_classes.json", "role": "ID event classes (V2 wording applied in dashboard)"},
+  "c3_stitch": {"path": "stage4_traffic_analysis/checkpoint3_tracks/data/c3_stitch_moving.json", "role": "Continuation links T = 1-3 s"},
+  "c7_summary": {"path": "stage4_traffic_analysis/checkpoint7_interactions/data/c7_summary_v2.json", "role": "Conflict indicator counts"},
+  "c7_agreement_v3": {"path": "stage4_traffic_analysis/checkpoint7_interactions/data/c7_agreement_v3.json", "role": "Agreement: any level / also severe (V2)"},
+  "c2_match": {"path": "stage4_traffic_analysis/checkpoint2_sensor_validation/data/c2c_match_main.json", "role": "Cross-sensor detection agreement"},
+  "a2_ratio": {"path": "stage4_traffic_analysis/checkpoint2_audit/pedestrian_ratio_recalculation.csv", "role": "Pedestrian ratio by unit"},
+  "a2_counts": {"path": "stage4_traffic_analysis/checkpoint2_audit/data/a2_counts.json", "role": "10 Newsense hotspot cells"},
+  "a5_traj": {"path": "stage4_traffic_analysis/checkpoint2_audit/trajectory_quality_audit.csv", "role": "Jump sensitivity"},
+  "c4_jitter": {"path": "stage4_traffic_analysis/checkpoint4_position_velocity/data/c4_stationary_jitter.json", "role": "Stationary jitter"},
+  "c1f": {"path": "stage4_traffic_analysis/checkpoint1_geometry/data/c1f_coverage.json", "role": "Coverage footprints and common region"},
+  "c1b": {"path": "stage4_traffic_analysis/checkpoint1_geometry/data/c1b_transform.json", "role": "Validated Newsense -> Ouster transform"},
+  "c6_15min": {"path": "stage4_traffic_analysis/checkpoint5_spatial_temporal/data/c6_ns_15min.json", "role": "Newsense two-day time-of-day patterns"},
+  "c5_share": {"path": "stage4_traffic_analysis/checkpoint5_spatial_temporal/data/c5_share_map.json", "role": "Share map"},
+  "clock_v2": {"path": "stage3_clock_assessment/v2/clock_model_v2.json", "role": "Approved clock model (unchanged)"},
+  "ticks_v2": {"path": "stage3_clock_assessment/v2/b6_video_ticks_v2.json", "role": "Video PTS mapping"},
+  "delta": {"path": "stage4_traffic_analysis/checkpoint2_sensor_validation/data/c2e_video_sensor_offset.json", "role": "CK-01 2.81 s video look-up offset (cause unresolved)"},
+  "homography": {"path": "stage4_traffic_analysis/checkpoint2_sensor_validation/data/c2e_homography_v4_stationary.json", "role": "Ground-plane projection to SCU3K2 image"}
+ },
+ "derived_by_dashboard": {
+  "data/obs_NS.parquet, data/obs_OU.parquet": "build/b1_extract.py from the original object lists (counts identical to the C3 cache)",
+  "data/segments.parquet, data/obs_seg_*.parquet": "build/b2_segments.py (C3 segmentation rules; counts identical to C3)",
+  "data/match_edges.parquet": "build/b3_matching.py (NEW, dashboard-only cross-sensor candidate matching; not part of the V2 results)",
+  "data/candidates.parquet": "build/b3b_candidates.py (NEW, dashboard-only investigation candidates)",
+  "data/agg_minute.parquet, data/heat.parquet, data/background.json, data/class_transitions.parquet": "build/b4_aggregates.py",
+  "data/video_index.json, data/events.parquet": "build/b5_video_events.py"
+ }
+}

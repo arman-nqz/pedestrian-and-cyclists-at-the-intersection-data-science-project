@@ -1,0 +1,67 @@
+{
+ "frame_pairs": 47297,
+ "hotspot_cells": [
+  [
+   -7.0,
+   -23.0
+  ],
+  [
+   -9.0,
+   -17.0
+  ],
+  [
+   -19.0,
+   3.0
+  ],
+  [
+   -17.0,
+   3.0
+  ],
+  [
+   -1.0,
+   -17.0
+  ],
+  [
+   -5.0,
+   33.0
+  ],
+  [
+   -29.0,
+   19.0
+  ],
+  [
+   -25.0,
+   1.0
+  ],
+  [
+   -7.0,
+   -21.0
+  ],
+  [
+   -9.0,
+   -23.0
+  ]
+ ],
+ "newsense": {
+  "obs_all": 489744,
+  "obs_dedup": 472330,
+  "obs_moving_0p3": 108681,
+  "obs_moving_0p5": 72878,
+  "obs_excl_hotspots": 208033,
+  "tracks_any_ped": 3271,
+  "tracks_dominant_ped": 3166,
+  "tracks_moving": 762
+ },
+ "ouster": {
+  "obs_ou_ped_plus_unk": 269393,
+  "obs_all": 193400,
+  "obs_moving_0p3": 97336,
+  "obs_moving_0p5": 91497,
+  "obs_excl_hotspots": 181513,
+  "obs_ou_excl_coasted": 189224,
+  "obs_dedup": 193091,
+  "tracks_any_ped": 1508,
+  "tracks_dominant_ped": 1050,
+  "tracks_moving": 838
+ }
+}

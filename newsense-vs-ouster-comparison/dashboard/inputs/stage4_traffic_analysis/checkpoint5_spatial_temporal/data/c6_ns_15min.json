@@ -1,0 +1,398 @@
+{
+"2026-10-28": {
+"06:00": {
+"stat_PED_s_hot": 1612,
+"PED_path_m": 265,
+"VEH_path_m": 7467,
+"stat_PED_s_other": 150,
+"CYC_path_m": 200
+},
+"06:15": {
+"stat_PED_s_hot": 1561,
+"VEH_path_m": 9065,
+"PED_path_m": 509,
+"CYC_path_m": 415,
+"stat_PED_s_other": 252
+},
+"06:30": {
+"stat_PED_s_hot": 1637,
+"VEH_path_m": 13237,
+"CYC_path_m": 590,
+"stat_PED_s_other": 200,
+"PED_path_m": 183
+},
+"06:45": {
+"stat_PED_s_hot": 1560,
+"VEH_path_m": 14409,
+"PED_path_m": 750,
+"stat_PED_s_other": 380,
+"CYC_path_m": 601
+},
+"07:00": {
+"VEH_path_m": 17294,
+"PED_path_m": 498,
+"stat_PED_s_hot": 1667,
+"CYC_path_m": 866,
+"stat_PED_s_other": 409
+},
+"07:15": {
+"stat_PED_s_hot": 1852,
+"VEH_path_m": 21219,
+"CYC_path_m": 2628,
+"stat_PED_s_other": 1588,
+"PED_path_m": 967
+},
+"07:30": {
+"stat_PED_s_other": 3508,
+"stat_PED_s_hot": 1794,
+"VEH_path_m": 26870,
+"CYC_path_m": 3700,
+"PED_path_m": 2959
+},
+"07:45": {
+"VEH_path_m": 29038,
+"stat_PED_s_hot": 1843,
+"stat_PED_s_other": 1358,
+"CYC_path_m": 1872,
+"PED_path_m": 2646
+},
+"08:00": {
+"VEH_path_m": 26779,
+"stat_PED_s_hot": 1839,
+"stat_PED_s_other": 1006,
+"CYC_path_m": 1494,
+"PED_path_m": 1196
+},
+"08:15": {
+"stat_PED_s_hot": 2003,
+"PED_path_m": 855,
+"VEH_path_m": 23716,
+"CYC_path_m": 993,
+"stat_PED_s_other": 708
+},
+"08:30": {
+"stat_PED_s_hot": 1911,
+"stat_PED_s_other": 817,
+"VEH_path_m": 19038,
+"CYC_path_m": 823,
+"PED_path_m": 1703
+},
+"08:45": {
+"VEH_path_m": 20715,
+"stat_PED_s_hot": 1703,
+"PED_path_m": 821,
+"CYC_path_m": 486,
+"stat_PED_s_other": 489
+},
+"09:00": {
+"stat_PED_s_other": 566,
+"stat_PED_s_hot": 1711,
+"CYC_path_m": 803,
+"VEH_path_m": 19298,
+"PED_path_m": 884
+},
+"09:15": {
+"stat_PED_s_hot": 1808,
+"stat_PED_s_other": 908,
+"VEH_path_m": 18880,
+"PED_path_m": 1938,
+"CYC_path_m": 734
+},
+"09:30": {
+"stat_PED_s_hot": 1674,
+"VEH_path_m": 22005,
+"stat_PED_s_other": 2401,
+"PED_path_m": 2761,
+"CYC_path_m": 1145
+},
+"09:45": {
+"stat_PED_s_other": 899,
+"stat_PED_s_hot": 1394,
+"VEH_path_m": 20514,
+"PED_path_m": 1634,
+"CYC_path_m": 903
+},
+"10:00": {
+"stat_PED_s_hot": 1323,
+"VEH_path_m": 19853,
+"stat_PED_s_other": 586,
+"PED_path_m": 806,
+"CYC_path_m": 420
+},
+"10:15": {
+"stat_PED_s_hot": 1042,
+"VEH_path_m": 21590,
+"stat_PED_s_other": 363,
+"PED_path_m": 887,
+"CYC_path_m": 496
+},
+"10:30": {
+"stat_PED_s_hot": 1230,
+"VEH_path_m": 20181,
+"CYC_path_m": 899,
+"stat_PED_s_other": 642,
+"PED_path_m": 849
+},
+"10:45": {
+"stat_PED_s_hot": 1531,
+"VEH_path_m": 20927,
+"CYC_path_m": 1098,
+"PED_path_m": 918,
+"stat_PED_s_other": 438
+},
+"11:00": {
+"stat_PED_s_hot": 1219,
+"VEH_path_m": 21013,
+"CYC_path_m": 1193,
+"stat_PED_s_other": 1014,
+"PED_path_m": 1584
+},
+"11:15": {
+"stat_PED_s_hot": 1214,
+"VEH_path_m": 24704,
+"PED_path_m": 2194,
+"CYC_path_m": 1340,
+"stat_PED_s_other": 1330
+},
+"11:30": {
+"VEH_path_m": 23099,
+"stat_PED_s_hot": 1272,
+"stat_PED_s_other": 989,
+"PED_path_m": 1721,
+"CYC_path_m": 1172
+},
+"11:45": {
+"VEH_path_m": 22154,
+"stat_PED_s_hot": 1431,
+"PED_path_m": 1169,
+"CYC_path_m": 797,
+"stat_PED_s_other": 575
+},
+"12:00": {
+"VEH_path_m": 21380,
+"stat_PED_s_other": 816,
+"stat_PED_s_hot": 1529,
+"CYC_path_m": 982,
+"PED_path_m": 1323
+},
+"12:15": {
+"stat_PED_s_hot": 1777,
+"VEH_path_m": 20329,
+"CYC_path_m": 935,
+"PED_path_m": 1590,
+"stat_PED_s_other": 629
+},
+"12:30": {
+"VEH_path_m": 21686,
+"stat_PED_s_hot": 1642,
+"PED_path_m": 1318,
+"stat_PED_s_other": 311,
+"CYC_path_m": 889
+},
+"12:45": {
+"stat_PED_s_hot": 1474,
+"VEH_path_m": 20426,
+"PED_path_m": 2191,
+"stat_PED_s_other": 2281,
+"CYC_path_m": 1892
+}
+},
+"2026-10-29": {
+"06:00": {
+"stat_PED_s_hot": 4073,
+"stat_PED_s_other": 608,
+"PED_path_m": 245,
+"VEH_path_m": 6231,
+"CYC_path_m": 351
+},
+"06:15": {
+"stat_PED_s_hot": 4035,
+"stat_PED_s_other": 722,
+"PED_path_m": 363,
+"VEH_path_m": 6928,
+"CYC_path_m": 455
+},
+"06:30": {
+"stat_PED_s_hot": 4069,
+"stat_PED_s_other": 726,
+"VEH_path_m": 11683,
+"CYC_path_m": 571,
+"PED_path_m": 329
+},
+"06:45": {
+"stat_PED_s_hot": 4203,
+"stat_PED_s_other": 1088,
+"VEH_path_m": 13373,
+"CYC_path_m": 842,
+"PED_path_m": 606
+},
+"07:00": {
+"stat_PED_s_hot": 5890,
+"stat_PED_s_other": 1402,
+"PED_path_m": 933,
+"VEH_path_m": 15208,
+"CYC_path_m": 1058
+},
+"07:15": {
+"stat_PED_s_hot": 5227,
+"stat_PED_s_other": 2428,
+"PED_path_m": 1422,
+"CYC_path_m": 1881,
+"VEH_path_m": 18631
+},
+"07:30": {
+"stat_PED_s_hot": 4869,
+"VEH_path_m": 22305,
+"stat_PED_s_other": 5315,
+"PED_path_m": 3369,
+"CYC_path_m": 3597
+},
+"07:45": {
+"stat_PED_s_hot": 4652,
+"stat_PED_s_other": 2916,
+"VEH_path_m": 25380,
+"PED_path_m": 2276,
+"CYC_path_m": 2145
+},
+"08:00": {
+"stat_PED_s_hot": 4620,
+"CYC_path_m": 1047,
+"VEH_path_m": 19545,
+"stat_PED_s_other": 1504,
+"PED_path_m": 1098
+},
+"08:15": {
+"stat_PED_s_hot": 4124,
+"stat_PED_s_other": 1327,
+"VEH_path_m": 18612,
+"CYC_path_m": 1302,
+"PED_path_m": 1078
+},
+"08:30": {
+"stat_PED_s_hot": 3796,
+"stat_PED_s_other": 1850,
+"PED_path_m": 1021,
+"VEH_path_m": 18472,
+"CYC_path_m": 1032
+},
+"08:45": {
+"stat_PED_s_hot": 3864,
+"stat_PED_s_other": 1466,
+"VEH_path_m": 18524,
+"CYC_path_m": 1118,
+"PED_path_m": 1029
+},
+"09:00": {
+"stat_PED_s_hot": 3594,
+"stat_PED_s_other": 1679,
+"CYC_path_m": 743,
+"VEH_path_m": 16196,
+"PED_path_m": 1418
+},
+"09:15": {
+"stat_PED_s_hot": 3439,
+"stat_PED_s_other": 1752,
+"VEH_path_m": 19538,
+"PED_path_m": 1200,
+"CYC_path_m": 882
+},
+"09:30": {
+"stat_PED_s_hot": 3035,
+"stat_PED_s_other": 2259,
+"VEH_path_m": 20794,
+"CYC_path_m": 577,
+"PED_path_m": 2044
+},
+"09:45": {
+"stat_PED_s_hot": 3058,
+"stat_PED_s_other": 2235,
+"VEH_path_m": 17970,
+"PED_path_m": 1115,
+"CYC_path_m": 374
+},
+"10:00": {
+"stat_PED_s_hot": 3373,
+"stat_PED_s_other": 1981,
+"VEH_path_m": 17855,
+"PED_path_m": 925,
+"CYC_path_m": 372
+},
+"10:15": {
+"stat_PED_s_hot": 3175,
+"stat_PED_s_other": 2213,
+"VEH_path_m": 18913,
+"PED_path_m": 1057,
+"CYC_path_m": 1090
+},
+"10:30": {
+"stat_PED_s_hot": 3254,
+"stat_PED_s_other": 2332,
+"CYC_path_m": 935,
+"PED_path_m": 1164,
+"VEH_path_m": 18906
+},
+"10:45": {
+"stat_PED_s_hot": 3137,
+"stat_PED_s_other": 1687,
+"VEH_path_m": 19902,
+"CYC_path_m": 837,
+"PED_path_m": 1059
+},
+"11:00": {
+"CYC_path_m": 404,
+"stat_PED_s_hot": 3195,
+"stat_PED_s_other": 1674,
+"PED_path_m": 841,
+"VEH_path_m": 20655
+},
+"11:15": {
+"stat_PED_s_hot": 3357,
+"stat_PED_s_other": 3600,
+"VEH_path_m": 18652,
+"CYC_path_m": 1035,
+"PED_path_m": 1988
+},
+"11:30": {
+"stat_PED_s_hot": 3325,
+"stat_PED_s_other": 2557,
+"VEH_path_m": 20176,
+"PED_path_m": 1067,
+"CYC_path_m": 961
+},
+"11:45": {
+"stat_PED_s_hot": 3336,
+"stat_PED_s_other": 2047,
+"VEH_path_m": 22249,
+"PED_path_m": 1048,
+"CYC_path_m": 883
+},
+"12:00": {
+"stat_PED_s_other": 2610,
+"stat_PED_s_hot": 3718,
+"VEH_path_m": 21911,
+"PED_path_m": 1912,
+"CYC_path_m": 939
+},
+"12:15": {
+"stat_PED_s_hot": 3381,
+"stat_PED_s_other": 1287,
+"VEH_path_m": 19228,
+"PED_path_m": 1222,
+"CYC_path_m": 1175
+},
+"12:30": {
+"stat_PED_s_hot": 3390,
+"stat_PED_s_other": 1143,
+"VEH_path_m": 21170,
+"PED_path_m": 1890,
+"CYC_path_m": 544
+},
+"12:45": {
+"stat_PED_s_hot": 3324,
+"stat_PED_s_other": 1744,
+"PED_path_m": 1724,
+"VEH_path_m": 23133,
+"CYC_path_m": 2021
+}
+}
+}

@@ -1,0 +1,26 @@
+{
+ "NS": {
+  "counts": {
+   "LONG": 636,
+   "MID": 1,
+   "SHORT": 2,
+   "MASK": 32
+  },
+  "median_distance_m": {
+   "LONG": 35.1,
+   "MID": 38.3,
+   "SHORT": 25.0,
+   "MASK": 0.1
+  }
+ },
+ "OU": {
+  "counts": {
+   "SHORT": 359,
+   "MASK": 53
+  },
+  "median_distance_m": {
+   "SHORT": 7.0,
+   "MASK": 5.8
+  }
+ }
+}

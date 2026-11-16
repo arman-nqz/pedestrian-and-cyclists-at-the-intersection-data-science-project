@@ -1,0 +1,21 @@
+[server]
+enableStaticServing = false
+headless = true
+runOnSave = false
+maxUploadSize = 10
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "viewer"
+
+[theme]
+base = "light"
+primaryColor = "#4F46E5"
+backgroundColor = "#F8FAFC"
+secondaryBackgroundColor = "#F1F5F9"
+textColor = "#0F172A"
+font = "sans serif"
+borderColor = "#E5E7EB"
+baseRadius = "medium"

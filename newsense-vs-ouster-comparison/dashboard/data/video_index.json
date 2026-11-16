@@ -1,0 +1,159 @@
+{
+ "clock": {
+  "a0_s": -51.2091,
+  "slope_per_s": -1.3255843401666598e-05,
+  "t0_ref_epoch": 1793254879.604753,
+  "source": "stage3_clock_assessment/v2/clock_model_v2.json (unchanged)"
+ },
+ "delta_s": 2.81,
+ "delta_source": "stage4_traffic_analysis/checkpoint2_sensor_validation/data/c2e_video_sensor_offset.json (CK-01; cause unresolved; look-up only)",
+ "parts": {
+  "001": {
+   "overlay_at_pts0_epoch": 1793250000.9891603,
+   "pts_s_per_overlay_s": 1.0000121652742435,
+   "duration_s": 3600.07,
+   "frame_interval_s": 0.033366700036146925,
+   "file": "Standard_SCU3K2_2026-10-29_0600.001.mp4",
+   "static_name": "scu3k2_1029_001.mp4"
+  },
+  "002": {
+   "overlay_at_pts0_epoch": 1793253601.7126765,
+   "pts_s_per_overlay_s": 1.000012206658025,
+   "duration_s": 3599.37,
+   "frame_interval_s": 0.03336669994067042,
+   "file": "Standard_SCU3K2_2026-10-29_0600.002.mp4",
+   "static_name": "scu3k2_1029_002.mp4"
+  },
+  "003": {
+   "overlay_at_pts0_epoch": 1793257201.4686246,
+   "pts_s_per_overlay_s": 1.0000122236823643,
+   "duration_s": 3599.6,
+   "frame_interval_s": 0.033366699932331594,
+   "file": "Standard_SCU3K2_2026-10-29_0600.003.mp4",
+   "static_name": "scu3k2_1029_003.mp4"
+  },
+  "004": {
+   "overlay_at_pts0_epoch": 1793260801.3912752,
+   "pts_s_per_overlay_s": 1.000012187867404,
+   "duration_s": 3599.67,
+   "frame_interval_s": 0.03336669993789453,
+   "file": "Standard_SCU3K2_2026-10-29_0600.004.mp4",
+   "static_name": "scu3k2_1029_004.mp4"
+  },
+  "005": {
+   "overlay_at_pts0_epoch": 1793264401.5475266,
+   "pts_s_per_overlay_s": 1.000012207174755,
+   "duration_s": 3599.5,
+   "frame_interval_s": 0.0333666999332567,
+   "file": "Standard_SCU3K2_2026-10-29_0600.005.mp4",
+   "static_name": "scu3k2_1029_005.mp4"
+  },
+  "006": {
+   "overlay_at_pts0_epoch": 1793268001.7371747,
+   "pts_s_per_overlay_s": 1.0000122091248718,
+   "duration_s": 3599.33,
+   "frame_interval_s": 0.03336669993788877,
+   "file": "Standard_SCU3K2_2026-10-29_0600.006.mp4",
+   "static_name": "scu3k2_1029_006.mp4"
+  },
+  "007": {
+   "overlay_at_pts0_epoch": 1793271601.2594802,
+   "pts_s_per_overlay_s": 1.0000122071178874,
+   "duration_s": 3602.94,
+   "frame_interval_s": 0.033366700006482744,
+   "file": "Standard_SCU3K2_2026-10-29_0600.007.mp4",
+   "static_name": "scu3k2_1029_007.mp4"
+  }
+ },
+ "image": {
+  "width": 720,
+  "height": 480,
+  "fps": 29.97,
+  "codec": "H.264 (avc1)"
+ },
+ "homography": {
+  "H": [
+   [
+    -5.600899856027472,
+    19.218920552741107,
+    325.53351140861855
+   ],
+   [
+    -0.8870559378178564,
+    -7.3972685940903435,
+    151.18270384647306
+   ],
+   [
+    -0.023331302182194088,
+    -0.0070526672955670555,
+    0.7342563714814125
+   ]
+  ],
+  "residuals_px": [
+   2.6431430359322565,
+   3.0131545511043183,
+   0.7021062717944728,
+   4.624386734228361,
+   8.703949424405359
+  ],
+  "pairs": [
+   {
+    "xy": [
+     -21.3,
+     -11.7
+    ],
+    "uv": [
+     170,
+     196
+    ],
+    "note": "1500 OU 13949 bus front section"
+   },
+   {
+    "xy": [
+     -27.8,
+     -17.4
+    ],
+    "uv": [
+     100,
+     204
+    ],
+    "note": "1500 OU 13973 bus rear section"
+   },
+   {
+    "xy": [
+     13.7,
+     0.65
+    ],
+    "uv": [
+     637,
+     328
+    ],
+    "note": "1500/2400 OU 13577/44526 static BICYCLE at right pole"
+   },
+   {
+    "xy": [
+     11.0,
+     -12.1
+    ],
+    "uv": [
+     60,
+     412
+    ],
+    "note": "2400 OU 45751 silver car bottom left"
+   },
+   {
+    "xy": [
+     -16.0,
+     -14.2
+    ],
+    "uv": [
+     110,
+     220
+    ],
+    "note": "2400 OU 44002 stationary car far left"
+   }
+  ],
+  "method": "stationary objects only (timing-immune)",
+  "source": "stage4_traffic_analysis/checkpoint2_sensor_validation/data/c2e_homography_v4_stationary.json"
+ }
+}

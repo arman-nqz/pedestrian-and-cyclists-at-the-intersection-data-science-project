@@ -1,0 +1,334 @@
+{
+ "version": "v2 (corrected after STAGE3_final_validation.md; v1 = ../clock_model.json, unchanged)",
+ "reference": "Traffic-signal export row labels (VRS5000; local CET = UTC+1; Timestamp column = label - 3600 s). Not validated against true UTC.",
+ "time_variable": "t = reference (signal-clock) epoch seconds in every formula",
+ "sign_convention": "offset_X = T_X - T_ref for the same physical event; T_X = T_ref + offset_X; T_ref = T_X - offset_X",
+ "signal_row_convention": {
+  "status": "UNDOCUMENTED",
+  "effect": "A row labelled s may describe the instant s, the preceding second (s-1, s] or the following second [s, s+1). Event-based offsets measured against row labels (lamp edges, detector edges) are therefore uncertain by up to 1 s. For the SCU3K2 lamp offsets the true clock offset lies in [offset, offset + 1 s] if rows describe the preceding second, and equals the offset if signal changes occur exactly at row labels."
+ },
+ "precision_summary": {
+  "newsense_vs_signals": "+-1 s",
+  "newsense_vs_ouster": "+-0.7 s",
+  "ouster_vs_signals": "+-1.5 s",
+  "scu3k2_corrected_vs_signals": "approx. +-1 s (statistical +-0.03 s; row convention one-sided [0,+1] s; extrapolation envelope per window)",
+  "scu4yv": "UNCONFIRMED - excluded from synchronised analysis"
+ },
+ "sources": {
+  "traffic_signal": {
+   "offset_s": 0.0,
+   "level": "reference by definition"
+  },
+  "newsense": {
+   "offset_s": 0.0,
+   "bound_s": 1.0,
+   "level": "measured estimate",
+   "evidence": "Detector loops D3_2/D4_1: presence-occupancy r=0.857/0.858 at lag 0.0 s; rising-edge cluster (-0.9,+0.2] s whose interpretation depends on the row convention (offset ~ +0.1..+0.2 s or ~ -0.9 s) plus cell geometry ~+-0.3 s; zone-crossing lags +3.4..+4.8 s = physical delay. Bound corrected from +-0.5 s (v1) to +-1 s.",
+   "detector_edges": {
+    "newsense/D3_2": {
+     "cell": [
+      -3.0,
+      17.0
+     ],
+     "rising": {
+      "n_edges": 147,
+      "matched": 134,
+      "median": 0.2,
+      "p25": -0.3,
+      "p75": 1.202,
+      "p05": -0.901,
+      "p95": 1.609,
+      "hist_0p1": {
+       "-1.3": 1,
+       "-1.2": 1,
+       "-1.1": 2,
+       "-1.0": 3,
+       "-0.9": 3,
+       "-0.8": 3,
+       "-0.7": 6,
+       "-0.6": 6,
+       "-0.5": 3,
+       "-0.4": 6,
+       "-0.3": 3,
+       "-0.2": 8,
+       "-0.1": 5,
+       "0.0": 6,
+       "0.1": 11,
+       "0.2": 4,
+       "0.3": 1,
+       "0.4": 2,
+       "0.5": 1,
+       "0.6": 1,
+       "0.7": 1,
+       "0.8": 1,
+       "0.9": 1,
+       "1.0": 8,
+       "1.1": 11,
+       "1.2": 10,
+       "1.3": 11,
+       "1.4": 5,
+       "1.5": 3,
+       "1.6": 2,
+       "1.7": 2,
+       "2.0": 2
+      }
+     },
+     "falling": {
+      "n_edges": 146,
+      "matched": 111,
+      "median": 0.41,
+      "p25": 0.003,
+      "p75": 0.704,
+      "p05": -0.591,
+      "p95": 1.505,
+      "hist_0p1": {
+       "-1.5": 1,
+       "-1.1": 1,
+       "-0.6": 2,
+       "-0.5": 2,
+       "-0.4": 4,
+       "-0.3": 3,
+       "-0.2": 4,
+       "-0.1": 7,
+       "0.0": 6,
+       "0.1": 3,
+       "0.2": 4,
+       "0.3": 8,
+       "0.4": 10,
+       "0.5": 8,
+       "0.6": 13,
+       "0.7": 7,
+       "0.8": 6,
+       "0.9": 1,
+       "1.0": 3,
+       "1.1": 4,
+       "1.2": 1,
+       "1.3": 2,
+       "1.4": 2,
+       "1.5": 1,
+       "1.8": 1,
+       "1.9": 1
+      }
+     }
+    },
+    "newsense/D4_1": {
+     "cell": [
+      -1.0,
+      15.0
+     ],
+     "rising": {
+      "n_edges": 178,
+      "matched": 169,
+      "median": 0.009,
+      "p25": -0.396,
+      "p75": 1.21,
+      "p05": -0.79,
+      "p95": 1.603,
+      "hist_0p1": {
+       "-1.5": 1,
+       "-0.9": 4,
+       "-0.8": 5,
+       "-0.7": 10,
+       "-0.6": 8,
+       "-0.5": 7,
+       "-0.4": 8,
+       "-0.3": 9,
+       "-0.2": 9,
+       "-0.1": 15,
+       "0.0": 14,
+       "0.1": 8,
+       "0.2": 9,
+       "0.3": 4,
+       "0.4": 1,
+       "0.5": 2,
+       "0.7": 1,
+       "0.8": 1,
+       "1.1": 7,
+       "1.2": 7,
+       "1.3": 12,
+       "1.4": 9,
+       "1.5": 6,
+       "1.6": 5,
+       "1.7": 2,
+       "1.8": 3
+      }
+     },
+     "falling": {
+      "n_edges": 177,
+      "matched": 125,
+      "median": 0.31,
+      "p25": 0.097,
+      "p75": 0.704,
+      "p05": -0.391,
+      "p95": 2.01,
+      "hist_0p1": {
+       "-1.6": 1,
+       "-0.9": 1,
+       "-0.7": 1,
+       "-0.4": 5,
+       "-0.3": 1,
+       "-0.2": 7,
+       "-0.1": 6,
+       "0.0": 10,
+       "0.1": 8,
+       "0.2": 8,
+       "0.3": 14,
+       "0.4": 13,
+       "0.5": 6,
+       "0.6": 7,
+       "0.7": 8,
+       "0.8": 11,
+       "0.9": 3,
+       "1.0": 1,
+       "1.1": 3,
+       "1.2": 1,
+       "1.6": 1,
+       "1.9": 1,
+       "2.0": 1
+      }
+     }
+    }
+   }
+  },
+  "ouster_logs_and_pcap_host": {
+   "offset_s": 0.0,
+   "bound_vs_signals_s": 1.5,
+   "bound_vs_newsense_s": 0.7,
+   "level": "measured estimate (84 min of logs)",
+   "evidence": "2 loops, 28-35 matched edges, medians -0.17/-0.37 s, p05-p95 -2.4..+1.5 s; Newsense activity xcorr -0.50..+0.65 s; log frame phase = PCAP frame-start phase within 1-2 ms (same clock domain, strong hypothesis). Bound corrected from +-1 s (v1) to +-1.5 s."
+  },
+  "miovision_SCU3K2_overlay": {
+   "level": "measured in 3 hours; model elsewhere",
+   "lamp_identity": "K1 (vehicle head): lamp shows red+amber (state S) before green and amber ending exactly 3.0 s after green; only K1 has S and a 3-row amber (F12-F15: G/R only; R1: 2-row amber). On/off-consistent alternatives F12-F15 (1 s shifted) are excluded physically, not only statistically.",
+   "estimator": "Same rule for all hours/days (v2): pooled median of lamp-edge differences over >= 2 agreeing edge types (ON, OFF_G = green->amber, OFF_A = amber->red), each with >= 8 tight matches and IQR <= 0.10 s. v1 used on+off mean on 29 Oct and off-only on 28 Oct (difference <= 0.02 s).",
+   "measured_points": [
+    {
+     "part": "SCU3K2_1028_002.csv",
+     "hour_overlay": "2026-10-28 07:00-08:00",
+     "offset_s": -50.074,
+     "n_edges": 50,
+     "iqr_s": 0.029,
+     "agreeing_edge_types": [
+      "ON",
+      "OFF_G"
+     ],
+     "t_ref": 1793169235.9434404,
+     "t_ref_local": "2026-10-28 07:33:55.943",
+     "model_residual_s": -0.0001
+    },
+    {
+     "part": "SCU3K2_1029_001.csv",
+     "hour_overlay": "2026-10-29 06:00-07:00",
+     "offset_s": -51.167,
+     "n_edges": 29,
+     "iqr_s": 0.023,
+     "agreeing_edge_types": [
+      "ON",
+      "OFF_A"
+     ],
+     "t_ref": 1793252001.1981761,
+     "t_ref_local": "2026-10-29 06:33:21.198",
+     "model_residual_s": 0.004
+    },
+    {
+     "part": "SCU3K2_1029_002.csv",
+     "hour_overlay": "2026-10-29 07:00-08:00",
+     "offset_s": -51.213,
+     "n_edges": 48,
+     "iqr_s": 0.019,
+     "agreeing_edge_types": [
+      "ON",
+      "OFF_G"
+     ],
+     "t_ref": 1793254879.604753,
+     "t_ref_local": "2026-10-29 07:21:19.604",
+     "model_residual_s": -0.0039
+    }
+   ],
+   "drift": {
+    "slope_ppm_3point_fit": -13.26,
+    "within_day_two_point_ppm_29Oct": -16.0,
+    "overlay_vs_mp4_frame_clock_ppm": "-11.6 to -12.2 (all 15 mapped camera parts: 14 parts of 29 Oct (7 per camera) + SCU3K2 28 Oct .002)",
+    "linearity": "Supported only within 29 Oct 06:00-08:00 (two consecutive hours) and by the day-to-day change; NOT measured after 08:00 (lamp contrast too low). The 3-point fit spans a device reboot (system clock re-set from RTC ~05:58 CET daily)."
+   },
+   "model": {
+    "formula": "offset(t) = a0 + slope * (t - t0)",
+    "a0_s": -51.2091,
+    "slope_per_s": -1.3255843401666598e-05,
+    "t0_ref_epoch": 1793254879.604753,
+    "t0_ref_local": "2026-10-29 07:21:19.604",
+    "inverse": "T_overlay = T_ref + offset(T_ref);  T_ref = T_overlay - offset(T_overlay - offset) (one fixed-point step; error < 1 ms)"
+   },
+   "measured_intervals_ref": [
+    [
+     "2026-10-28 07:00:51.517",
+     "2026-10-28 08:00:51.073"
+    ],
+    [
+     "2026-10-29 06:00:52.156",
+     "2026-10-29 07:00:52.179"
+    ],
+    [
+     "2026-10-29 07:00:52.925",
+     "2026-10-29 08:00:52.247"
+    ]
+   ],
+   "extrapolation": {
+    "envelope": "|t - nearest measured interval| x 13.3 ppm (within-day drift anywhere between 0 and 2x the fitted slope)",
+    "examples_s": {
+     "08:18 (window B)": 0.014,
+     "09:04 (C)": 0.05,
+     "10:24 (D)": 0.114,
+     "13:00": 0.238
+    },
+    "indicative_unaccepted_values": {
+     "SCU3K2_1029_003.csv": {
+      "OFF_G": {
+       "tight": 9,
+       "median": -51.175,
+       "iqr": 0.016,
+       "valid": true
+      },
+      "OFF_A": {
+       "tight": 9,
+       "median": -54.175,
+       "iqr": 0.016,
+       "valid": true
+      }
+     }
+    },
+    "note": "Hour 08:00-09:00 gives a single valid edge type (OFF_G, 9 edges) at -51.175 s, ~0.09 s above the model (-51.26); not accepted as a measurement (rule needs 2 agreeing types) but recorded as an unresolved hint of non-linearity."
+   },
+   "video_mapping": "v2/b6_video_ticks_v2.json: overlay_epoch(pts) = overlay_at_pts0_epoch + pts / pts_s_per_overlay_s for all 15 camera parts (all 14 parts of 29 Oct, both cameras, + SCU3K2 28 Oct .002) and the 3 clips; 50 overlay reads (18 anchors, 32 checks), all checks consistent",
+   "part_starts_overlay": {
+    "SCU3K2_1028_002.csv": "2026-10-28T07:00:01.443+01:00",
+    "SCU3K2_1029_001.csv": "2026-10-29T06:00:00.989+01:00",
+    "SCU3K2_1029_002.csv": "2026-10-29T07:00:01.712+01:00",
+    "SCU3K2_1029_003.csv": "2026-10-29T08:00:01.468+01:00",
+    "SCU3K2_1029_004.csv": "2026-10-29T09:00:01.391+01:00",
+    "SCU3K2_1029_005.csv": "2026-10-29T10:00:01.547+01:00",
+    "SCU3K2_1029_006.csv": "2026-10-29T11:00:01.737+01:00",
+    "SCU3K2_1029_007.csv": "2026-10-29T12:00:01.259+01:00",
+    "SCU4YV_1029_001.csv": "2026-10-29T06:00:00.841+01:00",
+    "SCU4YV_1029_002.csv": "2026-10-29T07:00:01.600+01:00",
+    "SCU4YV_1029_003.csv": "2026-10-29T08:00:01.424+01:00",
+    "SCU4YV_1029_004.csv": "2026-10-29T09:00:01.348+01:00",
+    "SCU4YV_1029_005.csv": "2026-10-29T10:00:01.673+01:00",
+    "SCU4YV_1029_006.csv": "2026-10-29T11:00:01.330+01:00",
+    "SCU4YV_1029_007.csv": "2026-10-29T12:00:01.521+01:00"
+   }
+  },
+  "miovision_SCU4YV_overlay": {
+   "level": "HYPOTHESIS - EXCLUDED from synchronised analysis",
+   "offset_s": "<= -71 (plausibly -75 to -90)",
+   "evidence": "Single shared vehicle (green tanker, identified by livery only) seen moving in SCU4YV at overlay 07:34:09-12; Newsense tracks the truck moving only from 07:35:23.4 (track 2163, ends while still moving at 07:35:35.4; 50 s untracked before). No camera geometry, no lamp.",
+   "not_used": "Motion-energy correlation (-80.5 s) is NOT used as corroboration: the same method was biased by 3.5 s on SCU3K2.",
+   "relation_to_SCU3K2": "Not synchronised with SCU3K2 [HYPOTHESIS, not fact]: synchronisation is disfavoured (would place the moving sighting in a period when Newsense shows the truck queued) but not excluded (truck identity unconfirmed)."
+  },
+  "ouster_sensor_internal": {
+   "note": "TIME_FROM_INTERNAL_OSC; host - sensor = power-on epoch 2026-10-29T06:10:28.035Z plus drift",
+   "drift_ppm_vs_host": 6.486077464084272
+  }
+ },
+ "ouster_10min_clips": "MioVision SCU3K2 10 fps extracts; see overlap CSV (start ~52 s after the PCAP they are named after; no clip for window B)"
+}
