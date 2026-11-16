@@ -9,11 +9,12 @@ from lib import data
 LIM = 46
 LAND = "#f2efe9"
 # highway type: (fill, casing, default width m, draw order); OSM Carto colors
+# Ring main road (trunk) runs below the junction, under the Wuerzburger Strasse bridge: drawn first and faded
 ROAD_STYLE = {
-    "trunk": ("#f9b29c", "#c84e2f", 7.0, 5),
+    "trunk": ("rgba(249,178,156,0.45)", "rgba(200,78,47,0.35)", 7.0, -1),
     "trunk_link": ("#f9b29c", "#c84e2f", 3.5, 4),
     "primary": ("#fcd6a4", "#a06b00", 8.0, 5),
-    "secondary": ("#f7fabf", "#707d05", 7.0, 3),
+    "secondary": ("#f7fabf", "#707d05", 7.0, 5),  # Wuerzburger Strasse, the bridge: on top
     "tertiary": ("#ffffff", "#8f8f8f", 6.0, 2),
     "residential": ("#ffffff", "#9a9a9a", 6.0, 1),
     "service": ("#ffffff", "#9a9a9a", 4.0, 0),
@@ -64,11 +65,12 @@ def _labels(roads, lim=LIM - 4, min_len=12, spacing=30):
         cum = np.cumsum(L)
         i = int(np.searchsorted(cum, cum[-1] / 2))  # segment at half the visible length
         x, y = mid[i]
-        if any(n == f["name"] and math.hypot(x - a, y - b) < spacing for a, b, _, n in out):
+        name = f["name"] + (" (underpass)" if f.get("highway") == "trunk" else "")
+        if any(n == name and math.hypot(x - a, y - b) < spacing for a, b, _, n in out):
             continue
         ang = -math.degrees(math.atan2(seg[i, 1], seg[i, 0]))
         ang = (ang + 90) % 180 - 90  # keep text upright
-        out.append((float(x), float(y), ang, f["name"]))
+        out.append((float(x), float(y), ang, name))
     return out
 
 

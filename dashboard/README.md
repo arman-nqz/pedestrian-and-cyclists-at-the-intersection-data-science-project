@@ -49,8 +49,10 @@ The filters are kept in the URL, so a link opens the same view. On Video, `?t=07
 ## The pages in detail
 
 Screenshots: `clean` variant, whole day, dark theme (Streamlit follows the system theme). Maps are in **sensor
-meters**, about ±46 m around the junction; north-west to south-east is Dr.-Willi-Reiland-Ring (salmon), south-west to
-north-east is Würzburger Straße (yellow). Arms: **N** and **S** on the Ring, **E** and **W** on Würzburger Straße.
+meters**, about ±46 m around the junction. Würzburger Straße (yellow) runs from upper left to lower right and crosses
+the Ring on a bridge; Dr.-Willi-Reiland-Ring (faded salmon, "underpass") runs from lower left to upper right below the
+junction, and only its ramps (salmon) are at street level. Arms: **N** and **S** on the Ring, **E** and **W** on
+Würzburger Straße.
 Crossings **X1 to X5** (green outlines) were found from the data by `zones.py`.
 
 ### Overview

@@ -48,6 +48,7 @@ def map_layer():
     for c in (z or {}).get("crossings", []):
         cx, cy = np.mean(c["polygon"], axis=0)
         crossings.append({"id": c["id"], "xy": c["polygon"], "cx": float(cx), "cy": float(cy)})
+    roads = [f for f in roads if f["highway"] != "trunk"]  # Ring main road is under the junction: not drawn
     return {"roads": [{"xy": f["xy"], "w": plots._width(f)} for f in roads],
             "footways": [f["xy"] for f in osm["footways"]],
             "buildings": [f["xy"] for f in osm.get("buildings", [])],

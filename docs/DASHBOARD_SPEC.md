@@ -9,7 +9,7 @@ Status: draft, decisions of 2026-11-09 included. Branch: `stitching-comparison`.
 | 1 | Stack | **Streamlit** (Python). Sections 4.6 and 6 are rewritten for it. |
 | 2 | Default cleaning variant | **`clean`**, with a dropdown in the sidebar to switch to `stitched` or `segmented` |
 | 3 | Events | Default is the **original pipeline** (`published`) events. Events recomputed on stitched tracks stay available as a comparison |
-| 4 | Map | OSM extract `dashboard/config/k305_map.osm` is aligned to the sensor frame (rotation 276 deg, no mirror); result in `dashboard/config/k305_map.json`. Crossing zones and arms still to be defined from it |
+| 4 | Map | OSM extract `dashboard/config/k305_map.osm` is aligned to the sensor frame (rotation 4.25 deg, no mirror; corrected 2026-11-10, see 5.5); result in `dashboard/config/k305_map.json`. Crossing zones and arms still to be defined from it |
 | 5 | Order of work | Map alignment first (done), then the data pipeline (M0/M1) |
 | 6 | Dataset | **29 October 2026 only** (decided after the professor's email); 14 October is dropped from the dashboard and kept only as test samples. Shared analysis windows: `docs/ANALYSIS_WINDOWS.md` |
 | 7 | NSE score | detections with a score below **0.25** are left out, as in `near_miss_analysis.py` |
@@ -202,6 +202,7 @@ The dashboard must work without the open items (features degrade as noted in eac
 - **Mirror question settled two independent ways:** (a) right-hand traffic: vehicles on the main axis keep right of the opposite flow in the sensor frame (8.4 m gap); (b) on the OSM one-way roads the recorded vehicle direction matches the drawn direction at 86 of 104 points (mirrored alternative: 9 of 102).
 - **Pedestrian check:** the mean log density of pedestrians on OSM footways is 0.64, random points 0.44.
 - **Accuracy:** not measured beyond the visual check in `alignment_check.png`; treat it as about 2 m. The OSM junction (signals mean) lies at the edge of the sensor window, so the map is trustworthy mainly where tracks exist.
+- **Correction (2026-11-10, 29 Oct data):** the fit above was 90 degrees off. Würzburger Straße crosses the Ring on a bridge and the Ring main road runs underneath, so the sensor sees no traffic on the Ring itself; fitting all motor roads matched the wrong pair of road bands. `surface_fit` in `map_alignment.py` now refits on Würzburger Straße and the ramps only, penalises traffic on the Ring main road, tries all four quarter turns and also scores footways and crossing nodes against pedestrian traffic. Result: rotation 4.25 deg, shift (-20.9, 8.2) m; quarter-turn totals +0 1.62, +90 4.44, +180 2.94, +270 3.79. The team confirmed the orientation by eye. Arms were renamed accordingly (old E = new N, old N = W, old W = S, old S = E); crossing areas did not move.
 
 ## 6. Technical approach
 

@@ -13,7 +13,10 @@ Writes in --out:
     alignment_check.png overlay of the map on vehicle and pedestrian density
 
 Method: coarse search over rotation (1 degree steps, FFT cross-correlation over shifts, 1 m cells), then
-a fine local search (0.25 degree, 0.5 m) on the road points. Needs numpy, matplotlib.
+a fine local search (0.25 degree, 0.5 m) on the road points. That first fit uses all motor roads and came out
+90 degrees off at K305, where the Ring main road runs under Wuerzburger Strasse. `surface_fit` therefore refits on
+the surface roads only (Wuerzburger Strasse and the ramps), tries all four quarter turns and picks the one that
+also puts footways and crossings on pedestrian traffic. Needs numpy, matplotlib.
 """
 import argparse
 import json
@@ -237,6 +240,73 @@ def oneway_direction_check(ways, nodes, lat0, lon0, deg, shift, mirror, velfield
     return agree, tot
 
 
+def surface_fit(nodes, ways, lat0, lon0, veh, ped, deg0, mirror, radius=60.0):
+    """Refit on the roads the sensor can see, trying all four quarter turns from `deg0`.
+
+    At K305 Wuerzburger Strasse is a bridge and the Ring main road (highway=trunk) runs underneath, so vehicles on
+    the Ring are not on the junction surface. Fitting all motor roads, as `refine` does, can lock onto a turn that is
+    90 deg off (the junction looks almost the same turned). Here: Wuerzburger Strasse and the ramps (trunk_link) must
+    lie on vehicle traffic, the Ring main road should not, road outside the sensor view counts as empty, and
+    footways and crossing nodes must lie on pedestrian traffic (that breaks the 180 deg symmetry).
+    The pose is searched as "where the Wuerzburger x Ring point lands" plus a rotation around it.
+    """
+    def pts(pred, centre=None, r=radius):
+        p = np.vstack([densify(way_xy(w, nodes, lat0, lon0)) for w in ways if pred(w["tags"])])
+        return p if centre is None else p[np.hypot(*(p - centre).T) < r]
+
+    wz_all = pts(lambda t: t.get("name") == "Würzburger Straße")
+    ring_all = pts(lambda t: t.get("highway") == "trunk")
+    near = lambda p: p[np.hypot(p[:, 0], p[:, 1]) < 80]
+    a, b = near(wz_all), near(ring_all)
+    dist = np.hypot(a[:, None, 0] - b[None, :, 0], a[:, None, 1] - b[None, :, 1])
+    i, j = np.unravel_index(np.argmin(dist), dist.shape)
+    J = (a[i] + b[j]) / 2  # Wuerzburger x Ring, ENU meters
+    wz = wz_all[np.hypot(*(wz_all - J).T) < radius]
+    ramps = pts(lambda t: t.get("highway") == "trunk_link", J)
+    under = ring_all[np.hypot(*(ring_all - J).T) < radius]
+    foot = pts(lambda t: t.get("highway") in PED_HIGHWAYS or t.get("footway") == "crossing", J)
+    xnodes = np.array([to_local(v[0], v[1], lat0, lon0) for v in nodes.values() if v[2].get("highway") == "crossing"])
+
+    def z(img):
+        d = blur(np.log1p(img), 1.5)
+        return (d - d.mean()) / d.std()
+    dv, dp = z(veh), z(ped)
+    empty = float(np.quantile(dv, 0.2))
+
+    def val(img, p, deg, sh, fill):
+        s = sample(img, to_sensor(p, deg, sh, mirror))
+        return np.where(np.isfinite(s), s, fill)
+
+    def vscore(deg, sh):
+        return val(dv, wz, deg, sh, empty).mean() + val(dv, ramps, deg, sh, empty).mean() - 0.5 * val(dv, under, deg, sh, empty).mean()
+
+    def search(deg_c, t_c, ddeg, dt, sdeg, st):
+        best = (-1e9, deg_c, t_c)
+        for deg in np.arange(deg_c - ddeg, deg_c + ddeg + 1e-9, sdeg):
+            R = rot(-deg).T
+            for tx in np.arange(t_c[0] - dt, t_c[0] + dt + 1e-9, st):
+                for ty in np.arange(t_c[1] - dt, t_c[1] + dt + 1e-9, st):
+                    t = np.array([tx, ty])
+                    s = vscore(deg, t - (J * [1, -1 if mirror else 1]) @ R)
+                    if s > best[0]:
+                        best = (s, deg, t)
+        return best
+
+    cands = {}
+    for turn in (0, 90, 180, 270):  # +90 = map turned clockwise on screen
+        s, deg, t = search(deg0 + turn, np.array([-5.0, -5.0]), 20, 30, 1.0, 1.5)
+        s, deg, t = search(deg, t, 1.5, 2.0, 0.25, 0.25)
+        sh = t - (J * [1, -1 if mirror else 1]) @ rot(-deg).T
+        fw = sample(dp, to_sensor(foot, deg, sh, mirror))
+        xn = sample(dp, to_sensor(xnodes, deg, sh, mirror))
+        c = {"deg": round(float(deg) % 360, 2), "shift": np.round(sh, 2).tolist(), "vehicle": round(float(s), 3),
+             "footway": round(float(np.nanmean(fw)), 3), "crossing": round(float(np.nanmean(xn)), 3)}
+        c["total"] = round(c["vehicle"] + c["footway"] + c["crossing"], 3)
+        cands[f"+{turn}"] = c
+    best = max(cands.values(), key=lambda c: c["total"])
+    return {"deg": best["deg"], "shift": best["shift"], "candidates": cands}
+
+
 GREEN = {"park", "village_green", "grass", "scrub", "pitch", "garden", "wood", "meadow"}
 
 
@@ -320,6 +390,12 @@ def main(argv=None):
     best = next(h for h in hyps if h["mirror"] == mirrored)
     deg, sh, mirror, fine_sc = best["deg"], best["shift"], best["mirror"], best["road_score"]
     print(f"chosen (by handedness): mirror={mirror}, rotation {deg:.2f} deg, shift {sh.round(2)} m")
+    sf = surface_fit(nodes, ways, lat0, lon0, veh, ped, deg, mirror)
+    for k, c in sf["candidates"].items():
+        print(f"surface fit, turn {k}: rotation {c['deg']:.2f} deg, shift {c['shift']}, vehicles {c['vehicle']:.2f}, "
+              f"footways {c['footway']:.2f}, crossings {c['crossing']:.2f}, total {c['total']:.2f}")
+    deg, sh = sf["deg"], np.array(sf["shift"])
+    print(f"chosen (surface roads + pedestrians): rotation {deg:.2f} deg, shift {sh.round(2)} m")
 
     # independent check: pedestrians should be on footways and crossings, not on random lines
     ped_ways = [w for w in ways if w["tags"].get("highway") in PED_HIGHWAYS or w["tags"].get("footway") == "crossing"]
@@ -353,6 +429,7 @@ def main(argv=None):
         "transform_enu_to_sensor": {"rotation_deg": round(float(deg), 3), "shift_m": np.round(sh, 3).tolist(), "mirror": mirror,
                                     "formula": "q = R(-rotation) @ (x_east, +-y_north) + shift"},
         "quality": {"fine_road_score": round(float(fine_sc), 3), **check, "density_files": nfiles,
+                    "surface_fit": sf["candidates"],
                     "hypotheses": [{"mirror": h["mirror"], "rotation_deg": round(float(h["deg"]), 3), "shift_m": np.round(h["shift"], 3).tolist(),
                                     "road_score": round(float(h["road_score"]), 3), "oneway_match": h["oneway_match"],
                                     } for h in hyps],
