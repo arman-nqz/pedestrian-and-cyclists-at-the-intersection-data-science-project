@@ -16,7 +16,8 @@ import pandas as pd
 
 # Point DATA_SOURCE to either a folder of JSONs or a .zip archive:
 # - Local path if downloaded to database/:
-DATA_SOURCE = "database/k305_object_list_2026-10-29_aggregation_5min.zip"
+#DATA_SOURCE = "database/k305_object_list_2026-10-29_aggregation_5min.zip"
+DATA_SOURCE = "/content/drive/MyDrive/k305_object_list_2026-10-29_aggregation_5min.zip"
 # - Google Colab path (if running via Google Drive shortcut):
 # DATA_SOURCE = "/content/drive/MyDrive/k305_object_list_2026-10-29_aggregation_5min.zip"
 # - Legacy sample folder (3 midnight files):
