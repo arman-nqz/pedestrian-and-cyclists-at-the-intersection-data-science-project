@@ -14,9 +14,12 @@ import zipfile
 import numpy as np
 import pandas as pd
 
-# Point DATA_SOURCE to either a folder of JSONs or a .zip archive
-DATA_SOURCE = "database/Data from date of 28.10, 29.10./newsense/object_list/k305_object_list_2026-10-29_aggregation_5min.zip"
-# Fallback legacy folder:
+# Point DATA_SOURCE to either a folder of JSONs or a .zip archive:
+# - Local path if downloaded to database/:
+DATA_SOURCE = "database/k305_object_list_2026-10-29_aggregation_5min.zip"
+# - Google Colab path (if running via Google Drive shortcut):
+# DATA_SOURCE = "/content/drive/MyDrive/k305_object_list_2026-10-29_aggregation_5min.zip"
+# - Legacy sample folder (3 midnight files):
 # DATA_SOURCE = "database/k305_object_list_2026-10-14_aggregation_5min"
 
 OUT_DIR = "output/vru_analysis"
@@ -90,7 +93,7 @@ def load_all_data(source):
 def to_local_time(series):
     if pd.api.types.is_numeric_dtype(series):
         return pd.to_datetime(series, unit="s", utc=True).dt.tz_convert("Europe/Berlin")
-    return pd.to_datetime(series, utc=True).dt.tz_convert("Europe/Berlin")
+    return pd.to_datetime(series, format="ISO8601", utc=True).dt.tz_convert("Europe/Berlin")
 
 
 def majority_class(series):
@@ -103,7 +106,7 @@ def main():
 
     df = pd.DataFrame(vru_rows, columns=["time", "track_id", "cls", "x", "y"])
     if df.empty:
-        raise SystemExit("No pedestrians or cyclists found (normal if only midnight files are present).")
+        raise SystemExit("No pedestrians or cyclists found.")
 
     df["time"] = to_local_time(df["time"])
     df = df.sort_values(["track_id", "time"]).reset_index(drop=True)
