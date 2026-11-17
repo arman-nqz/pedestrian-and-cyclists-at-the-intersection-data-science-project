@@ -36,7 +36,7 @@ def load_file(path):
 def to_local_time(series):
     if pd.api.types.is_numeric_dtype(series):
         return pd.to_datetime(series, unit="s", utc=True).dt.tz_convert("Europe/Berlin")
-    return pd.to_datetime(series, utc=True).dt.tz_convert("Europe/Berlin")
+    return pd.to_datetime(series, format="ISO8601", utc=True).dt.tz_convert("Europe/Berlin")
 
 
 def main():
