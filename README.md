@@ -154,13 +154,20 @@ Near-misses cluster sharply around daily human routines:
 3. **Evening Commute (16:00 – 17:00)**: **286 events** *(Work return commute)*.
 * Peak traffic interval of the day: **07:40 to 07:44** (`k305_object_list_2026-10-14_07-40_to_07-44.json`).
 
+---
+
 ## 🚶‍♂️🚲 VRU Spatial & Temporal Analysis (Areas 4 & 5)
 
-To complement the near-miss safety pipeline, dedicated spatial and temporal modules analyze **when** and **where** Vulnerable Road Users (Pedestrians and Cyclists) use intersection K305:
+To complement the vehicle near-miss safety pipeline, dedicated spatial and temporal modules examine **when** and **where** Vulnerable Road Users (Pedestrians and Cyclists) use intersection K305 across a full 24-hour cycle (October 29, 2026 — 288 five-minute intervals):
 
-* **Data Preparation (`vru_explore.py`, `vru_prepare.py`)**: Filters Pedestrian and Cyclist trajectories, removes transient noise tracks ($< 5$ frames / $0.5\,\text{s}$), deduplicates tracks across 5-minute file boundaries, and exports per-track summaries (`vru_tracks.csv`) alongside 15-minute interval counts (`vru_counts_15min.csv`).
-* **Temporal Profiles (Area 5)**: Computes 15-minute volume curves, dwell-time occupancy (person-seconds), peak-hour windows, and a direct modal comparison between Pedestrians and Cyclists.
-* **Spatial Density & Overlap (Area 4)**: Generates $0.5\,\text{m} \times 0.5\,\text{m}$ 2D dwell-time heatmaps, maps crossing trajectories to ground-truth crosswalks (`CW-NB`, `CW-SB`, `CW-WB`) and the eastbound bike lane (`Bike-EB`), and highlights VRU-vehicle spatial overlap zones.
+* **Data Preparation & Cleaning (`vru_explore.py`, `vru_prepare.py`)**:
+  * Filters Pedestrian and Cyclist trajectories, applies an ML confidence threshold (`score >= 0.25`), removes transient noise tracks ($< 5$ frames / $0.5\,\text{s}$), and resolves class flickering via majority voting.
+  * Across October 29, 2026, extracted **20,175 valid VRU tracks** (**14,600 Pedestrians** and **5,575 Cyclists**, a ~2.6 : 1 modal ratio) and exported per-track kinematics (`vru_tracks.csv`) alongside 15-minute interval counts (`vru_counts_15min.csv`) and occupancy (`vru_dwell_15min.csv`).
+* **Temporal Usage Profiles (`vru_temporal.py` — Area 5)**:
+  * Aggregates moving VRU trajectories ($\ge 1.5\,\text{m}$ net displacement) into 96 fifteen-minute windows (`00:00`–`23:45` CET), identifies top rolling 60-minute peak-hour windows (`temporal_peak_hours.csv`), and compares Pedestrian vs. Cyclist speeds, durations, and peak-to-mean ratios (`temporal_ped_vs_cyclist.csv`, `temporal_vru_profiles.png`).
+* **Spatial Density & Exposure Hotspots (`vru_spatial.py` — Area 4)**:
+  * Maps 10 Hz VRU trajectories onto a $0.5\,\text{m} \times 0.5\,\text{m}$ spatial grid (`spatial_vru_heatmaps.png`) overlaid with intersection zone polygons (`event_zones.json`).
+  * Computes a joint VRU-vehicle spatial overlap exposure index ($\sqrt{t_{\text{VRU}} \cdot t_{\text{Veh}}}$) to highlight shared conflict zones (`spatial_vru_vehicle_overlap.png`, `spatial_overlap_hotspots.csv`).
 
 ---
 
@@ -176,7 +183,9 @@ To complement the near-miss safety pipeline, dedicated spatial and temporal modu
 ├── eda_k305.py                       # Week 1 exploratory data analysis pipeline
 ├── eda_k305.ipynb                    # Week 1 exploratory Jupyter notebook
 ├── vru_explore.py                    # Initial single-file VRU inspection script
-├── vru_prepare.py                    # VRU trajectory cleaning & 15-minute count preparation
+├── vru_prepare.py                    # VRU trajectory cleaning, kinematics & 15-min aggregation
+├── vru_temporal.py                   # Area 5: 15-min volume curves, peak hours & modal comparison
+├── vru_spatial.py                    # Area 4: 0.5 m x 0.5 m dwell heatmaps & VRU-vehicle overlap
 ├── requirements.txt                  # Python package dependencies
 ├── DATABASE_AND_PROJECT_GUIDE.md     # In-depth database reference & geometry guide
 ├── RUN_NEAR_MISS_ANALYSIS.md         # Operational execution guide for near_miss_analysis
@@ -191,6 +200,7 @@ To complement the near-miss safety pipeline, dedicated spatial and temporal modu
     ├── full_day_20261026_204014_631230/ # 24-hour run output (2,583 TTC events, run_report.json)
     ├── extended_analysis/            # Week 3 figures (hotspots, hourly curves, TTC boxplots)
     └── peak_traffic_0740.gif         # 2D animated simulation of the 07:40 peak traffic window
+│   └── vru_analysis/                 # Full-day Oct 29 VRU tracks, 15-min counts, heatmaps & charts
 ```
 
 ---
