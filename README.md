@@ -156,19 +156,32 @@ Near-misses cluster sharply around daily human routines:
 
 ---
 
+---
+
 ## 🚶‍♂️🚲 VRU Spatial & Temporal Analysis (Areas 4 & 5)
 
-To complement the vehicle near-miss safety pipeline, dedicated spatial and temporal modules examine **when** and **where** Vulnerable Road Users (Pedestrians and Cyclists) use intersection K305 across a full 24-hour cycle (October 29, 2026 — 288 five-minute intervals):
+To complement the vehicle near-miss safety pipeline, dedicated temporal and spatial modules examine **when** and **where** Vulnerable Road Users (Pedestrians and Cyclists) use intersection K305 across a full 24-hour cycle (October 29, 2026 — 288 five-minute intervals, **20,175 raw VRU tracks** cleaned to **8,694 active moving trajectories** with net displacement $\ge 1.5\,\text{m}$):
 
-* **Data Preparation & Cleaning (`vru_explore.py`, `vru_prepare.py`)**:
-  * Filters Pedestrian and Cyclist trajectories, applies an ML confidence threshold (`score >= 0.25`), removes transient noise tracks ($< 5$ frames / $0.5\,\text{s}$), and resolves class flickering via majority voting.
-  * Across October 29, 2026, extracted **20,175 valid VRU tracks** (**14,600 Pedestrians** and **5,575 Cyclists**, a ~2.6 : 1 modal ratio) and exported per-track kinematics (`vru_tracks.csv`) alongside 15-minute interval counts (`vru_counts_15min.csv`) and occupancy (`vru_dwell_15min.csv`).
-* **Temporal Usage Profiles (`vru_temporal.py` — Area 5)**:
-  * Aggregates moving VRU trajectories ($\ge 1.5\,\text{m}$ net displacement) into 96 fifteen-minute windows (`00:00`–`23:45` CET), identifies top rolling 60-minute peak-hour windows (`temporal_peak_hours.csv`), and compares Pedestrian vs. Cyclist speeds, durations, and peak-to-mean ratios (`temporal_ped_vs_cyclist.csv`, `temporal_vru_profiles.png`).
-* **Spatial Density & Exposure Hotspots (`vru_spatial.py` — Area 4)**:
-  * Maps 10 Hz VRU trajectories onto a $0.5\,\text{m} \times 0.5\,\text{m}$ spatial grid (`spatial_vru_heatmaps.png`) overlaid with intersection zone polygons (`event_zones.json`).
-  * Computes a joint VRU-vehicle spatial overlap exposure index ($\sqrt{t_{\text{VRU}} \cdot t_{\text{Veh}}}$) to highlight shared conflict zones (`spatial_vru_vehicle_overlap.png`, `spatial_overlap_hotspots.csv`).
+### 1. Temporal VRU Usage Profiles (`vru_temporal.py` — Area 5)
 
+Aggregating the **5,476 moving Pedestrians** and **3,218 moving Cyclists** (1.70 : 1 modal ratio) across all 96 fifteen-minute windows (`00:00`–`23:45` CET) reveals sharp commuter peaking and distinct modal kinematics (`temporal_vru_profiles.png`, `temporal_peak_hours.csv`, `temporal_ped_vs_cyclist.csv`):
+
+* **Morning Commute / School Rush Peak (`07:00 – 08:00`)**: Both modes peaked simultaneously during the 07:00–08:00 window with **976 combined VRUs** (**553 Pedestrians** [10.1% of daily pedestrian volume] and **423 Cyclists** [13.1% of daily cyclist volume]), surging around 07:30 (`282` pedestrians and `195` cyclists in the single busiest 15-minute interval). Secondary midday (`13:00`) and afternoon (`15:30`–`18:00`) plateaus followed, while overnight volumes (`00:00`–`05:00`) remained below 15 tracks per 15 minutes.
+* **Modal Behavior & Kinematics**:
+
+| Mode | Moving Tracks (24h) | Mean / 15 min | Peak / 15 min | Peak-to-Mean Ratio | Median Duration | Median Displacement | Median Speed | Total Dwell Time |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Pedestrian** | 5,476 | 57.0 | 282 | 4.94 | 7.5 s | 8.6 m | 1.33 m/s | 22.84 person-hrs |
+| **Cyclist** | 3,218 | 33.5 | 195 | 5.82 | 4.8 s | 11.5 m | 2.16 m/s | 8.30 cyclist-hrs |
+
+* **Key Takeaway**: Cyclists exhibited a sharper commuter spike (**5.82** peak-to-mean ratio vs. **4.94** for pedestrians) and traversed the intersection 62% faster (**2.16 m/s** vs. **1.33 m/s**), whereas pedestrians generated **2.75× more total intersection occupancy** (**22.84** vs. **8.30** hours) due to longer crossing and signal-wait times.
+
+### 2. Spatial Density & VRU-Vehicle Overlap (`vru_spatial.py` — Area 4)
+
+Mapping 10 Hz VRU trajectories and 1 Hz motorized vehicle trajectories onto a $0.5\,\text{m} \times 0.5\,\text{m}$ spatial grid (`spatial_vru_heatmaps.png`, `spatial_vru_vehicle_overlap.png`, `spatial_overlap_hotspots.csv`) identifies where VRUs concentrate and share road space with vehicles:
+
+* **Pedestrian Staging vs. Cyclist Corridors**: Pedestrians form high-density dwell clusters at crosswalk waiting corners and medians (exceeding $110\,\text{s}$ per $0.25\,\text{m}^2$ cell at major crossing approaches), whereas cyclists follow narrower, higher-speed linear corridors along the approaches and bike lanes with lower peak dwell intensity ($\sim 40\,\text{s}$ per cell) and queuing concentrated near the northern approach corner.
+* **VRU-Vehicle Spatial Overlap (`72.2%`)**: Active VRUs occupied **5,770 spatial grid cells** ($1,442.5\,\text{m}^2$), of which **4,166 cells (72.2%)** overlapped with motorized vehicle trajectories—pinpointing high-exposure conflict zones across crosswalks and turning lanes.
 ---
 
 ## 📁 Repository Structure
