@@ -154,6 +154,14 @@ Near-misses cluster sharply around daily human routines:
 3. **Evening Commute (16:00 – 17:00)**: **286 events** *(Work return commute)*.
 * Peak traffic interval of the day: **07:40 to 07:44** (`k305_object_list_2026-10-14_07-40_to_07-44.json`).
 
+## 🚶‍♂️🚲 VRU Spatial & Temporal Analysis (Areas 4 & 5)
+
+To complement the near-miss safety pipeline, dedicated spatial and temporal modules analyze **when** and **where** Vulnerable Road Users (Pedestrians and Cyclists) use intersection K305:
+
+* **Data Preparation (`vru_explore.py`, `vru_prepare.py`)**: Filters Pedestrian and Cyclist trajectories, removes transient noise tracks ($< 5$ frames / $0.5\,\text{s}$), deduplicates tracks across 5-minute file boundaries, and exports per-track summaries (`vru_tracks.csv`) alongside 15-minute interval counts (`vru_counts_15min.csv`).
+* **Temporal Profiles (Area 5)**: Computes 15-minute volume curves, dwell-time occupancy (person-seconds), peak-hour windows, and a direct modal comparison between Pedestrians and Cyclists.
+* **Spatial Density & Overlap (Area 4)**: Generates $0.5\,\text{m} \times 0.5\,\text{m}$ 2D dwell-time heatmaps, maps crossing trajectories to ground-truth crosswalks (`CW-NB`, `CW-SB`, `CW-WB`) and the eastbound bike lane (`Bike-EB`), and highlights VRU-vehicle spatial overlap zones.
+
 ---
 
 ## 📁 Repository Structure
@@ -167,6 +175,8 @@ Near-misses cluster sharply around daily human routines:
 ├── data_video.py                     # Generates 2D animated LiDAR simulation videos / GIFs
 ├── eda_k305.py                       # Week 1 exploratory data analysis pipeline
 ├── eda_k305.ipynb                    # Week 1 exploratory Jupyter notebook
+├── vru_explore.py                    # Initial single-file VRU inspection script
+├── vru_prepare.py                    # VRU trajectory cleaning & 15-minute count preparation
 ├── requirements.txt                  # Python package dependencies
 ├── DATABASE_AND_PROJECT_GUIDE.md     # In-depth database reference & geometry guide
 ├── RUN_NEAR_MISS_ANALYSIS.md         # Operational execution guide for near_miss_analysis
@@ -258,3 +268,4 @@ python data_video.py --input database/k305_object_list_2026-10-14_aggregation_5m
 * **Institution**: Technical University of Applied Sciences Aschaffenburg (TH Aschaffenburg)
 * **Dataset**: Intersection K305 Roadside LiDAR Research Infrastructure
 * **Authors**: Arman & Hammad Ahmad
+* **Spatial & Temporal VRU Analysis (Areas 4 & 5)**: Ranisha Peiris
