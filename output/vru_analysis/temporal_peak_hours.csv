@@ -1,0 +1,4 @@
+Category,Peak_Hour_Window,Peak_1h_Count,Share_of_Daily_Pct
+Pedestrian,07:00 - 08:00,553,10.1
+Cyclist,07:00 - 08:00,423,13.1
+Total_VRU,07:00 - 08:00,976,11.2
