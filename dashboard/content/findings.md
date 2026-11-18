@@ -7,7 +7,7 @@ _29 October 2026, NSE object list (score at least 0.25), variant `clean` unless 
 - **Vulnerable road users (pedestrians, cyclists, motorcycles) are 20% of all tracks** in `clean` (3,829 pedestrian, 2,551 cyclist, 1,626 motorcycle tracks against 28,138 cars). In `stitched` they are 32%: the movement filter drops many short pedestrian tracks, so the true share is somewhere between.
 
 **Where**
-- **Most pedestrian and cyclist trips link the N and W arms** (Dr.-Willi-Reiland-Ring north and Würzburger Straße west): 821 tracks N to W and 722 W to N, then S to E with 357. See **Space**.
+- **Most pedestrian and cyclist trips link the S and E arms** (Dr.-Willi-Reiland-Ring south and Würzburger Straße east): 821 tracks S to E and 722 E to S, then N to W with 357. See **Space**.
 - **45% of pedestrian tracks and 25% of cyclist tracks pass one of the five crossings** (X1 to X5). The rest walk or ride along the sidewalks, or cross somewhere the zones do not cover.
 
 **Signals**
@@ -18,4 +18,5 @@ _29 October 2026, NSE object list (score at least 0.25), variant `clean` unless 
 
 **How far to trust the data**
 - **NSE and Ouster agree on most objects**: 77 to 93% of NSE detections are also seen by Ouster in the four 10-minute windows. Vehicles get the same class 93 to 99.6% of the time, pedestrians 74 to 87%, cyclists only 44 to 63%; 30% of NSE cyclists are persons for Ouster. Ouster reports 1.1 to 1.6 times more pedestrians and longer tracks. Cyclist counts are the least certain number here. See **NSE vs Ouster**.
+- **Ouster is the better sensor for pedestrian and cyclist trajectories** (full comparison 08:15 to 11:25, checked against the video). NSE splits one person into about 2.3 ids (Ouster 1.3), and its biggest cluster of standing "pedestrians" is a ghost: nobody stood there in the video. But Ouster merges people who walk together into one track, so its pedestrian counts in groups are a minimum. NSE detections below the 0.25 score that this dashboard drops can be real walking people, so NSE pedestrian counts here are on the low side. See **NSE vs Ouster** and **Video check**.
 - **Tracks break into pieces**: 64,426 pieces for the day; stitching joins 19% of them. 36% of detections score below 0.25 and are left out. See **Data quality**.

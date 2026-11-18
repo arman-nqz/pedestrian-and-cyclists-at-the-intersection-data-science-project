@@ -14,6 +14,7 @@ from lib import data, video  # noqa: E402
 
 st.set_page_config(page_title="Video - K305", layout="wide")
 st.title("Video")
+video.offset_controls()
 
 try:
     meta = data.meta()
@@ -50,7 +51,7 @@ if c4.button("Replay the tracks with this video"):
 
 cols = st.columns(2)
 for col, cam in zip(cols, video.CAMERAS):
-    path, offset = video.video_for(day, t_local, cam)
+    path, offset = video.video_for(day, t_local + video.SENSOR_OFFSET_S, cam)
     with col:
         st.markdown(f"**Camera {cam}**")
         if path is None:

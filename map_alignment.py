@@ -31,6 +31,13 @@ MOTOR_HIGHWAYS = {"secondary", "trunk", "trunk_link", "residential", "service", 
 PED_HIGHWAYS = {"footway", "path", "steps", "cycleway", "pedestrian"}
 HALF = 52          # half size of the sensor window in meters (sensor range is about 45 m)
 CELL = 1.0         # coarse cell size in meters
+# ponytail: the surface-fit scores cannot tell +90 from +270 reliably (vehicles favour +270, footways +90);
+# the team chose +270 by eye on 2026-11-16 (output/map_tests/rotation_all4_check.png). Use --turn auto for the scores.
+CHOSEN_TURN = "+270"
+# Fine-tune of the chosen pose in sensor meters, added to its shift: footways and crossing nodes then lie on the
+# pedestrian traffic (footway score 0.46 -> 1.46, crossings 0.44 -> 1.71; vehicles 0.94 -> 0.71). Chosen by eye
+# 2026-11-17 from output/map_tests/shift_check.png (option C). Set to (0, 0) to get the raw fit back.
+NUDGE_M = (-3.75, -5.5)
 
 
 # ---------------------------------------------------------------- OSM
@@ -356,6 +363,8 @@ def main(argv=None):
     ap.add_argument("--data-dir", required=True)
     ap.add_argument("--out", default="dashboard/config")
     ap.add_argument("--every", type=int, default=6, help="use every n-th json file for the density")
+    ap.add_argument("--turn", default=CHOSEN_TURN, choices=["auto", "+0", "+90", "+180", "+270"],
+                    help="surface-fit candidate to use; 'auto' = best total score")
     args = ap.parse_args(argv)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -394,8 +403,9 @@ def main(argv=None):
     for k, c in sf["candidates"].items():
         print(f"surface fit, turn {k}: rotation {c['deg']:.2f} deg, shift {c['shift']}, vehicles {c['vehicle']:.2f}, "
               f"footways {c['footway']:.2f}, crossings {c['crossing']:.2f}, total {c['total']:.2f}")
-    deg, sh = sf["deg"], np.array(sf["shift"])
-    print(f"chosen (surface roads + pedestrians): rotation {deg:.2f} deg, shift {sh.round(2)} m")
+    pick = sf if args.turn == "auto" else sf["candidates"][args.turn]
+    deg, sh = pick["deg"], np.array(pick["shift"]) + NUDGE_M
+    print(f"chosen (turn {args.turn}): rotation {deg:.2f} deg, shift {sh.round(2)} m")
 
     # independent check: pedestrians should be on footways and crossings, not on random lines
     ped_ways = [w for w in ways if w["tags"].get("highway") in PED_HIGHWAYS or w["tags"].get("footway") == "crossing"]
@@ -429,7 +439,7 @@ def main(argv=None):
         "transform_enu_to_sensor": {"rotation_deg": round(float(deg), 3), "shift_m": np.round(sh, 3).tolist(), "mirror": mirror,
                                     "formula": "q = R(-rotation) @ (x_east, +-y_north) + shift"},
         "quality": {"fine_road_score": round(float(fine_sc), 3), **check, "density_files": nfiles,
-                    "surface_fit": sf["candidates"],
+                    "surface_fit": sf["candidates"], "chosen_turn": args.turn, "nudge_m": list(NUDGE_M),
                     "hypotheses": [{"mirror": h["mirror"], "rotation_deg": round(float(h["deg"]), 3), "shift_m": np.round(h["shift"], 3).tolist(),
                                     "road_score": round(float(h["road_score"]), 3), "oneway_match": h["oneway_match"],
                                     } for h in hyps],

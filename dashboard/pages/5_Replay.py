@@ -6,11 +6,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import streamlit as st  # noqa: E402
 
-from lib import data, filters, replay, video  # noqa: E402
+from lib import data, filters, replay, sensor_pair, video  # noqa: E402
 
 st.set_page_config(page_title="Replay - K305", layout="wide")
 st.title("Replay with video")
 f = filters.sidebar(show_time=False, show_classes=False)
+video.offset_controls()
 
 try:
     meta = data.meta()
@@ -25,7 +26,10 @@ if not (data.DATA / "replay" / variant).exists():
     variant = "clean"
 
 st.session_state.setdefault("video_time", 7 * 3600 + 20 * 60)  # shared with the Video and Signals pages
-c1, c2, c3, c4, c5 = st.columns([1.2, 0.8, 0.5, 0.5, 1])
+c0, c1, c2, c3, c4, c5 = st.columns([0.9, 1.2, 0.8, 0.5, 0.5, 1])
+source = c0.radio("Sensor", ["NSE", "Ouster"], horizontal=True,
+                  help="NSE: our tracks for the cleaning variant in the sidebar. Ouster: its raw object list, moved into "
+                       "the NSE frame (no cleaning; the files on this computer cover 07:15 to 08:35).")
 text = c1.text_input("Local time (HH:MM:SS)", value=video.hms(st.session_state["video_time"]))
 try:
     st.session_state["video_time"] = video.parse_hms(text)
@@ -45,16 +49,21 @@ if start + minutes * 60 <= ev_s < start + minutes * 60 + 10:  # event just past 
     minutes += 5
 # one window stays inside one video file (files are one hour each)
 minutes = min(minutes, (3600 - start % 3600) // 60)
-tweak = c5.number_input("Video offset (s)", value=0.0, step=0.5,
+tweak = c5.number_input("Video offset (s)", value=video.SENSOR_OFFSET_S, step=0.5,
                         help="Add this to the video time if the picture runs ahead (negative) or behind (positive) of the tracks.")
 
-win = replay.window(variant, start, minutes)
+if source == "NSE":
+    win = replay.window(variant, start, minutes)
+else:
+    with st.spinner("Reading the Ouster object list ..."):
+        win = sensor_pair.ouster_replay(start, minutes)
 if win is None:
-    st.info(f"No tracks for {video.hms(start)}.")
+    st.info(f"No {source} tracks for {video.hms(start)}." + (" Ouster object lists here cover 07:15 to 08:35; copy the "
+            "other `object_list+occupations.log.*.gz` files into `database/ouster/` for more." if source == "Ouster" else ""))
     st.stop()
-_, voff = video.video_for(day, start, video.CAMERAS[0])
-paths = [video.video_for(day, t, cam)[0] for cam in video.CAMERAS]
-sync = voff is not None and any(paths)
+paths = [video.video_for(day, t + tweak, cam)[0] for cam in video.CAMERAS]
+voffs = [video.video_for(day, start + tweak, cam)[1] for cam, p in zip(video.CAMERAS, paths) if p is not None]  # per shown video
+sync = bool(voffs) and None not in voffs
 
 event = st.session_state.get("replay_event")
 left, right = st.columns([3, 2])
@@ -67,16 +76,19 @@ with left:
             del st.session_state["replay_event"]
             st.rerun()
     # our own HTML (assets/player.html + prebuilt data); st.iframe keeps same-origin access for the video sync
-    st.iframe(replay.player_html(win, t - start, (voff + tweak) if sync else None, event), height="content")
-    st.caption(f"{day}, {video.hms(start)} to {video.hms(start + minutes * 60)} local time, variant `{variant}`, "
-               f"{len(win['T']):,} frames. Circles: pedestrians, cyclists, motorcycles (with heading); boxes: motor vehicles.")
+    st.iframe(replay.player_html(win, t - start, voffs if sync else None, event), height="content")
+    st.caption(f"{day}, {video.hms(start)} to {video.hms(start + minutes * 60)} local time, "
+               f"{'NSE variant `' + variant + '`' if source == 'NSE' else 'Ouster object list (raw ids, grey = UNKNOWN)'}, "
+               f"{len(win['T']):,} frames. Circles: pedestrians, cyclists, motorcycles (with heading); boxes: motor vehicles. "
+               "Crossings take the colour of the signal group that serves them (inferred, see **Signals**; dashed = "
+               "uncertain mapping); the signal log has one value per second.")
 with right:
     for cam, p in zip(video.CAMERAS, paths):
         st.markdown(f"**Camera {cam}**")
         if p is None:
             st.info("No video for this time (or the file is not in `database/miovision`).")
         else:
-            st.video(str(p), start_time=int(video.video_for(day, t, cam)[1]), muted=True)
+            st.video(str(p), start_time=int(video.video_for(day, t + tweak, cam)[1]), muted=True)
     if sync:
         st.caption("Play, pause, the slider and the speed in the player also drive both videos. Untick "
                    "'Video follows' in the player to use the video controls on their own.")

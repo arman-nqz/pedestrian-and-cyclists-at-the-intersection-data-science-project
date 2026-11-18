@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  :root { --bg: #12263a; --panel: #1b3550; --ink: #eef3f8; --mut: #9fb3c8; --acc: #e8791b; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Source Sans Pro", Calibri, Arial, sans-serif; }
+  #wrap { display: flex; gap: 6px; padding: 4px; }
+  .pane { flex: 1 1 0; min-width: 0; }
+  .pane h4 { margin: 0 0 2px; font-size: 13px; }
+  .pane .sub { color: var(--mut); font-size: 12px; margin-left: 6px; font-weight: normal; }
+  canvas { background: #0b1622; border-radius: 6px; width: 100%; aspect-ratio: 1; display: block; }
+  #ctrl { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; padding: 0 4px 4px; }
+  button, select { background: var(--panel); color: var(--ink); border: 1px solid #3a5878; border-radius: 6px; padding: 3px 7px; font-size: 13px; cursor: pointer; }
+  button:hover { border-color: var(--acc); }
+  #play { min-width: 74px; background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+  input[type="range"] { accent-color: var(--acc); }
+  #slider { flex: 1; min-width: 160px; }
+  #clock { font-variant-numeric: tabular-nums; font-size: 16px; min-width: 96px; }
+  #phase { font-size: 12px; padding: 1px 7px; border-radius: 10px; }
+  #opts { display: flex; gap: 10px; flex-wrap: wrap; padding: 0 4px 2px; font-size: 12px; color: var(--mut); }
+  #opts label { display: flex; gap: 4px; align-items: center; cursor: pointer; }
+  .sw { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .hint { font-size: 11px; padding: 0 4px 4px; color: var(--mut); }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div class="pane"><h4>Ouster<span class="sub" id="ou_sub"></span></h4><canvas id="cv_ou" width="640" height="640"></canvas></div>
+  <div class="pane"><h4>NSE<span class="sub" id="ns_sub"></span></h4><canvas id="cv_ns" width="640" height="640"></canvas></div>
+</div>
+<div id="ctrl">
+  <button id="back" title="Back one frame (Left arrow)">&#9664;&#9664;</button><button id="play">Play</button><button id="fwd" title="Forward one frame (Right arrow)">&#9654;&#9654;</button>
+  <select id="speed"><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option><option>4</option></select>x
+  <span id="clock"></span><span id="phase"></span>
+  <input type="range" id="slider" min="0" max="1000" value="0" />
+</div>
+<div id="opts">
+  <span id="legend"></span>
+  <label><input type="checkbox" id="ids" checked /> Track ids</label>
+  <label><input type="checkbox" id="low" checked /> NSE score &lt; 0.25 (hollow)</label>
+  <label><input type="checkbox" id="veh" /> Vehicles</label>
+  <label><input type="checkbox" id="map" checked /> Map</label>
+  <label><input type="checkbox" id="sync" checked /> Video follows</label>
+  <label>Trail <input type="range" id="trail" min="0" max="10" step="1" value="4" style="width:80px" /> <span id="trv">4</span> s</label>
+</div>
+<div class="hint">Dashed ring = check spot. Trail colour follows the id: a new colour on the same person = a new id. Space: play / pause, arrows: frame step.</div>
+<script>
+const D = __DATA__;
+const G = D.groups, COL = ["#3da5ff", "#ff9a2e", "#c77dff", "#9fb3c8", "#e0e0e0"];
+const el = (id) => document.getElementById(id);
+const SENS = [["ou", D.ouster], ["ns", D.nse]].map(([k, d]) => {
+  const cv = el("cv_" + k), hist = {};
+  if (d) d.F.forEach((fr, i) => fr.forEach((o) => (hist[o[0]] = hist[o[0]] || []).push([d.T[i], o[1], o[2]])));
+  return { k, d, cv, ctx: cv.getContext("2d"), hist };
+});
+const dur = D.dur, S = 640 / (2 * D.half);
+let cur = Math.min(Math.max(D.start, 0), dur), playing = false, last = 0;
+el("legend").innerHTML = G.map((g, i) => '<span class="sw" style="background:' + COL[i] + '"></span>' + g).join(" &nbsp;");
+el("ou_sub").textContent = D.ouster ? "(moved into the NSE frame)" : "no data for this time";
+el("ns_sub").textContent = D.nse ? "(all scores)" : "no data";
+const px = (x) => 320 + (x - D.cx) * S, py = (y) => 320 - (y - D.cy) * S;
+const hue = (id) => (Math.abs(id * 2654435761) % 360);
+function frameAt(T, t) { let lo = 0, hi = T.length - 1; if (T[0] > t) return -1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (T[m] <= t) lo = m; else hi = m - 1; } return lo; }
+function clock(t) {
+  const s = Math.round((D.local0 + t) * 10) / 10, h = Math.floor(s / 3600) % 24, m = Math.floor((s % 3600) / 60), ss = (s % 60).toFixed(1).padStart(4, "0");
+  return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + ss;
+}
+function path(ctx, xy) { ctx.beginPath(); xy.forEach((p, k) => (k ? ctx.lineTo(px(p[0]), py(p[1])) : ctx.moveTo(px(p[0]), py(p[1])))); }
+function drawMap(ctx) {
+  const M = D.map; if (!M || !el("map").checked) return;
+  ctx.fillStyle = "#1c3047"; M.buildings.forEach((b) => { path(ctx, b); ctx.fill(); });
+  ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#24384f";
+  M.roads.forEach((r) => { ctx.lineWidth = r.w * S; path(ctx, r.xy); ctx.stroke(); });
+  ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2; ctx.strokeStyle = "#4d6a87"; M.footways.forEach((f) => { path(ctx, f); ctx.stroke(); }); ctx.setLineDash([]);
+  ctx.strokeStyle = "#2f8f5b"; ctx.lineWidth = 1.5; ctx.fillStyle = "rgba(47,143,91,0.12)";
+  M.crossings.forEach((c) => { path(ctx, c.xy); ctx.closePath(); ctx.fill(); ctx.stroke(); });
+  ctx.fillStyle = "#5fc28a"; ctx.font = "bold 12px Calibri,Arial"; ctx.textAlign = "center";
+  M.crossings.forEach((c) => ctx.fillText(c.id, px(c.cx), py(c.cy))); ctx.textAlign = "start";
+}
+function drawSensor(s) {
+  const { ctx, d, hist } = s;
+  ctx.clearRect(0, 0, 640, 640); drawMap(ctx);
+  ctx.strokeStyle = "#ff3b3b"; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+  ctx.beginPath(); ctx.arc(px(D.cx), py(D.cy), 4 * S, 0, 6.283); ctx.stroke(); ctx.setLineDash([]);
+  if (!d) { ctx.fillStyle = "#9fb3c8"; ctx.font = "16px Calibri,Arial"; ctx.fillText("No data for this time", 20, 30); return 0; }
+  const i = frameAt(d.T, cur); if (i < 0) return 0;
+  const ids = el("ids").checked, low = el("low").checked, veh = el("veh").checked, trail = +el("trail").value;
+  let n = 0;
+  d.F[i].forEach((o) => {
+    const [id, x, y, h, gi, lw] = o;
+    if (gi === 3 && !veh) return;
+    if (lw && !low) return;
+    const vru = gi < 3 || gi === 4;
+    if (vru) n++;
+    if (trail > 0) {
+      ctx.strokeStyle = "hsl(" + hue(id) + ",85%,62%)"; ctx.lineWidth = 2; ctx.globalAlpha = 0.8; ctx.beginPath();
+      let st = false; for (const p of hist[id]) { if (p[0] > d.T[i]) break; if (p[0] < d.T[i] - trail) continue;
+        if (!st) { ctx.moveTo(px(p[1]), py(p[2])); st = true; } else ctx.lineTo(px(p[1]), py(p[2])); }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    const r = vru ? 6 : 8;
+    ctx.beginPath(); ctx.arc(px(x), py(y), r, 0, 6.283);
+    if (lw) { ctx.strokeStyle = COL[gi]; ctx.lineWidth = 2; ctx.setLineDash([3, 2]); ctx.stroke(); ctx.setLineDash([]); }
+    else { ctx.fillStyle = COL[gi]; ctx.globalAlpha = gi === 3 ? 0.45 : 1; ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.2; ctx.stroke(); }
+    if (h !== null) { ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(px(x), py(y)); ctx.lineTo(px(x) + Math.cos(h) * r * 1.9, py(y) - Math.sin(h) * r * 1.9); ctx.stroke(); }
+    if (ids) { ctx.fillStyle = "hsl(" + hue(id) + ",85%,75%)"; ctx.font = "12px Calibri,Arial"; ctx.fillText(id, px(x) + 8, py(y) - 8); }
+  });
+  ctx.fillStyle = "#9fb3c8"; ctx.font = "12px Calibri,Arial"; ctx.fillText(n + " road users shown (not counting vehicles)", 10, 632);
+  return n;
+}
+function draw() {
+  SENS.forEach(drawSensor);
+  el("clock").textContent = clock(cur);
+  el("slider").value = Math.round((cur / dur) * 1000);
+  const ph = el("phase"), inWin = cur >= D.check[0] && cur <= D.check[1];
+  ph.textContent = inWin ? "check window" : cur < D.check[0] ? "before the check" : "after the check";
+  ph.style.background = inWin ? "#e8791b" : "#2a4562";
+  syncVideo();
+}
+function videos() { try { return [...window.parent.document.querySelectorAll("video")]; } catch (e) { return []; } }
+function syncVideo() {
+  if (!el("sync").checked || D.video_offset == null) return;
+  // one offset per camera (cameras disagree on time); a single number = same for all
+  const vo = [].concat(D.video_offset), rate = +el("speed").value;
+  videos().forEach((v, k) => {
+    const want = (vo[k] ?? vo[0]) + cur;
+    v.muted = true;
+    if (Math.abs(v.currentTime - want) > (playing ? 0.6 : 0.15)) v.currentTime = want;
+    if (v.playbackRate !== rate) v.playbackRate = rate;
+    if (playing && v.paused) v.play().catch(() => {});
+    if (!playing && !v.paused) v.pause();
+  });
+}
+const anyT = (SENS.find((s) => s.d) || {}).d;
+function tick(ts) {
+  if (!playing) return;
+  cur += ((ts - last) / 1000) * +el("speed").value; last = ts;
+  if (cur >= dur) { cur = dur; setPlay(false); }
+  draw(); requestAnimationFrame(tick);
+}
+function setPlay(p) { playing = p; el("play").textContent = p ? "Pause" : "Play"; if (p) { last = performance.now(); requestAnimationFrame(tick); } else draw(); }
+function step(k) { setPlay(false); if (anyT) { const T = anyT.T, i = Math.max(0, frameAt(T, cur)); cur = T[Math.min(T.length - 1, Math.max(0, i + k))]; } else cur = Math.min(dur, Math.max(0, cur + 0.1 * k)); draw(); }
+el("play").onclick = () => setPlay(!playing);
+el("back").onclick = () => step(-1);
+el("fwd").onclick = () => step(1);
+el("slider").oninput = (e) => { cur = (e.target.value / 1000) * dur; draw(); };
+["ids", "low", "veh", "map", "sync", "speed"].forEach((id) => (el(id).onchange = draw));
+el("trail").oninput = (e) => { el("trv").textContent = e.target.value; draw(); };
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space") { e.preventDefault(); setPlay(!playing); }
+  else if (e.code === "ArrowLeft") step(-1);
+  else if (e.code === "ArrowRight") step(1);
+});
+draw();
+setTimeout(draw, 1500); // videos may mount after the iframe
+</script>
+</body>
+</html>

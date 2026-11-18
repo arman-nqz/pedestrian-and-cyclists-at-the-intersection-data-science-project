@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import streamlit as st
 
 from lib import data, plots
@@ -56,6 +57,42 @@ def map_layer():
             "labels": plots._labels(osm["roads"])}
 
 
+@st.cache_data
+def _signal_log():
+    """1 Hz signal log as local seconds, one column per signal group (its representative), or None."""
+    p, g = data.DATA / "signals.parquet", data.DATA / "signal_groups.json"
+    if not (p.exists() and g.exists()):
+        return None
+    groups = list(json.loads(g.read_text(encoding="utf-8")))
+    sig = pd.read_parquet(p, columns=["local"] + groups)
+    sig["s"] = sig["local"].map(lambda v: sum(int(x) * f for x, f in zip(v.split(":"), (3600, 60, 1))))
+    return sig.drop(columns="local").set_index("s").astype(str)
+
+
+@st.cache_data(max_entries=6)
+def signals(local0, dur):
+    """State changes of every signal group in [local0, local0 + dur], times relative to local0, plus which group serves
+    each crossing (inferred by signal_mapping.py). None if the signal files are missing."""
+    sig = _signal_log()
+    if sig is None:
+        return None
+    win = sig[(sig.index > local0) & (sig.index <= local0 + dur)]
+    before = sig[sig.index <= local0].tail(1)
+    out = {}
+    for g in sig.columns:
+        col = pd.concat([before[g], win[g]])
+        changed = col.ne(col.shift())
+        out[g] = [[max(0, int(t) - local0), v] for t, v in col[changed].items()]
+    mp = data.CONFIG / "signal_mapping.json"
+    serves = {}
+    if mp.exists():
+        for x, by in json.loads(mp.read_text(encoding="utf-8"))["crossings"].items():
+            m = by.get("Pedestrian") or by.get("Cyclist")
+            if m:
+                serves[x] = {"group": m["group"], "clear": bool(m["clear"])}
+    return {"groups": out, "crossings": serves}
+
+
 def player_html(win, start_in_window, video_offset, event=None):
     """`video_offset`: seconds into the video file at the window start (None = no video sync).
     `event`: {local_s, local_end, x, y, ids, label} to highlight, from the Conflicts page."""
@@ -63,5 +100,6 @@ def player_html(win, start_in_window, video_offset, event=None):
     if event and win["local0"] <= event["local_s"] < win["local0"] + win["T"][-1] + 1:
         ev = {"t": event["local_s"] - win["local0"], "t_end": event["local_end"] - win["local0"],
               "x": event["x"], "y": event["y"], "ids": event["ids"], "label": event["label"]}
-    d = dict(win, start=start_in_window, video_offset=video_offset, map=map_layer(), event=ev)
+    d = dict(win, start=start_in_window, video_offset=video_offset, map=map_layer(), event=ev,
+             signals=signals(win["local0"], int(win["T"][-1]) + 1))
     return TEMPLATE.read_text(encoding="utf-8").replace("__DATA__", json.dumps(d, separators=(",", ":")))

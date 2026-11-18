@@ -316,3 +316,41 @@ O1–O5, N7 and N8 come from my own checks (fragmentation cases and low-score ma
   be an Ouster blind spot or a NewSense artefact),
   that is the one area where NewSense could add value. It would need its own validation.
 - **Do not** compare the sensors again using 28.10 NewSense data as it is.
+
+## 10. Video check results (added 2026-11-17)
+
+All 18 checks of section 8 were watched by one team member in the dashboard's **Video check** page (both cameras,
+with an Ouster / NewSense replay on one clock). Answers are in `video_check/results.csv`. O1, N2, N8 and O7 were marked
+"quite unclear"; O7, N6 and O10 could not be decided. Video quality is 720 × 480.
+
+| Question | Checks | Answer | Meaning |
+| :--- | :--- | :--- | :--- |
+| Is NewSense fragmentation real (isolated people)? | O1, O2, O3 | O1: 1 person (unclear), O3: 1 person; O2: 2 people | **Yes** for single people: one person, 5 and 6 NewSense IDs. O2 shows the Ouster merging two people into one track |
+| Does the Ouster merge groups in crowds? | O4, O5 | group, group | **Yes.** Part of NewSense's extra IDs in crowds are real extra people |
+| Main static cluster (−16.3, 1.8): people or ghost? | N1, N2 | nobody, nobody (N2 unclear) | **Ghost.** NewSense's largest static-pedestrian source is false |
+| Night-cell spot (18.7, 0.7) | N3, N4 | someone standing (08:31), nobody (08:06) | Mostly a fixed-structure ghost; a real person stood there once |
+| Third spot (−28.7, −11.8) | N6 | unclear | No conclusion |
+| Are low-score (< 0.25) NewSense tracks real? | N7, N8 | yes, yes (N8 unclear) | **Yes.** The 0.25 filter removes real moving pedestrians (section 5 confirmed) |
+| Does NewSense merge a pair? | O7 | other (unclear) | No conclusion |
+| One-sensor-only movers | N5, O6, O8, O9, O10 | N5 real cyclist; O6 pedestrian; O8, O9 real pedestrians; O10 unclear | Both sensors miss real road users sometimes: Ouster missed a cyclist (N5, west edge); NewSense missed O8 and O9 and labelled the O6 pedestrian "Motorcycle" |
+
+**What changes in this review.**
+- Section 4 concluded that the merged-group explanation "is not supported", from Ouster box sizes. The video
+  contradicts that for groups: in both crowd checks and in O2 the Ouster tracked several people as one object. The box
+  size test was weak (section 4, point 2), and this is where it failed. The isolated-object result (NewSense 1.92 against
+  Ouster 1.16 IDs per object) still stands, and O1 and O3 confirm it. The crowded-case gap (2.44 against 1.33) is partly
+  real people, not only NewSense fragmentation.
+- Section 7's open question is answered: the static cluster at (−16.3, 1.8) is a ghost, so NewSense has no proven
+  advantage for "where do pedestrians wait" there.
+- Section 5's inference is confirmed: low-score NewSense tracks include real walking people.
+
+**Updated recommendation (replaces section 9's "lean towards Ouster ... before committing, do the video check").**
+- **Use the Ouster for pedestrian and cyclist trajectories.** It keeps one ID per person far more often, and
+  NewSense's main static output is false.
+- **Caveat: Ouster pedestrian counts in groups are a minimum**, because it merges people who walk together.
+- **If NewSense data is used, do not filter by score.** A 0.25 cut removes real walking people and keeps static
+  ghosts. Filter static tracks at the known ghost spots and use movement instead. This also applies to the team
+  dashboard, which currently drops NewSense detections below 0.25 (36% of rows).
+- Both sensors miss real road users at the edges of their view; neither is complete on its own.
+- The evidence is one viewer and 18 moments: the direction is clear, the sizes are not proven.
+

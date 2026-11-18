@@ -26,7 +26,7 @@ evidence.
 | Pushed to GitHub `main` | Done (commit `5fb26b9`). `.venv/` and `output/cache/` are git-ignored |
 | Full run | Done 2026-11-16 by the user. All gates passed. Outputs are in `output/full/` and `sensor_comparison_full.ipynb`, committed to `main`. Results are in section 7b |
 | Independent review of the full results | Prompt ready: `PROMPT_review_full_results.md`. It writes `REVIEW_full_results.md`. Not yet run |
-| Video check of disputed tracks | Not started |
+| Video check of disputed tracks | Done 2026-11-17 by the user (all 18, answers in `video_check/results.csv`, checked with the dashboard's Video check page). Results and the updated recommendation: `REVIEW_full_results.md` section 10 |
 
 Working rules from the user:
 - Agents run analyses on a small sample only; the user starts full-data runs.

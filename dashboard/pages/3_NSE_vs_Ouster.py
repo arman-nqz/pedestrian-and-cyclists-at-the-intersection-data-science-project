@@ -51,6 +51,22 @@ st.caption(
     f"systems cover is compared. NSE detections with a score below {meta['min_score_nse']} are left out; Ouster has no "
     "score filter.")
 
+# --- full comparison (comparingDataFromBothSensors): verdict and scorecard
+st.subheader("Which sensor is more reliable? Full comparison, 08:15 to 11:25")
+st.markdown(data.content("sensor_verdict.md") or "_`content/sensor_verdict.md` is missing._")
+_sc = data.ROOT.parent / "comparingDataFromBothSensors" / "output" / "full" / "tables" / "scorecard.csv"
+if _sc.exists():
+    with st.expander("Scorecard: pedestrians and cyclists, filtered, 08:15 to 11:25"):
+        sc = pd.read_csv(_sc)
+        sc = sc[sc["scored"] & (sc["epoch"] == "B") & (sc["variant"] == "filtered") & sc["group"].isin(["ped", "bike"])]
+        st.dataframe(sc[["metric", "group", "newsense", "ouster", "n_newsense", "n_ouster", "better", "note"]],
+                     hide_index=True, width="stretch")
+        st.caption("`better` is the sensor with the better value (ties within 5%). Fragmentation rows: the NewSense "
+                   "value is the number of NewSense ids per Ouster track, so it measures NewSense fragmentation.")
+st.page_link("pages/7_Video_check.py", label="Open the video check (settles the open points)")
+st.divider()
+st.subheader("Four shared windows: do they see the same road users?")
+
 # --- headline table
 s = summ[summ["window"].isin(sel)]
 if wid == "all":

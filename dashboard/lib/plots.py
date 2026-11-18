@@ -20,6 +20,8 @@ ROAD_STYLE = {
     "service": ("#ffffff", "#9a9a9a", 4.0, 0),
 }
 LANE_M = 3.0
+# Plotly always draws heatmaps below scatter fills, so opaque map areas would hide the data: draw them see-through
+MAP_OPACITY = 0.4
 
 
 def _band(xy, width):
@@ -74,13 +76,13 @@ def _labels(roads, lim=LIM - 4, min_len=12, spacing=30):
     return out
 
 
-def base_map(fig, show_osm=True, show_zones=True, row=None, col=None):
+def base_map(fig, show_osm=True, show_zones=True, row=None, col=None, opacity=MAP_OPACITY):
     """Draw the map. Area layers go *behind* traces already in the figure; names and zones go on top."""
     kw = {"row": row, "col": col} if row else {}
     osm = data.osm_map() if show_osm else None
     if osm:
         n_before = len(fig.data)
-        common = dict(mode="lines", hoverinfo="skip", showlegend=False, legendgroup="osm")
+        common = dict(mode="lines", hoverinfo="skip", showlegend=False, legendgroup="osm", opacity=opacity)
 
         def area(polys, fill, line, width=0.6, **extra):
             if polys:

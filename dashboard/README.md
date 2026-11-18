@@ -1,4 +1,4 @@
-# K305 VRU dashboard
+﻿# K305 VRU dashboard
 
 An interactive Streamlit dashboard for Topic 4, **"Pedestrians and cyclists at the intersection K305: when and where?"**
 It shows when and where pedestrians, cyclists and motorcycles (vulnerable road users, VRUs) use the junction of
@@ -32,8 +32,9 @@ After pulling code changes, restart Streamlit: it reloads pages on save, but not
 | **NSE vs Ouster** | How far to trust the sensors: the two LiDAR systems compared in four shared 10-minute windows (W1 07:20, W2 07:40, W3 08:00, W4 08:20): detection overlap, class agreement, position error, counts, track fragmentation |
 | **Conflicts** | Where VRUs meet motor traffic: near-miss candidates (TTC and PET) by class pair, map, hour, sortable event list; select an event to replay it. Compare the original pipeline's events with events recomputed on cleaned tracks. Overlap map: cells where a VRU and a vehicle pass within a few seconds of each other |
 | **Signals** | Which signal group serves which crossing (inferred), share of crossings started on red, signal timeline with crossing entries |
-| **Replay** | The tracked objects on the map (play, pause, frame step, speed, trails, ids). Both camera videos follow the player's clock. Events from Conflicts are highlighted (red rings, dashed line between the two tracks) |
+| **Replay** | The tracked objects on the map (play, pause, frame step, speed, trails, ids), from NSE (cleaning variant) or Ouster (raw object list, moved into the NSE frame), with the traffic lights on the crossings. Both camera videos follow the player's clock. Events from Conflicts are highlighted (red rings, dashed line between the two tracks) |
 | **Video** | Both cameras at any second between 06:00 and 13:00, with the signal states and near-miss events nearby |
+| **Video check** | Settles the open points of the NSE vs Ouster comparison: 18 moments where the sensors disagree, a two-pane replay (Ouster left, NSE right, all NSE scores) with one controller that also drives both camera videos, and a form whose answers are saved to `comparingDataFromBothSensors/video_check/results.csv` |
 | **Data quality** | What cleaning does: duplicates, broken tracks, stitching joins and where they happen, low-score detections, a sensitivity table for the movement filter |
 
 ### Sidebar
