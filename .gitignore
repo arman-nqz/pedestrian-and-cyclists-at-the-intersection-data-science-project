@@ -19,3 +19,6 @@ __pycache__/
 
 # Office lock files
 .~lock.*#
+
+# Rendered counting clips (rebuild with video_counting/make_clips.py)
+/video_counting/clips/
